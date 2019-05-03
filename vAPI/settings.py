@@ -87,25 +87,25 @@ WSGI_APPLICATION = 'vAPI.wsgi.application'
 # DATABASES = {
 #     'default': env['DATABASE']
 # }
-
-# if on_heroku:
-DATABASES = {
-    'default': {
-          'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'dd7gonermmlu4d',
-            'USER': 'bwwaqpuwcrxdtb',
-            'PASSWORD': 'dc17a84de530180fa85638f177c2e3ee7dcaddefb6b844db502c3c4200b4a132',
-            'HOST': 'ec2-54-243-241-62.compute-1.amazonaws.com',
-            'PORT': '5432',
+DATABASES = None
+if on_heroku:
+    DATABASES = {
+        'default': {
+              'ENGINE': 'django.db.backends.postgresql',
+                'NAME': 'dd7gonermmlu4d',
+                'USER': 'bwwaqpuwcrxdtb',
+                'PASSWORD': 'dc17a84de530180fa85638f177c2e3ee7dcaddefb6b844db502c3c4200b4a132',
+                'HOST': 'ec2-54-243-241-62.compute-1.amazonaws.com',
+                'PORT': '5432',
+        }
     }
-}
-# else:
-#     DATABASES = {
-#         'default': {
-#             'ENGINE': 'django.db.backends.sqlite3',
-#             'NAME': 'vol_API',
-#         }
-#     }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'vol_API',
+        }
+    }
 
 # Rather set on a per-view-basis
 REST_FRAMEWORK = {
