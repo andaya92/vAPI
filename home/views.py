@@ -82,24 +82,25 @@ class CreateUser(APIView):
 		password_check = check_password(password, password_confirm)
 
 		if not password_check['error']:
-			try:
-				user = User.objects.create_user(username, email, password)
-				if account_type == "volunteer":
-					account = Volunteer(user=user)
-					account.save()
-					return Response(VolunteerSerializer(account).data)
-				elif account_type == "volunteer_provider":
-					account = VolunteerProvider(user=user)
-					account.save()
-					return Response(VolunteerProviderSerializer(account).data)
-				else:
-					print("Error creating user")
-					return Response({})
-			except:
+			# try:
+			user = User.objects.create_user(username, email, password)
+			if account_type == "volunteer":
+				account = Volunteer(user=user)
+				account.save()
+				return Response(VolunteerSerializer(account).data)
+			elif account_type == "volunteer_provider":
+				account = VolunteerProvider(user=user)
+				account.save()
+				return Response(VolunteerProviderSerializer(account).data)
+			else:
 				print("Error creating user")
-				return Response({})
+				return Response({"error": "Account type error"})
+			# except:
+			# 	print("Error creating user")
+			# 	return Response({"error":"user not created"})
 		elif password_check['error']:
 			print(password_check['msg'])
+		return Response({"error": "password check failed"})
 
 	def delete(self, request):
 		try:
