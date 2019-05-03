@@ -4,3 +4,9 @@ README
 # Delete Migrations
 find . -path "*/migrations/*.py" -not -name "__init__.py" -delete
 find . -path "*/migrations/*.pyc"  -delete
+
+
+# Heroku Deploy
+git add .
+git commit -am "make it better"
+git push heroku master

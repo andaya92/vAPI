@@ -1,0 +1,1 @@
+web : ./manage.py runserver -b $HOST -p $PORT
