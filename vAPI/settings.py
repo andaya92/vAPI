@@ -87,7 +87,7 @@ WSGI_APPLICATION = 'vAPI.wsgi.application'
 # DATABASES = {
 #     'default': env['DATABASE']
 # }
-
+DATABASES = None
 if on_heroku:
     DATABASES = {
         'default': {
