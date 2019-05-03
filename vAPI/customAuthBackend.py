@@ -7,7 +7,7 @@ class EmailBackend(ModelBackend):
         user = None
         try:
             # do user look up by email instead
-            if(email.contains("@"))
+            if "@" in email:
                 user = UserModel.objects.get(email=email)
             else:
                 user = UserModel.objects.get(username=email)
