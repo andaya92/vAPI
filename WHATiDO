@@ -1,0 +1,71 @@
+System
+- Token Authentication
+	- Test: HTTP_AUTHORIZATION="TOKEN 9a8sdhn23f9a80nlklks8"
+	- Mobile: headers={"Authorization": "TOKEN 9a8sdhn23f9a80nlklks8"} 
+
+Users
+- Create
+	- Volunteer
+	- Volunteer Provider
+	- account_type == "volunteer" || "volunteer_provider"
+-Get Volunteer or VolunteerProvider
+	- single instance by Pk or email
+	- or list all 
+- Delete User
+	- by User Pk
+- Authenticate
+	- email & password
+	- receives rest_token & user instance 
+
+Volunteer Event
+- Create Event
+	- title
+	- location_city
+	- location_state
+	- desc
+	- details
+	- provider
+	- event_begins
+	- event_ends
+- Get event 
+	- by Pk, City, State, or provider id
+
+Volunteer Post
+-Create Post 
+	- user
+	- [event] 
+	- img # png base64
+	- caption
+- Get Post
+	- by User Pk, Event id
+
+
+VolunteerEventSignUp
+-Create
+	- volunteer
+	- event
+- Get 
+	- by Pk, Volunteer_id, event_id
+
+
+
+News API
+import feedparser
+d = feedparser.parse("https://news.google.com/rss/search?q=state+of+emergency+california&hl=en-US&gl=US&ceid=US:en")
+
+for e in d['entries']:
+	e.title
+		California Governor Declares State of Emergency in Eight Counties, Including Mariposa County, Due to Winter Storms - Sierra Sun Times
+	e.link
+		https://goldrushcam.com/sierrasuntimes/index.php/news/local-news/18230-california-governor-declares-state-of-emergency-in-eight-counties-including-mariposa-county-due-to-winter-storms
+	e.summary
+		<a href="https://goldrushcam.com/sierrasuntimes/index.php/news/local-news/18230-california-governor-declares-state-of-emergency-in-eight-counties-including-mariposa-county-due-to-winter-storms" target="_blank">California Governor Declares State of Emergency in Eight Counties, Including Mariposa County, Due to Winter Storms</a>&nbsp;&nbsp;<font color="#6f6f6f">Sierra Sun Times</font><p>April 13, 2019 - SACRAMENTO — Governor Gavin Newsom on Friday issued an emergency proclamation for the counties of Butte, Colusa, Del Norte, Mariposa, ...</p>'
+	e.source.href
+		https://goldrushcam.com
+	e.source.title
+		Sierra Sun Times
+	e.media_content.url
+		https://lh4.googleusercontent.com/proxy/jcPiFk6AIyqAwAhHEdYkxZrEBb0o5u8wm1nv_03hjYdjFHEstekQWFQmQS6dYdkEQo6QsQmFVGHzi31hf92yNVrLN54pMto3SPyOaeBLpRX1nuC-4nGwKZXz_1KKIedju_VB36E=-w150-h150-c
+	e.media_content.medium
+		image
+
