@@ -1,1 +1,1 @@
-web: ./manage.py runserver -p $PORT
+web: gunicorn vAPI.wsgi
