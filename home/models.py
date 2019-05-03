@@ -29,6 +29,13 @@ class User(AbstractUser):
 			instance.rest_token = token.key
 			instance.save()
 
+	@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+	def create_superuser_password(sender, instance=None, created=False, **kwargs):
+		if created:
+			if instance.is_superuser:
+				instance.set_password("temptemp!1")
+				instance.save()
+
 class Volunteer(models.Model):
 	user = models.OneToOneField(User, on_delete=models.CASCADE)
 

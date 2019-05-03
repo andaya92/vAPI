@@ -11,3 +11,8 @@ git add .
 git commit -am "make it better"
 git push heroku master
 
+# Initial Deploy
+## Need to create superuser for production environment
+## 1. Create super user with Procfile worker
+		- worker:  ./manage.py createsuperuser --email admin@g.com --username admin
+## 2. Create Endpoint to change password

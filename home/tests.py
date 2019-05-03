@@ -112,7 +112,25 @@ class TestUser(APITestCase):
 		view = AuthUserAPI.as_view()
 		response = view(request)
 		self.assertEqual(response.data['user']['username'], 'hercules', "Username does not match user's email")
+	def test_view_change_password(self):
+		# User that is requesting from API
+		zeus = get_user_model().objects.get(pk=1)
+		self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(zeus.rest_token))
+
+		response = self.client.post("/home/change_password/", {
+								"current_password": "kidskidz@2",
+								"password": "chuckisgod1337",
+								"password_confirm": "chuckisgod1337"
+								})
 		
+		self.assertEqual(response.data['password_changed'], False)
+
+		response = self.client.post("/home/change_password/", {
+								"current_password": "kidskids@2",
+								"password": "chuckisgod1337",
+								"password_confirm": "chuckisgod1337"
+								})
+		self.assertEqual(response.data['password_changed'], True)
 	def test_view_volunteer_API(self):
 		# User that is requesting from API
 		zeus = get_user_model().objects.get(pk=1)
