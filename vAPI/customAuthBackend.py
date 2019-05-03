@@ -8,12 +8,12 @@ class EmailBackend(ModelBackend):
         try:
             # do user look up by email instead
             if "@" in email:
-                user = UserModel.objects.get(email=email)
+                user = UserModel.objects.filter(email=email)
             else:
-                user = UserModel.objects.get(username=email)
+                user = UserModel.objects.filter(username=email)
         except UserModel.DoesNotExist:
             return None
         else:
-            if user.check_password(password) and self.user_can_authenticate(user):
+            if user[0].check_password(password) and self.user_can_authenticate(user[0]):
                 return user
         return None
