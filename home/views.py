@@ -39,21 +39,19 @@ def check_password(password, password_confirm):
 
 # Create your views here.
 class ChangePassword(APIView):
-	# authentication_classes = (TokenAuthentication,)
-	# permission_classes = (IsAuthenticated,)
+	authentication_classes = (TokenAuthentication,)
+	permission_classes = (IsAuthenticated,)
 
 	def post(self, request, special=None):
-			
-
-		# current_password = request.data['current_password']
-		# password = request.data['password']
-		# password_confirm = request.data['password_confirm']
-		# checked_password = check_password(password, password_confirm)
-		# if not checked_password['error'] and request.user.check_password(current_password):
-		# 	request.user.set_password(password)
-		# 	return Response({"password_changed":True})
-		# elif checked_password['error']:
-		# 	print(checked_password['msg'])
+		current_password = request.data['current_password']
+		password = request.data['password']
+		password_confirm = request.data['password_confirm']
+		checked_password = check_password(password, password_confirm)
+		if not checked_password['error'] and request.user.check_password(current_password):
+			request.user.set_password(password)
+			return Response({"password_changed":True})
+		elif checked_password['error']:
+			print(checked_password['msg'])
 		return Response({"password_changed":False})
 
 
