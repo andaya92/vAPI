@@ -7,6 +7,7 @@ from .views import *
 
 from time import time
 import datetime
+import json
 from django.utils import timezone
 from django.test import TestCase 
 from .models import *
@@ -351,3 +352,125 @@ class TestUser(APITestCase):
 		is_deleted = self.client.delete("/home/volunteer_event_signup/delete/", {"pk" : signup.data['id']})		
 		# Expect deletion 
 		self.assertEqual(is_deleted.data['deleted'], True, "Signup not deleted when it shoudl've")
+
+	def test_view_dontaion_event_API_post(self):
+		# User that is requesting from API
+		zeus = get_user_model().objects.get(pk=1)
+		self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(zeus.rest_token))
+
+		response = self.client.post("/home/donation_event/", {
+			"title" : "The big nasty disaster that befell your fellow neighbor.",
+			"desc" : "A huge natural disaster has beseiged your neighboring town.",
+			"details" : "Over 800billion in damages, eveyone homeless...",
+			"beneficiary" : "Red Rover Robin Relief"
+			})
+		self.assertEqual(response.data['id'], 1, "Should be the first entry in table")
+
+	def test_view_dontaion_event_API_get(self):
+		# User that is requesting from API
+		zeus = get_user_model().objects.get(pk=1)
+		self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(zeus.rest_token))
+
+		response = self.client.post("/home/donation_event/", {
+			"title" : "Southern Califonia Fire Disaster",
+			"desc" : "A huge natural disaster has beseiged your neighboring town.",
+			"details" : "Fires. Everywhere. River of flames riveting through town.",
+			"beneficiary" : "Smokey Fire Bear"
+			})
+
+		response = self.client.post("/home/donation_event/", {
+			"title" : "Flood in Big Name Area.",
+			"desc" : "Dat wet wet here. Wetter the better they said...",
+			"details" : "Everything is soaked",
+			"beneficiary" : "Noah & Sons"
+			})
+
+		response = self.client.post("/home/donation_event/", {
+			"title" : "Terror in insert church/school/concert/airport/huge building/ here.",
+			"desc" : "So many ded. vry sad.",
+			"details" : "We need help, send monies...",
+			"beneficiary" : "Church of Saints"
+			})
+
+
+		response = self.client.get("/home/donation_event/pk/1/")
+		self.assertEqual(response.data['title'], "Southern Califonia Fire Disaster", "Wrong title; Expected different title")
+
+		response = self.client.get("/home/donation_event/title/in/")
+		self.assertEqual(len(response.data), 2, "Should be 2 result")
+
+		response = self.client.get("/home/donation_event/beneficiary/church/")
+		self.assertEqual(len(response.data), 1, "Should be 1 result")
+		
+	def test_view_dontaion_event_API_delete(self):
+		response = self.client.post("/home/donation_event/", {
+			"title" : "The big nasty disaster that befell your fellow neighbor.",
+			"desc" : "A huge natural disaster has beseiged your neighboring town.",
+			"details" : "Over 800billion in damages, eveyone homeless...",
+			"beneficiary" : "Red Rover Robin Relief"
+			})
+		response = self.client.delete("/home/donation_event/delete/", {"pk" : response.data['id']})
+	
+
+	## Needs legit token from stripe client		
+
+	# def test_view_donation_API_post(self):
+	# 	# User that is requesting from API
+	# 	zeus = get_user_model().objects.get(pk=1)
+	# 	self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(zeus.rest_token))
+
+	# 	response = self.client.post("/home/donation_event/", {
+	# 		"title" : "The big nasty disaster that befell your fellow neighbor.",
+	# 		"desc" : "A huge natural disaster has beseiged your neighboring town.",
+	# 		"details" : "Over 800billion in damages, eveyone homeless...",
+	# 		"beneficiary" : "Red Rover Robin Relief"
+	# 		})
+
+	# 	response = self.client.post("/home/make_donation/", {
+	# 								"user_stripe_token": "aaaaa",
+	# 								"donation_event_id" : response.data['id'],
+	# 								"amount" : "7347"
+	# 								})
+		
+	# 	print(response.data)
+
+
+	# def test_view_donation_API_get(self):
+	# 	zeus = get_user_model().objects.get(pk=1)
+	# 	self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(zeus.rest_token))
+
+	# 	response = self.client.post("/home/donation_event/", {
+	# 		"title" : "The big nasty disaster that befell your fellow neighbor.",
+	# 		"desc" : "A huge natural disaster has beseiged your neighboring town.",
+	# 		"details" : "Over 800billion in damages, eveyone homeless...",
+	# 		"beneficiary" : "Red Rover Robin Relief"
+	# 		})
+
+	# 	response = self.client.post("/home/make_donation/", {
+	# 								"user_stripe_token": "tok_1EWe4dIgfiVd5gwhSex8csfo",
+	# 								"donation_event_id" : response.data['id'],
+	# 								"amount" : "7347"
+	# 								})
+
+	# 	response = self.client.get("/home/user_donation/user/1/")
+	# 	print("Dontaion::user")
+	# 	print(response.data)
+		
+	# 	response = self.client.get("/home/user_donation/event/1/")
+	# 	print("Dontaion::event")
+	# 	print(response.data)
+
+	# # Get from stripe API 
+	# def test_view_donation_API_get(self):
+	# 	response = self.client.get("/home/user_donation/charge/ch_1EWe5VIgfiVd5gwhhJENWPQd/")
+	# 	self.assertEqual(response.data['amount'], 734700, "Amount is not what is expected")
+
+	# Get from stripe API 
+	def test_view_donation_API_delete(self):
+		response = self.client.delete("/home/refund_user_donation/", {
+										"charge_id": "ch_1EWe5VIgfiVd5gwhhJENWPQd"})
+		print(response.data)
+
+
+	
+	

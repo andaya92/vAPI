@@ -29,6 +29,8 @@ Volunteer Event
 	- event_ends
 - Get event 
 	- by Pk, City, State, or provider id
+- Delete
+	- by Pk
 
 Volunteer Post
 -Create Post 
@@ -38,6 +40,8 @@ Volunteer Post
 	- caption
 - Get Post
 	- by User Pk, Event id
+- Delete
+	- by Pk
 
 
 VolunteerEventSignUp
@@ -46,6 +50,52 @@ VolunteerEventSignUp
 	- event
 - Get 
 	- by Pk, Volunteer_id, event_id
+
+- Delete 
+	- by Pk
+
+DonationEvent
+- Create DonationEvent
+	- title
+	- desc
+	- details
+	- beneficiary
+
+- Get DonationEvent
+	- by pk, title, beneficiary
+	- performs __contains query
+- Delete
+ 	- by Pk
+
+UserDonation
+- Create UserDonation during Make Donation after a charge is created
+	- user
+	- DonationEvent
+	- amount
+	- charge_id
+
+- Get UserDonation
+	- user_id
+	- event_id
+	- charge_id
+
+- Delete
+-Refund
+# Remove from User Donation... where charge_id ==
+# Add refund model
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

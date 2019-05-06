@@ -75,3 +75,21 @@ class VolunteerPost(models.Model):
 			self.created = timezone.now()
 		self.modified = timezone.now()
 		return super(VolunteerPost, self).save(*args, **kwargs)
+
+class DonationEvent(models.Model):
+	title = models.CharField(max_length=100)
+	desc = models.CharField(max_length=2000)
+	details = models.CharField(max_length=500)
+	beneficiary = models.CharField(max_length=100)
+
+class UserDonation(models.Model):
+	user = models.ForeignKey(User, on_delete=models.CASCADE)
+	event = models.ForeignKey(DonationEvent, on_delete=models.CASCADE)
+	amount = models.FloatField()
+	charge = models.CharField(max_length=50)
+
+class UserDonationRefund(models.Model):
+	user = models.ForeignKey(User, on_delete=models.CASCADE)
+	event = models.ForeignKey(DonationEvent, on_delete=models.CASCADE)
+	amount = models.FloatField()
+	charge = models.CharField(max_length=50)

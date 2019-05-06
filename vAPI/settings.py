@@ -16,6 +16,8 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 from . import EnvironmentPickler
 
+STRIPE_API_KEY = "sk_test_zPi7M2GlORtMTTalLP8IvVQN00sworOe6m"
+
 on_heroku = False
 env = None
 if 'HEROKU' in os.environ:

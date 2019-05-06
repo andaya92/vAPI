@@ -8,12 +8,160 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth import authenticate
 from datetime import datetime
 
+from vAPI import settings
 from .serializer import *
 
 from django.core.files.base import ContentFile
 
 import base64
+import stripe
+import json
 
+
+
+
+class DonationAPI(APIView):
+	def get(self, request, user_id=-1, event_id=-1, charge_id="none"):
+		results = None
+		if user_id != -1:
+			results = UserDonation.objects.filter(user_id=user_id)
+		elif event_id != -1:
+			results = UserDonation.objects.filter(event_id=event_id)
+		elif charge_id != "none":
+			try:
+				stripe.api_key = settings.STRIPE_API_KEY
+				result = stripe.Charge.retrieve(charge_id)
+				return Response(result)
+			except:
+				print("Failed getting charge by id from Stripe")
+
+		if results:
+			qr = list()
+			for r in results:
+				qr.append(UserDonationSerializer(r).data)
+			return Response(qr)
+		return Response({})
+
+	def post(self, request):
+		stripe.api_key = settings.STRIPE_API_KEY
+		
+		user_stripe_token = request.data['user_stripe_token']
+		amount = request.data['amount']
+		donation_event_id = request.data['donation_event_id']
+		
+		de = DonationEvent.objects.get(pk=int(donation_event_id))
+
+		charge = None
+		# try:
+		charge = stripe.Charge.create(
+			amount=int(amount)*100,
+			currency='usd',
+			description='Example charge',
+			statement_descriptor= "Volunteer Me",
+			metadata={
+				"username" : request.user.username,
+				"email" : request.user.email,
+				"charge_type" : "donation",
+				"ids" : json.dumps({"donation_event": donation_event_id }),
+				"info" : json.dumps({"title":de.title, "desc":de.desc,
+				"details":de.details, "beneficiary" : de.beneficiary})
+			},
+			source= user_stripe_token
+		)
+		# except:
+		# 	print("Error creating charge")
+		if charge:
+			if charge.paid:
+				try:
+					ud = UserDonation()
+					ud.user_id = request.user.id
+					ud.event_id = de.id
+					ud.amount = amount
+					ud.charge = charge.id
+					ud.save()
+				except:
+					print("Failed creating UserDonation record")
+					# send data in json format to database
+					# make process that checks database for rows and trys to save them again...
+				return Response({"donated":True})
+
+		return Response({"donated":False})
+
+	def delete(self, request):
+		charge_id = request.data['charge_id']
+		stripe.api_key = settings.STRIPE_API_KEY
+		re = None
+		try:
+			re = stripe.Refund.create(
+				charge=charge_id
+			)
+		except stripe.error.InvalidRequestError as e:
+			print("Error creating refund", str(e))
+		if re:
+			result = UserDonation.objects.filter(charge=charge_id).first()
+			if result:
+				try:		
+					refund = UserDonationRefund()
+					refund.user_id = result.user_id
+					refund.event_id = result.event_id
+					refund.amount = result.amount
+					refund.charge = result.charge
+				except:
+					print("Failed creating UserDonationRefund")
+				try:
+					result.delete()
+				except:
+					print("Failed deleting UserDonation")
+			return Response(re)
+		return Response({})
+
+
+class DonationEventAPI(APIView):
+	def get(self, request, pk=-1, field=None, query=None):
+		results = None
+		if pk != -1:
+			result = DonationEvent.objects.get(pk=pk)
+			return Response(DonationEventSerializer(result).data)
+		elif field and query:
+			if field == "title":
+				results = DonationEvent.objects.filter(title__contains=query)
+			elif field == "beneficiary":
+				results = DonationEvent.objects.filter(beneficiary__contains=query)
+
+		if results:
+			qr = list()
+			for r in results:
+				qr.append(DonationEventSerializer(r).data)
+			return Response(qr)
+		return Response({})
+
+	def post(self, request):
+		title = request.data['title']
+		desc = request.data['desc']
+		details = request.data['details']
+		beneficiary = request.data['beneficiary']
+
+		try:
+			de = DonationEvent()
+			de.title = title
+			de.desc = desc
+			de.details = details
+			de.beneficiary = beneficiary
+			de.save()
+			return Response(DonationEventSerializer(de).data)
+		except:
+			print("Erro creating donation event")
+		return Response({})
+
+	def delete(self, request):
+		pk = request.data['pk']
+		try:
+			event = DonationEvent.objects.get(pk=pk)
+			event.delete()
+			return Response({'deleted':True})
+		except:
+			print("Error deleting DonationEvent")
+		return Response({'deleted':False})
 
 # Returns dict w/ key 'error' True or False
 	# 'msg' if error True
@@ -54,9 +202,6 @@ class ChangePassword(APIView):
 			print(checked_password['msg'])
 		return Response({"password_changed":False})
 
-
-
-
 class AuthUserAPI(APIView):
 	def post(self, request):
 		email = request.data['email']
@@ -82,22 +227,22 @@ class CreateUser(APIView):
 		password_check = check_password(password, password_confirm)
 
 		if not password_check['error']:
-			# try:
-			user = User.objects.create_user(username, email, password)
-			if account_type == "volunteer":
-				account = Volunteer(user=user)
-				account.save()
-				return Response(VolunteerSerializer(account).data)
-			elif account_type == "volunteer_provider":
-				account = VolunteerProvider(user=user)
-				account.save()
-				return Response(VolunteerProviderSerializer(account).data)
-			else:
+			try:
+				user = User.objects.create_user(username, email, password)
+				if account_type == "volunteer":
+					account = Volunteer(user=user)
+					account.save()
+					return Response(VolunteerSerializer(account).data)
+				elif account_type == "volunteer_provider":
+					account = VolunteerProvider(user=user)
+					account.save()
+					return Response(VolunteerProviderSerializer(account).data)
+				else:
+					print("Error creating user")
+					return Response({"error": "Account type error"})
+			except:
 				print("Error creating user")
-				return Response({"error": "Account type error"})
-			# except:
-			# 	print("Error creating user")
-			# 	return Response({"error":"user not created"})
+				return Response({"error":"user not created"})
 		elif password_check['error']:
 			print(password_check['msg'])
 		return Response({"error": "password check failed"})
@@ -222,7 +367,6 @@ class VolunteerPostAPI(APIView):
 		if user_id != -1:
 			posts = VolunteerPost.objects.filter(user_id=user_id)
 		elif event_id != -1:
-			print("getting posts by event")
 			posts = VolunteerPost.objects.filter(event_id=event_id)
 
 		if posts:

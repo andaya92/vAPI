@@ -1,10 +1,9 @@
 README
-
+# https://cst-499-volunteer-api.herokuapp.com/
 
 # Delete Migrations
 find . -path "*/migrations/*.py" -not -name "__init__.py" -delete
 find . -path "*/migrations/*.pyc"  -delete
-
 
 # Heroku Deploy
 git add .
@@ -12,3 +11,10 @@ git commit -am "make it better"
 git push heroku master
 
 
+heroku login
+heroku run bash
+
+
+# Android
+# app APK install fail
+- increase AVD device memory in manager settings (click on the pencil)

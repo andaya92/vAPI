@@ -63,3 +63,17 @@ class VolunteerEventSignUpSerializer(serializers.ModelSerializer):
 		fields = "__all__"
 		depth = 1
 
+class DonationEventSerializer(serializers.ModelSerializer):
+	class Meta:
+			model = DonationEvent
+			fields = "__all__"
+			depth = 1
+
+
+class UserDonationSerializer(serializers.ModelSerializer):
+	user = UserSerializer()
+	event = DonationEventSerializer()
+	class Meta:
+			model = UserDonation
+			fields = "__all__"
+			depth = 1
