@@ -49,7 +49,11 @@ urlpatterns = [
 	path("user_donation/user/<int:user_id>/", views.DonationAPI.as_view(), name="get_donation"),
 	path("user_donation/event/<int:event_id>/", views.DonationAPI.as_view(), name="get_donation"),
 	path("user_donation/charge/<str:charge_id>/", views.DonationAPI.as_view(), name="get_donation"),
-	path("refund_user_donation/", views.DonationAPI.as_view(), name="delete_donation")
+	path("refund_user_donation/", views.DonationAPI.as_view(), name="delete_donation"),
+	path("user_donation_refund/charge/<str:charge_id>/live/<int:live>/", views.UserDonationRefundAPI.as_view(), name="get_refund"), # live 0 == False(Database), 1 == True(Stripe API)
+	path("user_donation_refund/refund/<str:refund_id>/live/<int:live>/", views.UserDonationRefundAPI.as_view(), name="get_refund"),
+	path("user_donation_refund/charge/<str:charge_id>/", views.UserDonationRefundAPI.as_view(), name="get_refund"),
+	path("user_donation_refund/refund/<str:refund_id>/", views.UserDonationRefundAPI.as_view(), name="get_refund")
 
 
 ] 

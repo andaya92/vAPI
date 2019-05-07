@@ -20,6 +20,37 @@ import json
 
 
 
+class UserDonationRefundAPI(APIView):
+	def get(self, request, charge_id="none", refund_id="none", live=0):
+		stripe.api_key = settings.STRIPE_API_KEY
+		if charge_id != "none":
+			try:
+				if live == 1:
+					refunds = stripe.Refund.list(charge=charge_id)
+					qr =list()
+					for r in refunds.auto_paging_iter():
+						qr.append(r)
+					print("Results from charg_id query {}".format(qr))
+					return Response(qr)
+				else:
+					refund = UserDonationRefund.objects.filter(charge=charge_id).first()
+					print("VIEW::GetRefund")
+					print(refund)
+					return Response(UserDonationRefundSerializer(refund).data)
+			except:
+				print("Failed getting refund from api via charge_id")
+		elif refund_id != "none":
+			try:
+				if live == 1:
+					refund = stripe.Refund.retrieve(refund_id)
+					return Response(refund)
+				else:
+					refund = UserDonationRefund.objects.filter(refund=refund_id).first()
+					return Response(UserDonationRefundSerializer(refund).data)
+			except:
+				print("Failed getting refund from api via refund_id")
+		return Response({})
+
 class DonationAPI(APIView):
 	def get(self, request, user_id=-1, event_id=-1, charge_id="none"):
 		results = None
@@ -52,24 +83,24 @@ class DonationAPI(APIView):
 		de = DonationEvent.objects.get(pk=int(donation_event_id))
 
 		charge = None
-		# try:
-		charge = stripe.Charge.create(
-			amount=int(amount)*100,
-			currency='usd',
-			description='Example charge',
-			statement_descriptor= "Volunteer Me",
-			metadata={
-				"username" : request.user.username,
-				"email" : request.user.email,
-				"charge_type" : "donation",
-				"ids" : json.dumps({"donation_event": donation_event_id }),
-				"info" : json.dumps({"title":de.title, "desc":de.desc,
-				"details":de.details, "beneficiary" : de.beneficiary})
-			},
-			source= user_stripe_token
-		)
-		# except:
-		# 	print("Error creating charge")
+		try:
+			charge = stripe.Charge.create(
+				amount=int(amount)*100,
+				currency='usd',
+				description='Example charge',
+				statement_descriptor= "Volunteer Me",
+				metadata={
+					"username" : request.user.username,
+					"email" : request.user.email,
+					"charge_type" : "donation",
+					"ids" : json.dumps({"donation_event": donation_event_id }),
+					"info" : json.dumps({"title":de.title, "desc":de.desc,
+					"details":de.details, "beneficiary" : de.beneficiary})
+				},
+				source= user_stripe_token
+			)
+		except:
+			print("Error creating charge")
 		if charge:
 			if charge.paid:
 				try:
@@ -83,9 +114,8 @@ class DonationAPI(APIView):
 					print("Failed creating UserDonation record")
 					# send data in json format to database
 					# make process that checks database for rows and trys to save them again...
-				return Response({"donated":True})
-
-		return Response({"donated":False})
+				return Response(charge)
+		return Response()
 
 	def delete(self, request):
 		charge_id = request.data['charge_id']
@@ -105,13 +135,15 @@ class DonationAPI(APIView):
 					refund.user_id = result.user_id
 					refund.event_id = result.event_id
 					refund.amount = result.amount
-					refund.charge = result.charge
+					refund.refund = re.id
+					refund.charge = charge_id
+					refund.save()
+					try:
+						result.delete()
+					except:
+						print("Failed deleting UserDonation")
 				except:
 					print("Failed creating UserDonationRefund")
-				try:
-					result.delete()
-				except:
-					print("Failed deleting UserDonation")
 			return Response(re)
 		return Response({})
 

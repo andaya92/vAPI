@@ -77,3 +77,11 @@ class UserDonationSerializer(serializers.ModelSerializer):
 			model = UserDonation
 			fields = "__all__"
 			depth = 1
+
+class UserDonationRefundSerializer(serializers.ModelSerializer):
+	user = UserSerializer()
+	event = DonationEventSerializer()
+	class Meta:
+			model = UserDonationRefund
+			fields = "__all__"
+			depth = 1

@@ -79,10 +79,8 @@ UserDonation
 	- event_id
 	- charge_id
 
-- Delete
--Refund
-# Remove from User Donation... where charge_id ==
-# Add refund model
+- Delete/ Refund
+
 
 
 

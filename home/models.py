@@ -93,3 +93,4 @@ class UserDonationRefund(models.Model):
 	event = models.ForeignKey(DonationEvent, on_delete=models.CASCADE)
 	amount = models.FloatField()
 	charge = models.CharField(max_length=50)
+	refund = models.CharField(max_length=50)
