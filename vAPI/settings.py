@@ -17,15 +17,12 @@ import dj_database_url
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 from . import EnvironmentPickler
 
-SECRET_KEY = '2%5*r@ywgx73xg5+1*u8u%p0)@q6sbou7zd1=_+je#k46t)o%7'
-STRIPE_API_KEY = "sk_test_zPi7M2GlORtMTTalLP8IvVQN00sworOe6m"
-
 DATABASE_URL = None
 on_heroku = False
 env = None
 if 'HEROKU' in os.environ:
   on_heroku = True
-  DATABASE_URL = so.environ['DATABASE_URL']
+  DATABASE_URL = os.environ['DATABASE_URL']
 else:
     env = EnvironmentPickler.load_obj("volunteer_API_env")
     DATABASE_URL = env['DATABASE_URL']
