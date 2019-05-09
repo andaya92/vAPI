@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 
 import os
 import dj_database_url
-import EnvironmentPickler
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -21,9 +20,11 @@ on_heroku = False
 env = None
 
 if 'HEROKU' in os.environ:
-  on_heroku = True
-  DATABASE_URL = os.environ['DATABASE_URL']
+    from .. import EnvironmentPickler
+    on_heroku = True
+    DATABASE_URL = os.environ['DATABASE_URL']
 else:
+    import EnvironmentPickler
     env = EnvironmentPickler.load_obj("volunteer_API_env")
     DATABASE_URL = env['DATABASE_URL']
 
