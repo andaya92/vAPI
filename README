@@ -8,6 +8,7 @@ find . -path "*/migrations/*.pyc"  -delete
 # Heroku Deploy
 git add .
 git commit -am "make it better"
+git push origin
 git push heroku master
 
 

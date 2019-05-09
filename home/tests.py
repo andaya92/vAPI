@@ -411,103 +411,84 @@ class TestUser(APITestCase):
 			})
 		response = self.client.delete("/home/donation_event/delete/", {"pk" : response.data['id']})
 	
-
-	## Needs legit token from stripe client		
-
-	# def test_view_donation_API_post(self):
-	# 	# User that is requesting from API
+	# def test_stripe_donation_system(self):
+	# 	# Make donation
+	# 	# 	# User that is requesting from API
 	# 	zeus = get_user_model().objects.get(pk=1)
 	# 	self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(zeus.rest_token))
 
-	# 	response = self.client.post("/home/donation_event/", {
+	# 	donation_event = self.client.post("/home/donation_event/", {
 	# 		"title" : "The big nasty disaster that befell your fellow neighbor.",
 	# 		"desc" : "A huge natural disaster has beseiged your neighboring town.",
 	# 		"details" : "Over 800billion in damages, eveyone homeless...",
 	# 		"beneficiary" : "Red Rover Robin Relief"
 	# 		})
-
-	# 	response = self.client.post("/home/make_donation/", {
-	# 								"user_stripe_token": "aaaaa",
-	# 								"donation_event_id" : response.data['id'],
+	# 	donation = self.client.post("/home/make_donation/", {
+	# 								"user_stripe_token": "tok_1EXLiIIgfiVd5gwhDYOBK2lP",
+	# 								"donation_event_id" : donation_event.data['id'],
 	# 								"amount" : "7347"
 	# 								})
+	# 	self.assertEqual(donation.data['paid'], True, "Donation not paid")
 		
-	# 	print(response.data)
-
-
-	# def test_view_donation_API_get(self):
-	# 	zeus = get_user_model().objects.get(pk=1)
-	# 	self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(zeus.rest_token))
-
-	# 	response = self.client.post("/home/donation_event/", {
-	# 		"title" : "The big nasty disaster that befell your fellow neighbor.",
-	# 		"desc" : "A huge natural disaster has beseiged your neighboring town.",
-	# 		"details" : "Over 800billion in damages, eveyone homeless...",
-	# 		"beneficiary" : "Red Rover Robin Relief"
-	# 		})
-
-	# 	response = self.client.post("/home/make_donation/", {
-	# 								"user_stripe_token": "tok_1EWe4dIgfiVd5gwhSex8csfo",
-	# 								"donation_event_id" : response.data['id'],
-	# 								"amount" : "7347"
-	# 								})
-
-	# 	response = self.client.get("/home/user_donation/user/1/")
-	# 	print("Dontaion::user")
-	# 	print(response.data)
+	# 	# store charge_id
+	# 	charge_id = donation.data['id']
+	# 	self.assertEqual(charge_id[:3], "ch_", "Id is not a Stripe charge id")
 		
-	# 	response = self.client.get("/home/user_donation/event/1/")
-	# 	print("Dontaion::event")
-	# 	print(response.data)
-
-	# # Get from stripe API 
-	# def test_view_donation_API_get(self):
-	# 	response = self.client.get("/home/user_donation/charge/ch_1EWe5VIgfiVd5gwhhJENWPQd/")
-	# 	self.assertEqual(response.data['amount'], 734700, "Amount is not what is expected")
-
-	def test_stripe_donation_system(self):
-		# Make donation
-		# 	# User that is requesting from API
-		zeus = get_user_model().objects.get(pk=1)
-		self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(zeus.rest_token))
-
-		donation_event = self.client.post("/home/donation_event/", {
-			"title" : "The big nasty disaster that befell your fellow neighbor.",
-			"desc" : "A huge natural disaster has beseiged your neighboring town.",
-			"details" : "Over 800billion in damages, eveyone homeless...",
-			"beneficiary" : "Red Rover Robin Relief"
-			})
-		donation = self.client.post("/home/make_donation/", {
-									"user_stripe_token": "tok_1EXLiIIgfiVd5gwhDYOBK2lP",
-									"donation_event_id" : donation_event.data['id'],
-									"amount" : "7347"
-									})
-		self.assertEqual(donation.data['paid'], True, "Donation not paid")
+	# 	# Get donation from DB
+	# 	user_donations = self.client.get("/home/user_donation/user/1/")
+	# 	user_donations = self.client.get("/home/user_donation/event/1/")
+	# 	self.assertEqual(user_donations.data[0]['charge'], charge_id,
+	# 						"Stripe chrage id is incorrect {} - {}."
+	# 						.format(user_donations.data[0]['charge'], charge_id))
 		
-		# store charge_id
-		charge_id = donation.data['id']
-		self.assertEqual(charge_id[:3], "ch_", "Id is not a Stripe charge id")
+	# 	user_donation_id = user_donations.data[0]['id']
+
+	# 	# Refund donation
+	# 	refund = self.client.delete("/home/refund_user_donation/", {"charge_id":charge_id})
+	# 	self.assertEqual(refund.data['charge'], charge_id, "Stripe chrage id is incorrect {} - {}."
+	# 						.format(refund.data['charge'], charge_id))
+
+
+	# 	# Get refund
+	# 	refund = self.client.get("/home/user_donation_refund/charge/{}/".format(charge_id))
+	# 	print("Get refund info")
+	# 	print(refund.data)
+	# 	self.assertEqual(refund.data['user']['username'], "zeus", "Username does not match for refund")
+
+	def print_news(self, data):
+		# list of news entries
+		# <class 'feedparser.FeedParserDict'>
+		for e in data:
+			print("Entry Type:")
+			print(type(e))
+			print("Title: \n ---{}".format(e.title))
+			# California Governor Declares State of Emergency in Eight Counties, Including Mariposa County, Due to Winter Storms - Sierra Sun Times
+			print(e.link)
+			# https://goldrushcam.com/sierrasuntimes/index.php/news/local-news/18230-california-governor-declares-state-of-emergency-in-eight-counties-including-mariposa-county-due-to-winter-storms
+			print(e.summary)
+			print(e.published)
+			# <a href="https://goldrushcam.com/sierrasuntimes/index.php/news/local-news/18230-california-governor-declares-state-of-emergency-in-eight-counties-including-mariposa-county-due-to-winter-storms" target="_blank">California Governor Declares State of Emergency in Eight Counties, Including Mariposa County, Due to Winter Storms</a>&nbsp;&nbsp;<font color="#6f6f6f">Sierra Sun Times</font><p>April 13, 2019 - SACRAMENTO — Governor Gavin Newsom on Friday issued an emergency proclamation for the counties of Butte, Colusa, Del Norte, Mariposa, ...</p>'
+			print(e.source.href)
+			# https://goldrushcam.com
+			print(e.source.title)
+			# Sierra Sun Times
+			if "media_content" in e.keys():
+				# <class 'dict'>
+				for c in e.media_content:
+					print(c['url']) if "url" in c.keys() else print("no url")
+					# https://lh4.googleusercontent.com/proxy/jcPiFk6AIyqAwAhHEdYkxZrEBb0o5u8wm1nv_03hjYdjFHEstekQWFQmQS6dYdkEQo6QsQmFVGHzi31hf92yNVrLN54pMto3SPyOaeBLpRX1nuC-4nGwKZXz_1KKIedju_VB36E=-w150-h150-c
+					print(c['medium']) if "medium" in c.keys() else print("no medium")
+					# image
+			print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+
+	def test_view_news_API(self):
+		city_state_news = self.client.get("/home/news/city/Sacramento/state/California/terror/")
+		state_news = self.client.get("/home/news/state/California/state of emergency/")
 		
-		# Get donation from DB
-		user_donations = self.client.get("/home/user_donation/user/1/")
-		user_donations = self.client.get("/home/user_donation/event/1/")
-		self.assertEqual(user_donations.data[0]['charge'], charge_id,
-							"Stripe chrage id is incorrect {} - {}."
-							.format(user_donations.data[0]['charge'], charge_id))
-		
-		user_donation_id = user_donations.data[0]['id']
+		self.assertNotEqual(len(city_state_news.data), 0, "Feed length zero, no news returned")
+		self.assertNotEqual(city_state_news.data, None, "Feed == 'None' ")
 
-		# Refund donation
-		refund = self.client.delete("/home/refund_user_donation/", {"charge_id":charge_id})
-		self.assertEqual(refund.data['charge'], charge_id, "Stripe chrage id is incorrect {} - {}."
-							.format(refund.data['charge'], charge_id))
-
-
-		# Get refund
-		refund = self.client.get("/home/user_donation_refund/charge/{}/".format(charge_id))
-		print("Get refund info")
-		print(refund.data)
-		self.assertEqual(refund.data['user']['username'], "zeus", "Username does not match for refund")
-
-	
-	
+		# self.print_news(city_state_news.data)
+		# self.print_news(state_news.data)
+		print(len(city_state_news.data))
+		print(len(state_news.data))

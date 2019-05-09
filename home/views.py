@@ -13,11 +13,35 @@ from .serializer import *
 
 from django.core.files.base import ContentFile
 
+
+
 import base64
 import stripe
 import json
+import feedparser
 
 
+
+class NewsAPI(APIView):
+	
+	def build_query(self, city, state,keyword):
+		query = None
+		if city != "none":
+			query = "+".join([keyword.replace(" ", "+"), state, city])
+		else:
+			query = "+".join([keyword.replace(" ", "+"), state])
+		return query
+
+
+	def get(self, request, city="none", state="California", keyword="State of Emergency"):
+		news = None
+		try:
+			news = feedparser.parse("https://news.google.com/rss/search?q={}&hl=en-US&gl=US&ceid=US:en".format(self.build_query(city, state, keyword)))
+		except:
+			print("Failed to get rss feed")
+		if news:
+			return Response(news['entries'])
+		return Response({})
 
 
 class UserDonationRefundAPI(APIView):
