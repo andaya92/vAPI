@@ -26,7 +26,6 @@ if 'HEROKU' in os.environ:
 else:
     env = EnvironmentPickler.load_obj("volunteer_API_env")
     DATABASE_URL = env['DATABASE_URL']
-print(DATABASE_URL)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
