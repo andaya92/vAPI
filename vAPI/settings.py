@@ -16,6 +16,7 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 from . import EnvironmentPickler
 
+SECRET_KEY = '2%5*r@ywgx73xg5+1*u8u%p0)@q6sbou7zd1=_+je#k46t)o%7'
 STRIPE_API_KEY = "sk_test_zPi7M2GlORtMTTalLP8IvVQN00sworOe6m"
 
 on_heroku = False
@@ -25,11 +26,15 @@ if 'HEROKU' in os.environ:
 else:
     env = EnvironmentPickler.load_obj("volunteer_API_env")
 
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '2%5*r@ywgx73xg5+1*u8u%p0)@q6sbou7zd1=_+je#k46t)o%7'
+
+SECRET_KEY = env['SECRET_KEY'] if not on_heroku else os.environ['SECRET_KEY']
+STRIPE_API_KEY = env['STRIPE_API_KEY'] if not on_heroku else os.environ['STRIPE_API_KEY']
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -89,25 +94,11 @@ WSGI_APPLICATION = 'vAPI.wsgi.application'
 # DATABASES = {
 #     'default': env['DATABASE']
 # }
-DATABASES = None
-if on_heroku:
-    DATABASES = {
-        'default': {
-              'ENGINE': 'django.db.backends.postgresql',
-                'NAME': 'dd7gonermmlu4d',
-                'USER': 'bwwaqpuwcrxdtb',
-                'PASSWORD': 'dc17a84de530180fa85638f177c2e3ee7dcaddefb6b844db502c3c4200b4a132',
-                'HOST': 'ec2-54-243-241-62.compute-1.amazonaws.com',
-                'PORT': '5432',
-        }
-    }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'vol_API',
-        }
-    }
+
+
+DATABASES = {
+    'default': env['DB_sqlite'] if not on_heroku else os.environ['DB_heroku']
+}
 
 # Rather set on a per-view-basis
 REST_FRAMEWORK = {

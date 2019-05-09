@@ -1,119 +1,159 @@
+-------------------------------------------------------------------------------
 System
 - Token Authentication
 	- Test: HTTP_AUTHORIZATION="TOKEN 9a8sdhn23f9a80nlklks8"
 	- Mobile: headers={"Authorization": "TOKEN 9a8sdhn23f9a80nlklks8"} 
-
+-------------------------------------------------------------------------------
+#######################
+## Account Features
+########################
+-------------------------------------------------------------------------------
 Users
 - Create
-	- Volunteer
-	- Volunteer Provider
-	- account_type == "volunteer" || "volunteer_provider"
+	- Creates a Volunteer or
+	- a Volunteer Provider
+	- /home/account/new/
+	- {"username" : "dd",
+		"email" : "dd@dd.com",
+		"password" : "# length: 8 alphanumeric",
+		"password_confirm" : "dd",
+		"account_type" : "'volunteer' || 'volunteer_provider'"
+	}
 -Get Volunteer or VolunteerProvider
 	- single instance by Pk or email
+		- /home/volunteer/pk/<int:pk>/
+		- /home/volunteer/email/<str:email>/
 	- or list all 
+		- - /home/volunteer/all/
 - Delete User
 	- by User Pk
+		- /home/account/delete/
+		- {"pk": 99}
 - Authenticate
 	- email & password
-	- receives rest_token & user instance 
-
+	- /home/auth_user/
+		- {"email" : "c@g.com",
+			"password" : "asdasdasd"}
+	- returns rest_token & user instance 
+		- {"rest_token": "tok_asdmaskdmalsnd", "user": {"id":99,...}}
+- Change Password
+	- /home/change_password/
+		- {"current_password": "asdasd",
+			"password" : "asdasdzxczxc",
+			"password_confirm" : "asdasdzxczxc"}
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 Volunteer Event
 - Create Event
-	- title
-	- location_city
-	- location_state
-	- desc
-	- details
-	- provider
-	- event_begins
-	- event_ends
+	- /home/volunteer_event/new/
+	- { "title" : "asdasdasd",
+		"location_city" : "1",
+		"location_state" : "2",
+		"desc" : "dummyData",
+		"details" : "dummyData",
+		"provider" : "1",
+		"event_begins" : "5465198981891",
+		"event_ends" : "5465199881891"
+	}
 - Get event 
 	- by Pk, City, State, or provider id
+	/home/volunteer_event/pk/<int:pk>/
+	/home/volunteer_event/city/<int:city>/
+	/home/volunteer_event/state/<int:state>/
+	/home/volunteer_event/provider/<int:provider>/
 - Delete
 	- by Pk
-
+	- /home/volunteer_event/new/
+		- {"pk" : 99}
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 Volunteer Post
--Create Post 
-	- user
-	- [event] 
-	- img # png base64
-	- caption
-- Get Post
+-Create Post
+	- /home/volunteer_post/new/
+	- { "user" : "1",
+		"[event]" : "2",
+		"img # png base64" : "data:image/png;base64,/9j/4AAQSk.....",
+		"caption" : "dummyData"
+	}
+- Get VolPost
 	- by User Pk, Event id
+	- /home/volunteer_post/user/<int:user_id>
+	- /home/volunteer_post/event/<int:event_id>
 - Delete
 	- by Pk
-
-
+	- /home/volunteer_post/delete/
+		{"pk" : 99}
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 VolunteerEventSignUp
 -Create
-	- volunteer
-	- event
+	- /home/volunteer_event_signup/new/
+	- {"volunteer_id" : 1,
+		"event_id" :1
+	}
+	
 - Get 
 	- by Pk, Volunteer_id, event_id
+	- /home/volunteer_event_signup/pk/<int:pk>/
+	- /home/volunteer_event_signup/volunteer/<int:volunteer_id>/
+	- /home/volunteer_event_signup/event/<int:event_id>/
 
 - Delete 
 	- by Pk
+	- /home/volunteer_event/delete/
+		- {"pk" : 1}
+-------------------------------------------------------------------------------
 
+#######################
+## Donation Features
+########################
+-------------------------------------------------------------------------------
 DonationEvent
 - Create DonationEvent
-	- title
-	- desc
-	- details
-	- beneficiary
+	- /home/donation_event/new/
+	- {"title" : "dumData",
+		"desc" : "dumData",
+		"details" : "dumData",
+		"beneficiary" : "dumData"
+	}
 
 - Get DonationEvent
 	- by pk, title, beneficiary
 	- performs __contains query
+	- /home/donation_event/pk/<int:pk>/
+	- /home/donation_event/<str:field>/<str:query>/
+		- WHERE 'field' => title OR beneficiary
 - Delete
  	- by Pk
-
+ 	- /home/donation_event/delete/
+ 		- {"pk" : 22}
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 UserDonation
 - Create UserDonation during Make Donation after a charge is created
-	- user
-	- DonationEvent
-	- amount
-	- charge_id
-
+	- /home/make_donation/
+	- {"user" : "1",
+		"DonationEvent" : "2",
+		"amount" : "55",
+		"charge_id" : "ch_asdasdasd"
+	}
 - Get UserDonation
-	- user_id
-	- event_id
-	- charge_id
-
+	- /home/user_donation/user/<int:user_id>/
+	- /home/user_donation/event/<int:event_id>/
+	- /home/user_donation/charge/<int:charge_id>/
+	
 - Delete/ Refund
+	- /home/refund_user_donation/
+		- {"charge_id" : "ch_adasdasdasd"}
+-------------------------------------------------------------------------------
 
+#######################
+## News Features
+########################
+-------------------------------------------------------------------------------
+News Feed API
+- Get news
+ - /home/news/city/<str:city>/state/<str:state>/<str:keyword>/
+ - /home/news/state/<str:state>/<str:keyword>/
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-News API
-import feedparser
-d = feedparser.parse("https://news.google.com/rss/search?q=state+of+emergency+california&hl=en-US&gl=US&ceid=US:en")
-
-for e in d['entries']:
-	e.title
-		California Governor Declares State of Emergency in Eight Counties, Including Mariposa County, Due to Winter Storms - Sierra Sun Times
-	e.link
-		https://goldrushcam.com/sierrasuntimes/index.php/news/local-news/18230-california-governor-declares-state-of-emergency-in-eight-counties-including-mariposa-county-due-to-winter-storms
-	e.summary
-		<a href="https://goldrushcam.com/sierrasuntimes/index.php/news/local-news/18230-california-governor-declares-state-of-emergency-in-eight-counties-including-mariposa-county-due-to-winter-storms" target="_blank">California Governor Declares State of Emergency in Eight Counties, Including Mariposa County, Due to Winter Storms</a>&nbsp;&nbsp;<font color="#6f6f6f">Sierra Sun Times</font><p>April 13, 2019 - SACRAMENTO — Governor Gavin Newsom on Friday issued an emergency proclamation for the counties of Butte, Colusa, Del Norte, Mariposa, ...</p>'
-	e.source.href
-		https://goldrushcam.com
-	e.source.title
-		Sierra Sun Times
-	e.media_content.url
-		https://lh4.googleusercontent.com/proxy/jcPiFk6AIyqAwAhHEdYkxZrEBb0o5u8wm1nv_03hjYdjFHEstekQWFQmQS6dYdkEQo6QsQmFVGHzi31hf92yNVrLN54pMto3SPyOaeBLpRX1nuC-4nGwKZXz_1KKIedju_VB36E=-w150-h150-c
-	e.media_content.medium
-		image
-
+-------------------------------------------------------------------------------

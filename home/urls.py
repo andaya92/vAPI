@@ -40,7 +40,7 @@ urlpatterns = [
 	path("volunteer_event_signup/volunteer/<int:volunteer_id>/", views.VolunteerEventSignUpAPI.as_view(), name="get_volunteer_event_signup"),
 	path("volunteer_event_signup/event/<int:event_id>/", views.VolunteerEventSignUpAPI.as_view(), name="get_volunteer_event_signup"),
 
-	path("donation_event/", views.DonationEventAPI.as_view(), name="donation_event"),
+	path("donation_event/new/", views.DonationEventAPI.as_view(), name="donation_event"),
 	path("donation_event/delete/", views.DonationEventAPI.as_view(), name="donation_event_delete"),
 	path("donation_event/pk/<int:pk>/", views.DonationEventAPI.as_view(), name="get_donation_event"),
 	path("donation_event/<str:field>/<str:query>/", views.DonationEventAPI.as_view(), name="get_donation_event"),
@@ -49,6 +49,7 @@ urlpatterns = [
 	path("user_donation/user/<int:user_id>/", views.DonationAPI.as_view(), name="get_donation"),
 	path("user_donation/event/<int:event_id>/", views.DonationAPI.as_view(), name="get_donation"),
 	path("user_donation/charge/<str:charge_id>/", views.DonationAPI.as_view(), name="get_donation"),
+	
 	path("refund_user_donation/", views.DonationAPI.as_view(), name="delete_donation"),
 	path("user_donation_refund/charge/<str:charge_id>/live/<int:live>/", views.UserDonationRefundAPI.as_view(), name="get_refund"), # live 0 == False(Database), 1 == True(Stripe API)
 	path("user_donation_refund/refund/<str:refund_id>/live/<int:live>/", views.UserDonationRefundAPI.as_view(), name="get_refund"),

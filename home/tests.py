@@ -62,7 +62,7 @@ class TestUser(APITestCase):
 		event.event_ends = datetime.datetime.fromtimestamp(int(time())+1000)
 		event.save()
 		
-	def test_view_create_user(self):
+	def test_view_create_user_delete_user(self):
 		# Create
 		factory = APIRequestFactory()
 		
@@ -191,7 +191,6 @@ class TestUser(APITestCase):
 								'event_ends' : int(time())+1000})
 		
 		count = VolunteerEvent.objects.count()
-
 		self.assertEqual(init_count+1, count, "VolunteerEvent not created, counts not equal")
 		self.assertEqual(response.data['provider']['user']['username'], 'zeus', "VolunteerProvider Usernames do not match")
 		self.assertEqual(response.data['title'], 'My First Event', "Volunteer Event Titles do not match")
@@ -234,7 +233,6 @@ class TestUser(APITestCase):
 		
 		is_deleted = self.client.delete("/home/volunteer_event/delete/", {"pk": response.data['id']})
 		self.assertEqual(is_deleted.data['deleted'], True)
-
 
 	def test_view_volunteer_post_get(self):
 		# User that is requesting from API
@@ -329,8 +327,6 @@ class TestUser(APITestCase):
 		response = self.client.get("/home/volunteer_event_signup/event/1/")
 		self.assertEqual(response.data[0]['event']['title'], "Code4Cure", "Event Titles do not match")
 		self.assertEqual(response.data[0]['volunteer']['user']['username'], "hercules", "Volunteer Usernames do not match")
-
-
 	def test_view_volunteer_event_signup_API_delete(self):
 		# User that is requesting from API
 		zeus = get_user_model().objects.get(pk=1)
@@ -358,34 +354,33 @@ class TestUser(APITestCase):
 		zeus = get_user_model().objects.get(pk=1)
 		self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(zeus.rest_token))
 
-		response = self.client.post("/home/donation_event/", {
+		response = self.client.post("/home/donation_event/new/", {
 			"title" : "The big nasty disaster that befell your fellow neighbor.",
 			"desc" : "A huge natural disaster has beseiged your neighboring town.",
 			"details" : "Over 800billion in damages, eveyone homeless...",
 			"beneficiary" : "Red Rover Robin Relief"
 			})
 		self.assertEqual(response.data['id'], 1, "Should be the first entry in table")
-
 	def test_view_dontaion_event_API_get(self):
 		# User that is requesting from API
 		zeus = get_user_model().objects.get(pk=1)
 		self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(zeus.rest_token))
 
-		response = self.client.post("/home/donation_event/", {
+		response = self.client.post("/home/donation_event/new/", {
 			"title" : "Southern Califonia Fire Disaster",
 			"desc" : "A huge natural disaster has beseiged your neighboring town.",
 			"details" : "Fires. Everywhere. River of flames riveting through town.",
 			"beneficiary" : "Smokey Fire Bear"
 			})
 
-		response = self.client.post("/home/donation_event/", {
+		response = self.client.post("/home/donation_event/new/", {
 			"title" : "Flood in Big Name Area.",
 			"desc" : "Dat wet wet here. Wetter the better they said...",
 			"details" : "Everything is soaked",
 			"beneficiary" : "Noah & Sons"
 			})
 
-		response = self.client.post("/home/donation_event/", {
+		response = self.client.post("/home/donation_event/new/", {
 			"title" : "Terror in insert church/school/concert/airport/huge building/ here.",
 			"desc" : "So many ded. vry sad.",
 			"details" : "We need help, send monies...",
@@ -401,9 +396,8 @@ class TestUser(APITestCase):
 
 		response = self.client.get("/home/donation_event/beneficiary/church/")
 		self.assertEqual(len(response.data), 1, "Should be 1 result")
-		
 	def test_view_dontaion_event_API_delete(self):
-		response = self.client.post("/home/donation_event/", {
+		response = self.client.post("/home/donation_event/new/", {
 			"title" : "The big nasty disaster that befell your fellow neighbor.",
 			"desc" : "A huge natural disaster has beseiged your neighboring town.",
 			"details" : "Over 800billion in damages, eveyone homeless...",
@@ -480,7 +474,6 @@ class TestUser(APITestCase):
 					print(c['medium']) if "medium" in c.keys() else print("no medium")
 					# image
 			print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-
 	def test_view_news_API(self):
 		city_state_news = self.client.get("/home/news/city/Sacramento/state/California/terror/")
 		state_news = self.client.get("/home/news/state/California/state of emergency/")
