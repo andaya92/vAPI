@@ -24,7 +24,7 @@ if 'HEROKU' in os.environ:
     DATABASE_URL = os.environ['DATABASE_URL']
 else:
     from . import EnvironmentPickler
-    env = EnvironmentPickler.load_obj("volunteer_API_env")
+    env = EnvironmentPickler.load_obj(".volunteer_API_env")
     DATABASE_URL = env['DATABASE_URL']
 
 # Quick-start development settings - unsuitable for production
