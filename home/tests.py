@@ -483,5 +483,4 @@ class TestUser(APITestCase):
 
 		# self.print_news(city_state_news.data)
 		# self.print_news(state_news.data)
-		print(len(city_state_news.data))
-		print(len(state_news.data))
+		
