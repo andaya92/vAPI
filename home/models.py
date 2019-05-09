@@ -20,7 +20,7 @@ class User(AbstractUser):
 	customer_id = models.CharField(max_length=30, blank=True, null =True, unique=True) # Stripe CusId
 	
 	def __str__(self):
-		return "{} (PK:{})".format(self.username, self.id)
+		return "{} (PK:{}) {}".format(self.username, self.id, self.email)
 	
 	@receiver(post_save, sender=settings.AUTH_USER_MODEL)
 	def create_auth_token(sender, instance=None, created=False, **kwargs):
@@ -32,15 +32,28 @@ class User(AbstractUser):
 class Volunteer(models.Model):
 	user = models.OneToOneField(User, on_delete=models.CASCADE)
 
+	def __str__(self):
+		return "{} (PK:{}) {}".format(self.user.username, self.id, self.user.email)
+
 class VolunteerProvider(models.Model):
 	user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+	def __str__(self):
+		return "{} (PK:{}) {}".format(self.user.username, self.id, self.user.email)
 
 class EventState(models.Model):
 	name = models.CharField(max_length=30, unique=True)
 
+	def __str__(self):
+		return "{} (PK:{})".format(self.name, self.id)
+
 class EventCity(models.Model):
 	name = models.CharField(max_length=50)
 	state = models.ForeignKey(EventState, on_delete=models.CASCADE)
+	
+	def __str__(self):
+		return "{} (PK:{}) {}".format(self.name, self.id, self.state.name)
+
 	class Meta:
 		unique_together = ('name', 'state')
 
@@ -53,10 +66,16 @@ class VolunteerEvent(models.Model):
 	provider = models.ForeignKey(VolunteerProvider, on_delete=models.CASCADE)
 	event_begins = models.DateTimeField()
 	event_ends = models.DateTimeField()
+
+	def __str__(self):
+		return "{} (PK:{}) {}".format(self.provider.user.email, self.id, self.title)
 	
 class VolunteerEventSignUp(models.Model):
 	volunteer = models.ForeignKey(Volunteer, on_delete=models.CASCADE)
 	event = models.ForeignKey(VolunteerEvent, on_delete=models.CASCADE)
+
+	def __str__(self):
+		return "{} (PK:{}) {}--{}".format(self.volunteer.user.email, self.id, self.event.title, self.event.provider.user.email)
 
 	class Meta:
 		unique_together = ('volunteer', 'event')
@@ -67,8 +86,11 @@ class VolunteerPost(models.Model):
 	img = models.ImageField(upload_to="user_posts", default='empty_user_post.png')
 	caption =models.CharField(max_length=480) #two tweets
 	created = models.DateTimeField(editable=False)
-	modified = models.DateTimeField()
+	modified = models.DateTimeField(editable=False)
 	
+	def __str__(self):
+		return "{} (PK:{}) {}--{}".format(self.user.email, self.id, self.event.title, self.caption[:40])	
+
 	def save(self, *args, **kwargs):
 		''' On save, update timestamps '''
 		if not self.id:
@@ -82,11 +104,17 @@ class DonationEvent(models.Model):
 	details = models.CharField(max_length=500)
 	beneficiary = models.CharField(max_length=100)
 
+	def __str__(self):
+		return "{} (PK:{}) {}--{}".format(self.title, self.id, self.desc[:20], self.beneficiary)
+
 class UserDonation(models.Model):
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
 	event = models.ForeignKey(DonationEvent, on_delete=models.CASCADE)
 	amount = models.FloatField()
 	charge = models.CharField(max_length=50)
+
+	def __str__(self):
+		return "{} (PK:{}) {}--${}".format(self.user.email, self.id, self.event.title, self.amount)
 
 class UserDonationRefund(models.Model):
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -94,3 +122,6 @@ class UserDonationRefund(models.Model):
 	amount = models.FloatField()
 	charge = models.CharField(max_length=50)
 	refund = models.CharField(max_length=50)
+
+	def __str__(self):
+		return "{} (PK:{}) {}--${}".format(self.user.email, self.id, self.event.title, self.amount)
