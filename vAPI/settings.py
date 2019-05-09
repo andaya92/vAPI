@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
+import dj_database_url
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -19,13 +20,16 @@ from . import EnvironmentPickler
 SECRET_KEY = '2%5*r@ywgx73xg5+1*u8u%p0)@q6sbou7zd1=_+je#k46t)o%7'
 STRIPE_API_KEY = "sk_test_zPi7M2GlORtMTTalLP8IvVQN00sworOe6m"
 
+DATABASE_URL = None
 on_heroku = False
 env = None
 if 'HEROKU' in os.environ:
   on_heroku = True
+  DATABASE_URL = so.environ['DATABASE_URL']
 else:
     env = EnvironmentPickler.load_obj("volunteer_API_env")
-
+    DATABASE_URL = env['DATABASE_URL']
+print(DATABASE_URL)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
@@ -95,10 +99,8 @@ WSGI_APPLICATION = 'vAPI.wsgi.application'
 #     'default': env['DATABASE']
 # }
 
-
-DATABASES = {
-    'default': env['DB_sqlite'] if not on_heroku else os.environ['DB_heroku']
-}
+DATABASES = {}
+DATABASES['default'] = dj_database_url.config(default=DATABASE_URL, conn_max_age=600)
 
 # Rather set on a per-view-basis
 REST_FRAMEWORK = {
