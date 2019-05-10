@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth import authenticate
 from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
+from django.views.generic.base import TemplateView
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -15,7 +16,38 @@ import base64
 import stripe
 import json
 import feedparser
-from datetime import datetime
+import pandas as pd
+from datetime import datetime, timedelta
+
+
+#######################
+## Model Charts
+########################
+
+class index(TemplateView):
+	template_name = "home/index.html"
+
+class VolunteerChart(TemplateView):
+	template_name = "home/volunteers.html"
+
+	def get(self, request, s_month=None, s_day=None, e_month=None, e_day=None):
+		volunteers = Volunteer.objects.all()
+		total_vol = Volunteer.objects.count()
+		# Graph account creation timeline
+		# (date_span, # of accounts created/)
+		dat = pd.DataFrame()
+		dat['dates'] = pd.to_datetime([vol.user.date_joined for vol in volunteers])
+		dat['count'] = [1 for vol in volunteers]
+		dat = dat.set_index('dates', drop=False)
+		dat = dat.resample("W").sum()
+
+		print(dat['count'].values)
+		context = {
+			"dates" : [str(d) for d in dat.index],
+			"count" : list(dat['count'].values),
+			"total_volunteers" : total_vol
+		}
+		return render(request, self.template_name, context )
 
 
 #######################

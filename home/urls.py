@@ -8,6 +8,12 @@ from . import views
 app_name = "home"
  
 urlpatterns = [
+
+	path("models/", views.index.as_view(), name="index"),
+	path("models/volunteers/", views.VolunteerChart.as_view(), name="vol_chart"),
+	####
+	# API
+	####
 	# Accounts
 	path("account/new/", views.CreateUser.as_view(), name="register"),
 	path("account/delete/", views.CreateUser.as_view(), name="register"),

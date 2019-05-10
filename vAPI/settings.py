@@ -46,6 +46,7 @@ AUTH_USER_MODEL = 'home.User'
 # Application definition
 
 INSTALLED_APPS = [
+    'django_extensions',
     'rest_framework.authtoken',
     'rest_framework',
     'home.apps.HomeConfig',

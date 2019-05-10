@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+{% extends 'vAPI/base.html'%}
+{% load staticfiles %}
+{% block title %}
+VolunteerMe
+{% endblock %}
+
+{% block body %}
+	<div class="row text-center">
+		<div class="col-6 offset-3">
+			<h1> Volunteer Charts </h1>
+			<canvas id="vol_chart" className="chart" width="400" height="300"></canvas>
+			<table>
+			<thead>
+				<tr>
+					<th>Total Volunteers</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>
+						{{total_volunteers}}
+					</td>
+				</tr>
+			</tbody>
+			</table>
+		</div>
+	</div>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
+
+	<script type="text/javascript">
+		let leftCtx = document.getElementById("vol_chart").getContext('2d');
+
+		{% autoescape off %}
+			let vol_labels = {{dates}};
+			let vol_data = {{count}};
+		{% endautoescape %}
+
+		console.log(`${vol_labels}, ${vol_data}`);
+		let leftChart = new Chart(leftCtx, {
+		    type: 'bar',
+		    data: {
+		    	labels: vol_labels,
+		        datasets: [{
+		            label: 'Volunteers Joined',
+		            data:  vol_data,
+		            backgroundColor: "green",
+		            borderWidth: 1
+		        }]
+		    },
+		    options: {
+		        scales: {
+		            yAxes: [{
+		                ticks: {
+		                    beginAtZero:true
+		                }
+		            }]
+		        }
+		    }
+		});
+
+	</script>
+{% endblock %}
