@@ -138,6 +138,7 @@ class TestUser(APITestCase):
 		self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(zeus.rest_token))
 
 		response = self.client.get("/home/volunteer/all/")
+		print(response)
 		self.assertEqual(response.data[0]['user']['username'], "hercules", "Username does not match")
 
 		response = self.client.get("/home/volunteer/pk/1/")

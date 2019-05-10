@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'rest_framework',
     'home.apps.HomeConfig',
+    "vAPI",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
