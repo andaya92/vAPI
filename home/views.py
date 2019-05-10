@@ -30,25 +30,50 @@ class index(TemplateView):
 class VolunteerChart(TemplateView):
 	template_name = "home/volunteers.html"
 
-	def get(self, request, s_month=None, s_day=None, e_month=None, e_day=None):
-		volunteers = Volunteer.objects.all()
-		total_vol = Volunteer.objects.count()
-		# Graph account creation timeline
-		# (date_span, # of accounts created/)
+	def get(self, request, volunteer=-1):
+		self.template_name = "home/volunteers.html" if volunteer == 1 else "home/volunteer_providers.html"
+		users = None
+		total_users = 0
+		if volunteer == 1:
+			users = Volunteer.objects.all()
+			total_users = Volunteer.objects.count()
+		elif volunteer == 0:
+			users = VolunteerProvider.objects.all()
+			total_users = VolunteerProvider.objects.count()
+		
 		dat = pd.DataFrame()
-		dat['dates'] = pd.to_datetime([vol.user.date_joined for vol in volunteers])
-		dat['count'] = [1 for vol in volunteers]
+		dat['dates'] = pd.to_datetime([user.user.date_joined for user in users])
+		dat['count'] = [1 for user in users]
 		dat = dat.set_index('dates', drop=False)
 		dat = dat.resample("W").sum()
 
-		print(dat['count'].values)
 		context = {
 			"dates" : [str(d) for d in dat.index],
 			"count" : list(dat['count'].values),
-			"total_volunteers" : total_vol
+			"total_users" : total_users
 		}
-		return render(request, self.template_name, context )
+		return render(request, self.template_name, context)
 
+class VolunteerEventChart(TemplateView):
+	template_name = "home/volunteer_events.html"
+
+	def get(self, request):
+		events = VolunteerEvent.objects.all()
+		dat = pd.DataFrame()
+		dat['dates'] = pd.to_datetime([event.event_begins for event in events])
+		dat['count'] = [1 for event in events]
+		dat = dat.set_index('dates', drop=False)
+		dat = dat.resample("W").sum()
+
+		context = {
+			"total_events" : 50,
+			"total_events_past" : 20,
+			"total_events_future" : 30,
+			"labels" : [str(d) for d in dat.index],
+			"data" : list(dat['count'].values)
+
+		}
+		return render(request, self.template_name, context)
 
 #######################
 ## Account Features

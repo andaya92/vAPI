@@ -10,7 +10,8 @@ app_name = "home"
 urlpatterns = [
 
 	path("models/", views.index.as_view(), name="index"),
-	path("models/volunteers/", views.VolunteerChart.as_view(), name="vol_chart"),
+	path("models/users/<int:volunteer>/", views.VolunteerChart.as_view(), name="vol_chart"),
+	path("models/volunteer_events/", views.VolunteerEventChart.as_view(), name="vol_event_chart"),
 	####
 	# API
 	####

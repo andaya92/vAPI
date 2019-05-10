@@ -8,19 +8,27 @@ VolunteerMe
 {% block body %}
 	<div class="row text-center">
 		<div class="col-6 offset-3">
-			<h1> Volunteer Charts </h1>
-			<canvas id="vol_chart" className="chart" width="400" height="300"></canvas>
+			<h1> Volunteer Provider Charts </h1>
+			<canvas id="bar_chart" className="chart" width="400" height="300"></canvas>
 
 			<table class="table table-light table-striped table-bordered">
 				<thead class="thead-light">
 					<tr>
-						<th>Total Volunteers</th>
+						<th>Total Volunteer Events</th>
+						<th>Total Volunteer Events in Past</th>
+						<th>Total Volunteer Events in Future</th>
 					</tr>
 				</thead>
 				<tbody class="">
 					<tr>
 						<td>
-							{{total_users}}
+							{{total_events}}
+						</td>
+						<td>
+							{{total_events_past}}
+						</td>
+						<td>
+							{{total_events_future}}
 						</td>
 					</tr>
 				</tbody>
@@ -35,34 +43,27 @@ VolunteerMe
 		
 		<br/><br/><br/><br/>
 		<p>IMPROVEMENTS:</p>
-		<ul>
-			<li>Filter by date</li>
-			<ul>
-				<li>Ajax request to update data</li>
-				<li>Date Picker</li>
-			</ul>
-			<li>Demographics of volunteers</li>
-		</ul>
+		
 	</div>
 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
 
 	<script type="text/javascript">
-		let leftCtx = document.getElementById("vol_chart").getContext('2d');
+		let leftCtx = document.getElementById("bar_chart").getContext('2d');
 
 		{% autoescape off %}
-			let vol_labels = {{dates}};
-			let vol_data = {{count}};
+			let labels = {{labels}};
+			let data = {{data}};
 		{% endautoescape %}
 
-		console.log(`${vol_labels}, ${vol_data}`);
+		
 		let leftChart = new Chart(leftCtx, {
 		    type: 'bar',
 		    data: {
-		    	labels: vol_labels,
+		    	labels: labels,
 		        datasets: [{
-		            label: 'Volunteers Joined',
-		            data:  vol_data,
+		            label: 'Volunteer Events',
+		            data:  data,
 		            backgroundColor: "green",
 		            borderWidth: 1
 		        }]

@@ -8,13 +8,13 @@ VolunteerMe
 {% block body %}
 	<div class="row text-center">
 		<div class="col-6 offset-3">
-			<h1> Volunteer Charts </h1>
+			<h1> Volunteer Provider Charts </h1>
 			<canvas id="vol_chart" className="chart" width="400" height="300"></canvas>
 
 			<table class="table table-light table-striped table-bordered">
 				<thead class="thead-light">
 					<tr>
-						<th>Total Volunteers</th>
+						<th>Total Volunteer Providers</th>
 					</tr>
 				</thead>
 				<tbody class="">
@@ -61,7 +61,7 @@ VolunteerMe
 		    data: {
 		    	labels: vol_labels,
 		        datasets: [{
-		            label: 'Volunteers Joined',
+		            label: 'Volunteer Providers Joined',
 		            data:  vol_data,
 		            backgroundColor: "green",
 		            borderWidth: 1
