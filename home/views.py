@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate
 from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
 from django.views.generic.base import TemplateView
+from django.db.utils import IntegrityError
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -118,6 +119,7 @@ class CreateUser(APIView):
 		if not password_check['error']:
 			try:
 				user = User.objects.create_user(username, email, password)
+
 				if account_type == "volunteer":
 					account = Volunteer(user=user)
 					account.save()
@@ -129,9 +131,10 @@ class CreateUser(APIView):
 				else:
 					print("Error creating user")
 					return Response({"error": "Account type error"})
-			except:
-				print("Error creating user")
-				return Response({"error":"user not created"})
+			except IntegrityError as e:
+				print("Error creating user {}".format(str(e)))
+				print(e.args)
+				return Response({"error":str(e)})
 		elif password_check['error']:
 			print(password_check['msg'])
 		return Response({"error": "password check failed"})

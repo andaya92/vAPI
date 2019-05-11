@@ -67,28 +67,27 @@ class TestUser(APITestCase):
 		factory = APIRequestFactory()
 		
 		init_count = Volunteer.objects.count()
-		request = factory.post('/home/account/new/',
+		response = self.client.post('/home/account/new/',
 								{'account_type' : 'volunteer',
 								'username': 'godlike',
-								'email' : 'g@g.com',
+								'email' : 'g@ga.com',
 								'password' : 'kidskids@2',
 								'password_confirm' : 'kidskids@2'})
-		view = CreateUser.as_view()
-		response = view(request)
+	
 		count = Volunteer.objects.count()
 		
 		self.assertEqual(init_count+1, count, "Volunteer not created, counts not equal")
 		self.assertEqual(response.data['user']['username'], 'godlike', "Volunteer Usernames do not match")
 
 		init_count = VolunteerProvider.objects.count()
-		request = factory.post('/home/account/new/',
+		response = self.client.post('/home/account/new/',
 								{'account_type' : 'volunteer_provider',
 								'username': 'ekildog',
 								'email' : 'e@g.com',
 								'password' : 'kidskids@2',
 								'password_confirm' : 'kidskids@2'})
 
-		response = view(request)
+	
 		count = VolunteerProvider.objects.count()
 		
 		self.assertEqual(init_count+1, count, "VolunteerProvider not created, counts not equal")
@@ -97,7 +96,7 @@ class TestUser(APITestCase):
 		# Delete User 
 		User = get_user_model()
 		init_count = User.objects.count()
-		user = User.objects.create_user("t34t_u$34", "test@g.com", "letmein")
+		user = User.objects.create_user("t34t_u$34", "t3st@g.com", "letmein")
 		response = self.client.delete("/home/account/delete/", {"pk":user.id})
 		self.assertEqual(response.data['deleted'], True, "User not deleted when it should've")
 
@@ -445,7 +444,7 @@ class TestUser(APITestCase):
 
 
 	# 	# Get refund
-	# 	refund = self.client.get("/home/user_donation_refund/charge/{}/".format(charge_id))
+	# 	refund = self.client.get("/home/user_donation_refund/charge/live/{}/1/".format(charge_id))
 	# 	print("Get refund info")
 	# 	print(refund.data)
 	# 	self.assertEqual(refund.data['user']['username'], "zeus", "Username does not match for refund")
@@ -476,7 +475,7 @@ class TestUser(APITestCase):
 					# image
 			print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 	def test_view_news_API(self):
-		city_state_news = self.client.get("/home/news/city/Sacramento/state/California/terror/")
+		city_state_news = self.client.get("/home/news/city/state/Sacramento/California/terror/")
 		state_news = self.client.get("/home/news/state/California/state of emergency/")
 		
 		self.assertNotEqual(len(city_state_news.data), 0, "Feed length zero, no news returned")

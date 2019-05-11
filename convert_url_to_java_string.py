@@ -1,14 +1,20 @@
-from django.contrib import admin
-from django.urls import path, include
-from django.conf.urls.static import static
-from django.conf import settings
+import re
 
-from . import views
+# Rules:
+# 	1. path(url, view, name) must include spaces after each comma, especially url param
+#	2. all query params must be at end of url endpoint 
+		# /home/user/email/username/<str:email>/<str:username>/
+		# 	name => home_user_email_username  
+		# 	url => /home/user/email/username/
+		# build in java with::
+			# String user_email_lookup = home_user_email_username + "C@g.com/candaya/";
+
+path_p = re.compile('path\("[a-zA-Z/]+\)"')
+line_p = re.compile('path\\([\\S]*') # must contain a space after comma of path url
 
 app_name = "home"
- 
-urlpatterns = [
 
+urls = '''
 	path("models/", views.index.as_view(), name="index"),
 	path("models/users/<int:volunteer>/", views.VolunteerChart.as_view(), name="vol_chart"),
 	path("models/volunteer_events/", views.VolunteerEventChart.as_view(), name="vol_event_chart"),
@@ -65,6 +71,25 @@ urlpatterns = [
 	# News API
 	path("news/city/state/<str:city>/<str:state>/<str:keyword>/", views.NewsAPI.as_view(), name="news_api"),
 	path("news/state/<str:state>/<str:keyword>/", views.NewsAPI.as_view(), name="news_api")
+'''
 
 
-] 
+# path("models/", views.index.as_view(), name="index"),
+
+lines = line_p.findall(urls)
+for line in lines:
+	url = line[len('path("'):-2]
+
+	pos = url.find("<")
+	name = ""
+	if pos != -1:
+		url = url[:pos]
+	name = url[:-1].replace("/", "_")
+
+	print('public static final String {} = "{}/{}";'.format(name.upper(), app_name, url))
+
+
+
+
+
+

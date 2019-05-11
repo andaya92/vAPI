@@ -18,7 +18,7 @@ class User(AbstractUser):
 	stripe_token = models.CharField(max_length=30, blank=True, null =True, unique=True)
 	stripe_email = models.EmailField(blank=True, null =True, unique=True)
 	customer_id = models.CharField(max_length=30, blank=True, null =True, unique=True) # Stripe CusId
-	
+	email = models.EmailField(unique=True)
 	def __str__(self):
 		return "{} (PK:{}) {}".format(self.username, self.id, self.email)
 	
@@ -28,6 +28,9 @@ class User(AbstractUser):
 			token = Token.objects.create(user=instance)
 			instance.rest_token = token.key
 			instance.save()
+
+	
+
 
 class Volunteer(models.Model):
 	user = models.OneToOneField(User, on_delete=models.CASCADE)
