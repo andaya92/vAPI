@@ -4,9 +4,27 @@ from .models import *
 
 
 class UserSerializer(serializers.ModelSerializer):
+	acct_type = serializers.SerializerMethodField()
 	class Meta:
 		model = get_user_model()
-		fields = ('username', 'email', 'id')
+		fields = ('username', 'email', 'id', 'acct_type')
+
+	def get_acct_type(self, obj):
+		acct_type = None
+		try:
+			acct_type = obj.volunteer
+		except:
+			print("Error, no volunteer")
+		try:
+			acct_type = obj.volunteerprovider
+		except:
+			print("Error, no provider")
+			
+		if type(acct_type) == type(Volunteer()):
+			return "Volunteer"
+		elif type(acct_type) == type(VolunteerProvider()):
+			return "VolunteerProvider"
+		return "None"
 
 class VolunteerSerializer(serializers.ModelSerializer):
 	user = UserSerializer()
