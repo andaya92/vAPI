@@ -6,7 +6,7 @@ from .models import *
 class UserSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = get_user_model()
-		fields = ('username', 'email')
+		fields = ('username', 'email', 'id')
 
 class VolunteerSerializer(serializers.ModelSerializer):
 	user = UserSerializer()
