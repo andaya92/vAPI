@@ -44,7 +44,7 @@ class VolunteerProvider(models.Model):
 
 class VolunteerInterest(models.Model):
 	name = models.CharField(max_length=40, unique=True)
-	desc = models.CharField(max_length=200, null=True, blank=True)
+	desc = models.CharField(max_length=200, null=True, blank=True, default="")
 
 	def __str__(self):
 		return "{}".format(self.name)
@@ -58,7 +58,7 @@ class UserVolunteerInterest(models.Model):
 
 class VolunteerSkill(models.Model):
 	name = models.CharField(max_length=40, unique=True)
-	desc = models.CharField(max_length=200, null=True, blank=True)
+	desc = models.CharField(max_length=200, null=True, blank=True, default="")
 
 	def __str__(self):
 		return "{}".format(self.name)

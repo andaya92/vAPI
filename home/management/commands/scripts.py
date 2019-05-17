@@ -20,16 +20,16 @@ class Command(BaseCommand):
 	def handle(self, *args, **options):
 		interests, skills = self.get_interests_skills()
 
-		# try:
-		for interest in interests:
-			tmp = VolunteerInterest()
-			tmp.name = interest
-			tmp.save()
+		try:
+			for interest in interests:
+				tmp = VolunteerInterest()
+				tmp.name = interest
+				tmp.save()
 
 
-		for skill in skills:
-			tmp = VolunteerSkill()
-			tmp.name = skill
-			tmp.save()
-		# except:
-		# 	print("failed")
+			for skill in skills:
+				tmp = VolunteerSkill()
+				tmp.name = skill
+				tmp.save()
+		except:
+			print("failed creating interests and skills")
