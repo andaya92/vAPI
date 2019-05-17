@@ -105,6 +105,68 @@ VolunteerEventSignUp
 -------------------------------------------------------------------------------
 
 #######################
+## User Quick Questions
+########################
+-------------------------------------------------------------------------------
+VolunteerInterests
+- Get Interest
+ - /home/interests/
+ - /home/interests/pk/<int:pk>/
+
+- Post Interest
+ - /home/interests/new/
+ 	- {"name" : "Coding", "desc" : ""}
+
+ - Delete Interest
+  - /home/interests/delete/
+ 	- {"pk" : pk}
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+ UserVolunteerInterests
+- Get UserVolunteerInterest
+ - /home/interests/user/
+ - /home/interests/user/<int:user_id>/
+ - /home/interests/pk/<int:pk>/
+
+- Post UserVolunteerInterest
+ - /home/interests/user/new/
+ 	- {"user_id" : "1", "volunteer_interest_id" : "1"}
+
+ - Delete UserVolunteerInterest
+  - /home/interests/user/delete/
+ 	- {"pk" : pk}
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+VolunteerSkills
+- Get Skill
+ - /home/skills/
+ - /home/skills/pk/<int:pk>/
+
+- Post VolunteerSkill
+ - /home/skills/new/
+ 	- {"name" : "Coding", "desc" : ""}
+
+ - Delete VolunteerSkills
+  - /home/skills/delete/
+ 	- {"pk" : pk}
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+ UserVolunteerSkills
+- Get UserVolunteerSkill
+ - /home/skills/user/
+ - /home/skills/user/<int:user_id>/
+ - /home/skills/pk/<int:pk>/
+
+- Post UserVolunteerSkill
+ - /home/skills/user/new/
+ 	- {"user_id" : "1", "volunteer_skill_id" : "1"}
+
+ - Delete UserVolunteerSkill
+  - /home/skills/user/delete/
+ 	- {"pk" : pk}
+-------------------------------------------------------------------------------
+
+#######################
 ## Donation Features
 ########################
 -------------------------------------------------------------------------------
@@ -156,4 +218,60 @@ News Feed API
  - /home/news/city/<str:city>/state/<str:state>/<str:keyword>/
  - /home/news/state/<str:state>/<str:keyword>/
 
+-------------------------------------------------------------------------------
+
+#######################
+## Location Features
+########################
+-------------------------------------------------------------------------------
+Country
+- Get country
+ - /home/location/country/
+ - /home/location/country/<str:name>/
+ - /home/location/country/pk/<int:pk>/
+- Post Country
+ - /home/location/country/new/
+ 	- {"name" : "USA"}
+- Delete Country
+ - /home/location/country/delete/
+  - {"pk":"1"}
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+State
+- Get state
+ - /home/location/state/
+ - /home/location/state/<str:name>/
+ - /home/location/state/pk/<int:pk>/
+- Post State
+ - /home/location/state/new/
+ 	- {"name" : "California", "country_id":"1"}
+- Delete State
+ - /home/location/state/delete/
+  - {"pk":"1"}
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+ZipCode
+- Get zipcode
+ - /home/location/zipcode/
+ - /home/location/zipcode/<str:name>/
+ - /home/location/zipcode/pk/<int:pk>/
+- Post ZipCode
+ - /home/location/zipcode/new/
+ 	- {"name" : "95847", "state_id":"1"}
+- Delete ZipCode
+ - /home/location/zipcode/delete/
+  - {"pk":"1"}
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+City
+- Get city
+ - /home/location/city/
+ - /home/location/city/<str:name>/
+ - /home/location/city/pk/<int:pk>/
+- Post City
+ - /home/location/city/new/
+ 	- {"name" : "Tracy", "state_id":"1", "zipcode_id": "1"}
+- Delete City
+ - /home/location/city/delete/
+  - {"pk":"1"}
 -------------------------------------------------------------------------------

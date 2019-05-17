@@ -15,3 +15,9 @@ admin.site.register(EventState)
 admin.site.register(DonationEvent)
 admin.site.register(UserDonation)
 admin.site.register(UserDonationRefund)
+
+admin.site.register(VolunteerInterest)
+admin.site.register(VolunteerSkill)
+
+admin.site.register(UserVolunteerInterest)
+admin.site.register(UserVolunteerSkill)

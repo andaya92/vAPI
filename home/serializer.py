@@ -7,18 +7,18 @@ class UserSerializer(serializers.ModelSerializer):
 	acct_type = serializers.SerializerMethodField()
 	class Meta:
 		model = get_user_model()
-		fields = ('username', 'email', 'id', 'acct_type')
+		fields = ('photo', 'username', 'email', 'id', 'acct_type')
 
 	def get_acct_type(self, obj):
 		acct_type = None
 		try:
 			acct_type = obj.volunteer
 		except:
-			print("Error, no volunteer")
+			pass
 		try:
 			acct_type = obj.volunteerprovider
 		except:
-			print("Error, no provider")
+			pass
 			
 		if type(acct_type) == type(Volunteer()):
 			return "Volunteer"
@@ -40,14 +40,38 @@ class VolunteerProviderSerializer(serializers.ModelSerializer):
 		fields = "__all__"
 		depth = 1	
 
-class EventStateSerializer(serializers.ModelSerializer): 
+class EventCountrySerializer(serializers.ModelSerializer): 
 	class Meta:
-		model = EventState
+		model = EventCountry
 		fields = "__all__"
 		depth = 1	
 
+class EventStateSerializer(serializers.ModelSerializer): 
+	country = EventCountrySerializer()
+	class Meta:
+		model = EventState
+		fields = "__all__"
+		depth = 1
+
 class EventCitySerializer(serializers.ModelSerializer):
 	state = EventStateSerializer()
+	class Meta:
+		model = EventCity
+		fields = "__all__"
+		depth = 1
+
+
+class ZipCodeSerializer(serializers.ModelSerializer):
+	state = EventStateSerializer()
+	class Meta:
+		model = ZipCode
+		fields = "__all__"
+		depth = 1
+
+
+class EventCitySerializer(serializers.ModelSerializer):
+	state = EventStateSerializer()
+	zip_code = ZipCodeSerializer()
 	class Meta:
 		model = EventCity
 		fields = "__all__"
@@ -83,23 +107,90 @@ class VolunteerEventSignUpSerializer(serializers.ModelSerializer):
 
 class DonationEventSerializer(serializers.ModelSerializer):
 	class Meta:
-			model = DonationEvent
-			fields = "__all__"
-			depth = 1
+		model = DonationEvent
+		fields = "__all__"
+		depth = 1
 
 
 class UserDonationSerializer(serializers.ModelSerializer):
 	user = UserSerializer()
 	event = DonationEventSerializer()
 	class Meta:
-			model = UserDonation
-			fields = "__all__"
-			depth = 1
+		model = UserDonation
+		fields = "__all__"
+		depth = 1
 
 class UserDonationRefundSerializer(serializers.ModelSerializer):
 	user = UserSerializer()
 	event = DonationEventSerializer()
 	class Meta:
-			model = UserDonationRefund
-			fields = "__all__"
-			depth = 1
+		model = UserDonationRefund
+		fields = "__all__"
+		depth = 1
+
+
+class VolunteerSkillSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = VolunteerSkill
+		fields = "__all__"
+		depth = 1
+
+class UserVolunteerSkillSerializer(serializers.ModelSerializer):
+	user = UserSerializer()
+	volunteer_skill = VolunteerSkillSerializer()
+	class Meta:
+		model = UserVolunteerSkill
+		fields = "__all__"
+		depth = 1
+
+class VolunteerInterestSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = VolunteerInterest
+		fields = "__all__"
+		depth = 1	
+
+class UserVolunteerInterestSerializer(serializers.ModelSerializer):
+	user = UserSerializer()
+	volunteer_interest = VolunteerInterestSerializer()
+	class Meta:
+		model = UserVolunteerInterest
+		fields = "__all__"
+		depth = 1		
+
+class UserVolunteerLocationSerializer(serializers.ModelSerializer):
+	user = UserSerializer()
+	city = EventCity()
+	state = EventState()
+	country = EventCountrySerializer()
+	zip_code = ZipCodeSerializer()
+
+	class Meta:
+		model = UserVolunteerLocation
+		fields = "__all__"
+		depth = 1		
+
+class VolunteerInterestSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = VolunteerInterest
+		fields = "__all__"
+		depth = 1
+
+class UserVolunteerInterestSerializer(serializers.ModelSerializer):
+	user = UserSerializer()
+	class Meta:
+		model = UserVolunteerInterest
+		fields = "__all__"
+		depth = 1
+
+class VolunteerSkillSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = VolunteerSkill
+		fields = "__all__"
+		depth = 1
+
+class UserVolunteerSkillSerializer(serializers.ModelSerializer):
+	user = UserSerializer()
+	class Meta:
+		model = UserVolunteerSkill
+		fields = "__all__"
+		depth = 1

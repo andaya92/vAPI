@@ -29,8 +29,6 @@ class User(AbstractUser):
 			instance.rest_token = token.key
 			instance.save()
 
-	
-
 
 class Volunteer(models.Model):
 	user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -44,21 +42,71 @@ class VolunteerProvider(models.Model):
 	def __str__(self):
 		return "{} (PK:{}) {}".format(self.user.username, self.id, self.user.email)
 
-class EventState(models.Model):
-	name = models.CharField(max_length=30, unique=True)
+class VolunteerInterest(models.Model):
+	name = models.CharField(max_length=40, unique=True)
+	desc = models.CharField(max_length=200, null=True, blank=True)
 
 	def __str__(self):
+		return "{}".format(self.name)
+
+class UserVolunteerInterest(models.Model):
+	user = models.ForeignKey(User, on_delete=models.CASCADE)
+	volunteer_interest = models.ForeignKey(VolunteerInterest, on_delete=models.CASCADE)
+
+	class Meta:
+		unique_together = ('user', 'volunteer_interest')
+
+class VolunteerSkill(models.Model):
+	name = models.CharField(max_length=40, unique=True)
+	desc = models.CharField(max_length=200, null=True, blank=True)
+
+	def __str__(self):
+		return "{}".format(self.name)
+
+class UserVolunteerSkill(models.Model):
+	user = models.ForeignKey(User, on_delete=models.CASCADE)
+	volunteer_skill = models.ForeignKey(VolunteerSkill, on_delete=models.CASCADE)
+
+	class Meta:
+		unique_together = ('user', 'volunteer_skill')
+
+
+
+class EventCountry(models.Model):
+	name = models.CharField(max_length=30, unique=True)
+	def __str__(self):
 		return "{} (PK:{})".format(self.name, self.id)
+
+class EventState(models.Model):
+	name = models.CharField(max_length=30, unique=True)
+	country = models.ForeignKey(EventCountry, on_delete=models.CASCADE)
+	def __str__(self):
+		return "{} (PK:{})".format(self.name, self.id)
+
+class ZipCode(models.Model):
+	zip_code = models.CharField(max_length=30, unique=True)
+	state = models.ForeignKey(EventState, on_delete=models.CASCADE)
 
 class EventCity(models.Model):
 	name = models.CharField(max_length=50)
 	state = models.ForeignKey(EventState, on_delete=models.CASCADE)
+	zip_code = models.ForeignKey(ZipCode, on_delete=models.CASCADE)
 	
 	def __str__(self):
 		return "{} (PK:{}) {}".format(self.name, self.id, self.state.name)
 
 	class Meta:
 		unique_together = ('name', 'state')
+
+class UserVolunteerLocation(models.Model):
+	user = models.ForeignKey(User, on_delete=models.CASCADE)
+	city = models.ForeignKey(EventCity, on_delete=models.CASCADE)
+	state = models.ForeignKey(EventState, on_delete=models.CASCADE)
+	country = models.ForeignKey(EventCountry, on_delete=models.CASCADE)
+	zip_code = models.ForeignKey(ZipCode, on_delete=models.CASCADE)
+
+	class Meta:
+		unique_together = ('user', 'city', 'state','country', 'zip_code')
 
 class VolunteerEvent(models.Model):
 	title = models.CharField(max_length=100)

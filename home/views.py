@@ -76,6 +76,171 @@ class VolunteerEventChart(TemplateView):
 		}
 		return render(request, self.template_name, context)
 
+
+#######################
+## Volunteer QuickQuestions
+########################
+
+class VolunteerInterestAPI(APIView):
+	def get(self, request, pk=-1):
+		interests = None
+		if pk != -1:
+			vol_int = VolunteerInterest.objects.get(pk=pk)
+			return Response(VolunteerInterestSerializer(vol_int).data)
+		else:
+			interests = VolunteerInterest.objects.all()
+
+		if interests:
+			qr = list()
+			for i in interests:
+				qr.append(VolunteerInterestSerializer(i).data)
+			return Response(qr)
+		return Response({})
+
+	def post(self, request):
+		name = request.data['name']
+		desc = request.data['desc']
+		try:
+			vol_int = VolunteerInterest()
+			vol_int.name = name
+			vol_int.desc = desc
+			vol_int.save()
+			return Response(VolunteerInterestSerializer(vol_int).data)
+		except:
+			print("Failed to create Volunteer Interest {}".format(name))
+		return Response({})
+
+	def delete(self, request):
+		pk = request.data['pk']
+		try:
+			obj = VolunteerInterest.objects.get(pk=pk)
+			obj.delete()
+			return Response({"deleted":True})
+		except:
+			print("Error deleting VolunteerInterest with pk: {}".format(pk))
+		return Response({"deleted":False})
+
+class UserVolunteerInterestAPI(APIView):
+	def get(self, request, pk=-1, user_id=-1):
+		interests = None
+		if pk != -1:
+			vol_int = UserVolunteerInterest.objects.get(pk=pk)
+			return Response(UserVolunteerInterestSerializer(vol_int).data)
+		elif user_id != -1:
+			interests = UserVolunteerInterest.objects.filter(user_id=user_id)
+		else:
+			interests = UserVolunteerInterest.objects.all()
+
+		if interests:
+			qr = list()
+			for i in interests:
+				qr.append(UserVolunteerInterestSerializer(i).data)
+			return Response(qr)
+		return Response({})
+
+	def post(self, request):
+		user_id = request.data['user_id']
+		volunteer_interest_id = request.data['volunteer_interest_id']
+		try:
+			vol_int = UserVolunteerInterest()
+			vol_int.user_id = user_id
+			vol_int.volunteer_interest_id = volunteer_interest_id
+			vol_int.save()
+			return Response(UserVolunteerInterestSerializer(vol_int).data)
+		except:
+			print("Failed to create User Volunteer Interest")
+		return Response({})
+
+	def delete(self, request):
+		pk = request.data['pk']
+		try:
+			obj = UserVolunteerInterest.objects.get(pk=pk)
+			obj.delete()
+			return Response({"deleted":True})
+		except:
+			print("Error deleting UserVolunteerInterest with pk: {}".format(pk))
+		return Response({"deleted":False})
+
+class VolunteerSkillAPI(APIView):
+	def get(self, request, pk=-1):
+		skills = None
+		if pk != -1:
+			vol_int = VolunteerSkill.objects.get(pk=pk)
+			return Response(VolunteerSkillSerializer(vol_int).data)
+		else:
+			skills = VolunteerSkill.objects.all()
+
+		if skills:
+			qr = list()
+			for i in skills:
+				qr.append(VolunteerSkillSerializer(i).data)
+			return Response(qr)
+		return Response({})
+
+	def post(self, request):
+		name = request.data['name']
+		desc = request.data['desc']
+		try:
+			vol_int = VolunteerSkill()
+			vol_int.name = name
+			vol_int.desc = desc
+			vol_int.save()
+			return Response(VolunteerSkillSerializer(vol_int).data)
+		except:
+			print("Failed to create Volunteer Skill {}".format(name))
+		return Response({})
+
+	def delete(self, request):
+		pk = request.data['pk']
+		try:
+			obj = VolunteerSkill.objects.get(pk=pk)
+			obj.delete()
+			return Response({"deleted":True})
+		except:
+			print("Error deleting VolunteerSkill with pk: {}".format(pk))
+		return Response({"deleted":False})
+
+class UserVolunteerSkillAPI(APIView):
+	def get(self, request, pk=-1, user_id=-1):
+		skills = None
+		if pk != -1:
+			vol_int = UserVolunteerSkill.objects.get(pk=pk)
+			return Response(UserVolunteerSkillSerializer(vol_int).data)
+		elif user_id != -1:
+			skills = UserVolunteerSkill.objects.filter(user_id=user_id)
+		else:
+			skills = UserVolunteerSkill.objects.all()
+
+		if skills:
+			qr = list()
+			for i in skills:
+				qr.append(UserVolunteerSkillSerializer(i).data)
+			return Response(qr)
+		return Response({})
+
+	def post(self, request):
+		user_id = request.data['user_id']
+		volunteer_skill_id = request.data['volunteer_skill_id']
+		try:
+			vol_int = UserVolunteerSkill()
+			vol_int.user_id = user_id
+			vol_int.volunteer_skill_id = volunteer_skill_id
+			vol_int.save()
+			return Response(UserVolunteerSkillSerializer(vol_int).data)
+		except:
+			print("Failed to create User Volunteer Skill")
+		return Response({})
+
+	def delete(self, request):
+		pk = request.data['pk']
+		try:
+			obj = UserVolunteerSkill.objects.get(pk=pk)
+			obj.delete()
+			return Response({"deleted":True})
+		except:
+			print("Error deleting UserVolunteerSkill with pk: {}".format(pk))
+		return Response({"deleted":False})
+
 #######################
 ## Account Features
 ########################
@@ -369,6 +534,194 @@ class VolunteerEventSignUpAPI(APIView):
 				print("Failed deleting volunteer event signup")
 		return Response({"deleted":False})
 
+
+#######################
+## Location
+########################
+class EventCityAPI(APIView):
+	def get(self, request, pk=-1, name="none", state_id=-1, zipcode_id=-1):
+		cities = None
+		if pk != -1:
+			city = EventCity.objects.get(pk=pk)
+			return Response(EventCitySerializer(city).data)
+		elif name != "none":
+			cities = EventCity.objects.filter(name__contains=name)
+		elif state_id != -1:
+			cities = EventCity.objects.filter(state_id=state_id)
+		elif zipcode_id != -1:
+			cities = EventCity.objects.filter(zip_code_id=zipcode_id)
+		else:
+			cities = EventCity.objects.all()
+
+		if cities:
+			qr = list()
+			for c in cities:
+				qr.append(EventCitySerializer(c).data)
+			return Response(qr)
+		return Response({})
+
+	def post(self, request):
+		name = request.data['name']
+		state_id = request.data['state_id']
+		zipcode_id = request.data['zipcode_id']
+		city = None
+		# try:
+		city = EventCity()
+		city.name = name
+		city.state_id = state_id
+		city.zip_code_id = zipcode_id
+		city.save()
+		# except:
+		# 	print("Error creating City {}".format(name))
+		if city:
+			return Response(EventCitySerializer(city).data)
+		return Response({})
+
+	def delete(self, request):
+		pk = request.data['pk']
+		try:
+			obj = EventCity.objects.get(pk=pk)
+			obj.delete()
+			return Response({"deleted":True})
+		except:
+			print("Error deleting EventCity with pk: {}".format(pk))
+		return Response({"deleted":False})
+
+class ZipCodeAPI(APIView):
+	def get(self, request, pk=-1, name="none", state_id=-1):
+		zipcodes = None
+		if pk!=-1:
+			zipcode = ZipCode.objects.get(pk=pk)
+			return Response(ZipCodeSerializer(zipcode).data)
+		elif name != "none":
+			zipcodes = ZipCode.objects.filter(zip_code__contains=name)
+		elif state_id != -1:
+			zipcodes = ZipCode.objects.filter(state_id=name)
+		else:
+			zipcodes = ZipCode.objects.all()
+		
+		if zipcodes:
+			qr = list()
+			for z in zipcodes:
+				qr.append(ZipCodeSerializer(z).data)
+			return Response(qr)
+		return Response({})
+
+
+	def post(self, request):
+		name = request.data['name']
+		state_id = request.data['state_id']
+		zipcode = None
+		try:
+			zipcode = ZipCode()
+			zipcode.zip_code = name
+			zipcode.state_id = state_id
+			zipcode.save()
+		except:
+			print("Error creating ZipCode {}".format(name))
+		if zipcode:
+			return Response(ZipCodeSerializer(zipcode).data)
+		return Response({})
+
+	def delete(self, request):
+		pk = request.data['pk']
+		try:
+			obj = ZipCode.objects.get(pk=pk)
+			obj.delete()
+			return Response({"deleted":True})
+		except:
+			print("Error deleting ZipCode with pk: {}".format(pk))
+		return Response({"deleted":False})
+
+class EventStateAPI(APIView):
+	def get(self, request, pk=-1, name="none", country_id=-1):
+		states = None
+		if pk!=-1:
+			state = EventState.objects.get(pk=pk)
+			return Response(EventStateSerializer(state).data)
+		elif name != "none":
+			states = EventState.objects.filter(name__contains=name)
+		elif country_id != -1:
+			states = EventState.objects.filter(country_id=country_id)
+		else:
+			states = EventState.objects.all()
+		
+		if states:
+			qr = list()
+			for s in states:
+				qr.append(EventStateSerializer(s).data)
+			return Response(qr)
+		return Response({})
+
+	def post(self, request):
+		name = request.data['name']
+		country_id = request.data['country_id']
+		state = None
+		try:
+			state = EventState()
+			state.name = name
+			state.country_id = country_id
+			state.save()
+		except:
+			print("Error creating State {}".format(name))
+		if state:
+			return Response(EventStateSerializer(state).data)
+		return Response({})
+
+	def delete(self, request):
+		pk = request.data['pk']
+		try:
+			obj = EventState.objects.get(pk=pk)
+			obj.delete()
+			return Response({"deleted":True})
+		except:
+			print("Error deleting EventState with pk: {}".format(pk))
+		return Response({"deleted":False})
+
+class EventCountryAPI(APIView):
+	def get(self, request, pk=-1, name="none"):
+		countries = None
+		if pk!=-1:
+			country = EventCountry.objects.get(pk=pk)
+			return Response(EventCountrySerializer(country).data)
+		elif name != "none":
+			countries = EventCountry.objects.filter(name__contains=name)
+		else:
+			countries = EventCountry.objects.all()
+		
+		if countries:
+			qr = list()
+			for c in countries:
+				qr.append(EventCountrySerializer(c).data)
+			return Response(qr)
+		return Response({})
+
+	def delete(self, request):
+		pk = request.data['pk']
+		try:
+			obj = EventCountry.objects.get(pk=pk)
+			obj.delete()
+			return Response({"deleted":True})
+		except:
+			print("Error deleting EventCountry with pk: {}".format(pk))
+		return Response({"deleted":False})
+
+
+	def post(self, request):
+		name = request.data['name']
+		country = None
+		try:
+			country = EventCountry()
+			country.name = name
+			country.save()
+		except:
+			print("Error creating country {}".format(name))
+		if country:
+			return Response(EventCountrySerializer(country).data)
+		return Response({})
+
+
+
 #######################
 ## Donation Features
 ########################
@@ -467,8 +820,38 @@ class DonationAPI(APIView):
 				},
 				source= user_stripe_token
 			)
+		except stripe.error.CardError as e:
+			# Since it's a decline, stripe.error.CardError will be caught
+			body = e.json_body
+			err  = body.get('error', {})
+
+			print ("Status is: {}".format(e.http_status))
+			print ("Type is: {}".format(err.get('type')))
+			print ("Code is: {}".format(err.get('code')))
+			# param is '' in this case
+			print ("Param is: {}".format(err.get('param')))
+			print ("Message is: {}".format(err.get('message')))
+			return Response({"data":str(e)})
+		except stripe.error.RateLimitError as e:
+		# Too many requests made to the API too quickly
+			return Response({"data":str(e)})
+		except stripe.error.InvalidRequestError as e:
+		# Invalid parameters were supplied to Stripe's API
+			return Response({"data":str(e)})
+		except stripe.error.AuthenticationError as e:
+		# Authentication with Stripe's API failed
+		# (maybe you changed API keys recently)
+			return Response({"data":str(e)})
+		except stripe.error.APIConnectionError as e:
+		# Network communication with Stripe failed
+			return Response({"data":str(e)})
+		except stripe.error.StripeError as e:
+		# Display a very generic error to the user, and maybe send
+		# yourself an email
+			return Response({"data":str(e)})
 		except:
-			print("Error creating charge")
+			return Response({"data":"Error creating charge"})
+		
 		if charge:
 			if charge.paid:
 				try:
@@ -525,12 +908,9 @@ class UserDonationRefundAPI(APIView):
 					qr =list()
 					for r in refunds.auto_paging_iter():
 						qr.append(r)
-					print("Results from charg_id query {}".format(qr))
 					return Response(qr)
 				else:
 					refund = UserDonationRefund.objects.filter(charge=charge_id).first()
-					print("VIEW::GetRefund")
-					print(refund)
 					return Response(UserDonationRefundSerializer(refund).data)
 			except:
 				print("Failed getting refund from api via charge_id")

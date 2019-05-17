@@ -28,6 +28,57 @@ urlpatterns = [
 	path("volunteer_provider/all/", views.VolunteerProviderAPI.as_view(), name="get_volunteer_provider"),
 	path("volunteer_provider/pk/<int:pk>/", views.VolunteerProviderAPI.as_view(), name="get_volunteer_provider"),
 	path("volunteer_provider/email/<str:email>/", views.VolunteerProviderAPI.as_view(), name="get_volunteer_provider"),
+
+	# Locations
+	#	City
+	path("location/city/new/", views.EventCityAPI.as_view(), name="event_city"),
+	path("location/city/delete/", views.EventCityAPI.as_view(), name="event_city"),
+	path("location/city/", views.EventCityAPI.as_view(), name="event_city"),
+	path("location/city/pk/<int:pk>/", views.EventCityAPI.as_view(), name="event_city"),
+	path("location/city/<str:name>/", views.EventCityAPI.as_view(), name="event_city"),
+	#	Zipcode
+	path("location/zipcode/new/", views.ZipCodeAPI.as_view(), name="zipcode"),
+	path("location/zipcode/delete/", views.ZipCodeAPI.as_view(), name="zipcode"),
+	path("location/zipcode/", views.ZipCodeAPI.as_view(), name="zipcode"),
+	path("location/zipcode/pk/<int:pk>/", views.ZipCodeAPI.as_view(), name="zipcode"),
+	path("location/zipcode/contains/<int:name>/", views.ZipCodeAPI.as_view(), name="zipcode"),
+	#	State
+	path("location/state/new/", views.EventStateAPI.as_view(), name="event_state"),
+	path("location/state/delete/", views.EventStateAPI.as_view(), name="event_state"),
+	path("location/state/", views.EventStateAPI.as_view(), name="event_state"),
+	path("location/state/pk/<int:pk>/", views.EventStateAPI.as_view(), name="event_state"),
+	path("location/state/<str:name>/", views.EventStateAPI.as_view(), name="event_state"),
+	#	Country
+	path("location/country/new/", views.EventCountryAPI.as_view(), name="event_country"),
+	path("location/country/delete/", views.EventCountryAPI.as_view(), name="event_country"),
+	path("location/country/", views.EventCountryAPI.as_view(), name="event_country"),
+	path("location/country/pk/<int:pk>/", views.EventCountryAPI.as_view(), name="event_country"),
+	path("location/country/<str:name>/", views.EventCountryAPI.as_view(), name="event_country"),
+
+	# Interests
+	path("interests/new/", views.VolunteerInterestAPI.as_view(), name="volunteer_interest"),
+	path("interests/delete/", views.VolunteerInterestAPI.as_view(), name="volunteer_interest"),
+	path("interests/", views.VolunteerInterestAPI.as_view(), name="volunteer_interest"),
+	path("interests/pk/<int:pk>/", views.VolunteerInterestAPI.as_view(), name="volunteer_interest"),
+	# User Interests
+	path("interests/user/new/", views.UserVolunteerInterestAPI.as_view(), name="user_volunteer_interest"),
+	path("interests/user/delete/", views.UserVolunteerInterestAPI.as_view(), name="user_volunteer_interest"),
+	path("interests/user/", views.UserVolunteerInterestAPI.as_view(), name="user_volunteer_interest"),
+	path("interests/user/<int:user_id>/", views.UserVolunteerInterestAPI.as_view(), name="user_volunteer_interest"),
+	path("interests/user/pk/<int:pk>/", views.UserVolunteerInterestAPI.as_view(), name="user_volunteer_interest"),
+	# Skills
+	path("skills/new/", views.VolunteerSkillAPI.as_view(), name="volunteer_skill"),
+	path("skills/delete/", views.VolunteerSkillAPI.as_view(), name="volunteer_skill"),
+	path("skills/", views.VolunteerSkillAPI.as_view(), name="volunteer_skill"),
+	path("skills/pk/<int:pk>/", views.VolunteerSkillAPI.as_view(), name="volunteer_skill"),
+	
+	# User Skills
+	path("skills/user/new/", views.UserVolunteerSkillAPI.as_view(), name="user_volunteer_skill"),
+	path("skills/user/delete/", views.UserVolunteerSkillAPI.as_view(), name="user_volunteer_skill"),
+	path("skills/user/", views.UserVolunteerSkillAPI.as_view(), name="user_volunteer_skill"),
+	path("skills/user/<int:user_id>/", views.UserVolunteerSkillAPI.as_view(), name="user_volunteer_skill"),
+	path("skills/user/pk/<int:pk>/", views.UserVolunteerSkillAPI.as_view(), name="user_volunteer_skill"),
+
 	# Events
 	path("volunteer_event/new/", views.VolunteerEventAPI.as_view(), name="vol_event"),
 	path("volunteer_event/delete/", views.VolunteerEventAPI.as_view(), name="vol_event"),
