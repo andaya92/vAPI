@@ -410,10 +410,16 @@ class VolunteerEventAPI(APIView):
 		city = request.data['event_city']
 		desc = request.data['desc']
 		details = request.data['details']
-		provider = int(request.data['provider'])
-		
 		event_begins = int(request.data['event_begins'])
 		event_ends = int(request.data['event_ends'])
+
+		user_id = int(request.data['provider'])
+		user = get_user_model().object.get(pk=user_id)
+		provider = None
+		try:
+			provider = user.volunteerprovider.id
+		except:
+			print("User is not a volunteer provider")
 		
 		try:
 			volunteer_event = VolunteerEvent()
