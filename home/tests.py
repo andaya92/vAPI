@@ -22,10 +22,10 @@ def populate_city_state():
 	countries = {
 		"United States"	: {
 			"AZ" : {
-				"95382" : ["Turlock", "Tracy"] 
+				"89745" : ["Tempe", "Winslow"] 
 			},
 			"CA" : {
-				"89999" : ['Atwater', "Manteca", "Modesto", "Ripon", "Sacramento"]	
+				"95382" : ['Atwater', "Manteca", "Modesto", "Ripon", "Sacramento"]	
 			}
 		}
 	}
@@ -533,6 +533,9 @@ class TestUser(APITestCase):
 		state = self.client.get("/home/location/state/")
 		zipcode = self.client.get("/home/location/zipcode/")
 		city = self.client.get("/home/location/city/")
+		
+		city_by_state = self.client.get("/home/location/city/state/{}/".format(state.data['data'][0]['id']))
+		print(city_by_state.data)
 
 		self.assertEqual(len(country.data) > 0, True, "Expected more data from Country API.")
 		self.assertEqual(len(state.data) > 0, True, "Expected more data from State API.")

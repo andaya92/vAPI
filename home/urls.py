@@ -36,6 +36,7 @@ urlpatterns = [
 	path("location/city/", views.EventCityAPI.as_view(), name="event_city"),
 	path("location/city/pk/<int:pk>/", views.EventCityAPI.as_view(), name="event_city"),
 	path("location/city/<str:name>/", views.EventCityAPI.as_view(), name="event_city"),
+	path("location/city/state/<int:state_id>/", views.EventCityAPI.as_view(), name="event_city"),
 	#	Zipcode
 	path("location/zipcode/new/", views.ZipCodeAPI.as_view(), name="zipcode"),
 	path("location/zipcode/delete/", views.ZipCodeAPI.as_view(), name="zipcode"),

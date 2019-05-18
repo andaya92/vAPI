@@ -56,6 +56,9 @@ class UserVolunteerInterest(models.Model):
 	class Meta:
 		unique_together = ('user', 'volunteer_interest')
 
+	def __str__(self):
+		return "{} -- {}".format(self.user.email, self.volunteer_interest.name)
+
 class VolunteerSkill(models.Model):
 	name = models.CharField(max_length=40, unique=True)
 	desc = models.CharField(max_length=200, null=True, blank=True, default="")
@@ -70,6 +73,8 @@ class UserVolunteerSkill(models.Model):
 	class Meta:
 		unique_together = ('user', 'volunteer_skill')
 
+	def __str__(self):
+		return "{} -- {}".format(self.user.email, self.volunteer_skill.name)
 
 
 class EventCountry(models.Model):
@@ -86,6 +91,8 @@ class EventState(models.Model):
 class ZipCode(models.Model):
 	zip_code = models.CharField(max_length=30, unique=True)
 	state = models.ForeignKey(EventState, on_delete=models.CASCADE)
+	def __str__(self):
+		return "{}".format(self.zip_code)
 
 class EventCity(models.Model):
 	name = models.CharField(max_length=50)
@@ -93,7 +100,7 @@ class EventCity(models.Model):
 	zip_code = models.ForeignKey(ZipCode, on_delete=models.CASCADE)
 	
 	def __str__(self):
-		return "{} (PK:{}) {}".format(self.name, self.id, self.state.name)
+		return "{} (PK:{}) {}".format(self.name, self.id, self.state.name, self.zip_code.zip_code)
 
 	class Meta:
 		unique_together = ('name', 'state')
@@ -107,6 +114,8 @@ class UserVolunteerLocation(models.Model):
 
 	class Meta:
 		unique_together = ('user', 'city', 'state','country', 'zip_code')
+	def __str__(self):
+		return "{}".format(self.user.email, self.country.name, self.state.name, self.zip_code.zip_code, self.city.name)
 
 class VolunteerEvent(models.Model):
 	title = models.CharField(max_length=100)
