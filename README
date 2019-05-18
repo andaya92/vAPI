@@ -1,3 +1,14 @@
+#### Huge problem
+
+List responses need to be wrapped in a Dict with key data
+because volley expects a response of JSONObjects not JSONArrays
+so if all lists are wrapped in data we can check type within Java code to make a JSON array or JSONObject to return to the rest of the android app
+
+
+#############
+
+
+
 README
 # https://cst-499-volunteer-api.herokuapp.com/
 

@@ -94,7 +94,7 @@ class VolunteerInterestAPI(APIView):
 			qr = list()
 			for i in interests:
 				qr.append(VolunteerInterestSerializer(i).data)
-			return Response(qr)
+			return Response({"data":qr})
 		return Response({})
 
 	def post(self, request):
@@ -135,7 +135,7 @@ class UserVolunteerInterestAPI(APIView):
 			qr = list()
 			for i in interests:
 				qr.append(UserVolunteerInterestSerializer(i).data)
-			return Response(qr)
+			return Response({"data":qr})
 		return Response({})
 
 	def post(self, request):
@@ -174,7 +174,7 @@ class VolunteerSkillAPI(APIView):
 			qr = list()
 			for i in skills:
 				qr.append(VolunteerSkillSerializer(i).data)
-			return Response(qr)
+			return Response({"data":qr})
 		return Response({})
 
 	def post(self, request):
@@ -215,7 +215,7 @@ class UserVolunteerSkillAPI(APIView):
 			qr = list()
 			for i in skills:
 				qr.append(UserVolunteerSkillSerializer(i).data)
-			return Response(qr)
+			return Response({"data":qr})
 		return Response({})
 
 	def post(self, request):
@@ -357,7 +357,7 @@ class VolunteerAPI(APIView):
 			qr = list()
 			for v in volunteers:
 				qr.append(VolunteerSerializer(v).data)
-			return Response(qr)
+			return Response({"data":qr})
 		return Response({})
 
 class VolunteerProviderAPI(APIView):
@@ -378,7 +378,7 @@ class VolunteerProviderAPI(APIView):
 			qr = list()
 			for v in volunteers:
 				qr.append(VolunteerProviderSerializer(v).data)
-			return Response(qr)
+			return Response({"data":qr})
 		return Response({})
 
 class VolunteerEventAPI(APIView):
@@ -401,7 +401,7 @@ class VolunteerEventAPI(APIView):
 			qr = list() # list of query results
 			for r in results:
 				qr.append(VolunteerEventSerializer(r).data)
-			return Response(qr)
+			return Response({"data":qr})
 		return Response({})
 
 	def post(self, request):
@@ -456,7 +456,7 @@ class VolunteerPostAPI(APIView):
 			qr = list()
 			for p in posts:
 				qr.append(VolunteerPostSerializer(p).data)
-			return Response(qr)
+			return Response({"data":qr})
 		return Response({})
 
 	def post(self, request):
@@ -509,10 +509,12 @@ class VolunteerEventSignUpAPI(APIView):
 			results = VolunteerEventSignUp.objects.filter(volunteer_id=volunteer_id)
 		elif event_id != -1:
 			results = VolunteerEventSignUp.objects.filter(event_id=event_id)
-		qr = list()
-		for r in results:
-			qr.append(VolunteerEventSignUpSerializer(r).data)
-		return Response(qr)
+		if results:
+			qr = list()
+			for r in results:
+				qr.append(VolunteerEventSignUpSerializer(r).data)
+			return Response({"data":qr})
+		return Response({})
 
 	def post(self, request):
 		volunteer = request.data['volunteer_id']
@@ -557,7 +559,7 @@ class EventCityAPI(APIView):
 			qr = list()
 			for c in cities:
 				qr.append(EventCitySerializer(c).data)
-			return Response(qr)
+			return Response({"data":qr})
 		return Response({})
 
 	def post(self, request):
@@ -604,7 +606,7 @@ class ZipCodeAPI(APIView):
 			qr = list()
 			for z in zipcodes:
 				qr.append(ZipCodeSerializer(z).data)
-			return Response(qr)
+			return Response({"data":qr})
 		return Response({})
 
 
@@ -650,7 +652,7 @@ class EventStateAPI(APIView):
 			qr = list()
 			for s in states:
 				qr.append(EventStateSerializer(s).data)
-			return Response(qr)
+			return Response({"data":qr})
 		return Response({})
 
 	def post(self, request):
@@ -693,7 +695,7 @@ class EventCountryAPI(APIView):
 			qr = list()
 			for c in countries:
 				qr.append(EventCountrySerializer(c).data)
-			return Response(qr)
+			return Response({"data":qr})
 		return Response({})
 
 	def delete(self, request):
@@ -741,7 +743,7 @@ class DonationEventAPI(APIView):
 			qr = list()
 			for r in results:
 				qr.append(DonationEventSerializer(r).data)
-			return Response(qr)
+			return Response({"data":qr})
 		return Response({})
 
 	def post(self, request):
@@ -791,7 +793,7 @@ class DonationAPI(APIView):
 			qr = list()
 			for r in results:
 				qr.append(UserDonationSerializer(r).data)
-			return Response(qr)
+			return Response({"data":qr})
 		return Response({})
 
 	def post(self, request):
@@ -908,7 +910,7 @@ class UserDonationRefundAPI(APIView):
 					qr =list()
 					for r in refunds.auto_paging_iter():
 						qr.append(r)
-					return Response(qr)
+					return Response({"data":qr})
 				else:
 					refund = UserDonationRefund.objects.filter(charge=charge_id).first()
 					return Response(UserDonationRefundSerializer(refund).data)
