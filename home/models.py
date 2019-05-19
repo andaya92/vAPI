@@ -149,7 +149,8 @@ class VolunteerPost(models.Model):
 	modified = models.DateTimeField(editable=False)
 	
 	def __str__(self):
-		return "{} (PK:{}) {}--{}".format(self.user.email, self.id, self.event.title, self.caption[:40])	
+		title = self.event.title if self.event != None else "No Event"
+		return "{} (PK:{}) {}--{}".format(self.user.email, self.id, title, self.caption[:40])	
 
 	def save(self, *args, **kwargs):
 		''' On save, update timestamps '''
