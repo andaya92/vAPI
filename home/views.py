@@ -20,7 +20,25 @@ import feedparser
 import pandas as pd
 from datetime import datetime, timedelta
 
+def is_volunteer(user_id):
+	user = get_user_model().objects.get(pk=user_id)
+	volunteer_id = -1
+	try:
+		volunteer_id = user.volunteer.id
+	except:
+		# return Response({"Error" : "User is not a volunteer"})
+		pass
+	return volunteer_id != -1
 
+def get_users_account_id(user_id):
+	vol = None
+	if is_volunteer(user_id):
+		vol = Volunteer.objects.filter(user_id=user_id)
+	else:
+		vol = VolunteerProvider.objects.filter(user_id=user_id)
+	if vol:
+		return vol[0].id
+	return -1		
 #######################
 ## Model Charts
 ########################
@@ -396,7 +414,18 @@ class VolunteerEventAPI(APIView):
 		elif city != -1:
 			results = VolunteerEvent.objects.filter(location_city_id=city)
 		elif provider != -1:
-			results = VolunteerEvent.objects.filter(provider_id=provider)
+			acct_id = -1
+			if not is_volunteer(provider):
+				print("Is volunteerProvider: {}".format(True))
+				acct_id = get_users_account_id(provider)
+				print("Acct id: {}".format(acct_id))
+			else:
+				print("Not a volunteerprovider")
+
+			if acct_id != -1:
+				results = VolunteerEvent.objects.filter(provider_id=acct_id)
+		
+
 		if results:
 			qr = list() # list of query results
 			for r in results:
@@ -415,13 +444,13 @@ class VolunteerEventAPI(APIView):
 
 		user_id = int(request.data['provider'])
 		user = get_user_model().objects.get(pk=user_id)
-		provider = None
-		try:
-			provider = user.volunteerprovider.id
-		except:
-			print("User is not a volunteer provider")
+		acct_id = -1
+
+		if not is_volunteer(user_id):
+			acct_id = get_users_account_id(user_id)
+		else:
 			return Response({"error" : "User is not a volunteer provider."})
-		
+
 		try:
 			volunteer_event = VolunteerEvent()
 			volunteer_event.title = title
@@ -429,7 +458,7 @@ class VolunteerEventAPI(APIView):
 			volunteer_event.location_city_id = city
 			volunteer_event.desc = desc
 			volunteer_event.details = details
-			volunteer_event.provider_id = provider
+			volunteer_event.provider_id = acct_id
 			volunteer_event.event_begins = datetime.fromtimestamp(event_begins)
 			volunteer_event.event_ends = datetime.fromtimestamp(event_ends)
 			volunteer_event.save()
@@ -503,6 +532,8 @@ class VolunteerPostAPI(APIView):
 				print("Failed deleting Volunteer Post")
 		return Response({"deleted":False})
 
+
+
 class VolunteerEventSignUpAPI(APIView):
 	authentication_classes = (TokenAuthentication,)
 	permission_classes = (IsAuthenticated,)
@@ -513,6 +544,13 @@ class VolunteerEventSignUpAPI(APIView):
 			vol_event_signup = VolunteerEventSignUp.objects.get(pk=pk)
 			return Response(VolunteerEventSignUpSerializer(vol_event_signup).data)
 		elif volunteer_id != -1:
+			user = get_user_model().objects.get(pk=volunteer_id)
+			volunteer_id = -1
+			try:
+				volunteer_id = user.volunteer.id
+			except:
+				return Response({"Error" : "User is not a volunteer"})
+
 			results = VolunteerEventSignUp.objects.filter(volunteer_id=volunteer_id)
 		elif event_id != -1:
 			results = VolunteerEventSignUp.objects.filter(event_id=event_id)
@@ -524,13 +562,22 @@ class VolunteerEventSignUpAPI(APIView):
 		return Response({})
 
 	def post(self, request):
-		volunteer = request.data['volunteer_id']
+		user_id = request.data['volunteer_id']
 		event = request.data['event_id']
-		vol_event_signup = VolunteerEventSignUp()
-		vol_event_signup.volunteer_id = volunteer
-		vol_event_signup.event_id = event
-		vol_event_signup.save()
-		return Response(VolunteerEventSignUpSerializer(vol_event_signup).data)
+		acct_id = -1
+		
+		if is_volunteer(user_id):
+			acct_id = get_users_account_id(user_id)
+		else:
+			print("Only volunteers can sign up for events!")
+
+		if acct_id != -1:
+			vol_event_signup = VolunteerEventSignUp()
+			vol_event_signup.volunteer_id = acct_id
+			vol_event_signup.event_id = event
+			vol_event_signup.save()
+			return Response(VolunteerEventSignUpSerializer(vol_event_signup).data)
+		return Response({"Error":"Failed to create Sign up"})
 
 	def delete(self, request):
 		pk = request.data['pk']

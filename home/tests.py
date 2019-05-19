@@ -192,9 +192,12 @@ class TestUser(APITestCase):
 
 		response = self.client.get("/home/volunteer_event/state/1/")
 		self.assertEqual(response.data['data'][0]['title'], "Code4Cure", "Title does not match record expected")
-
+		
 		response = self.client.get("/home/volunteer_event/provider/1/")
+		
 		self.assertEqual(response.data['data'][0]['title'], "Code4Cure", "Title does not match record expected")
+
+
 	def test_view_volunteer_event_API_post(self):
 		# User that is requesting from API
 		zeus = get_user_model().objects.get(pk=1)
@@ -227,6 +230,9 @@ class TestUser(APITestCase):
 								'email' : 'abc@g.com',
 								'password' : 'kidskids@2',
 								'password_confirm' : 'kidskids@2'})
+
+	
+
 		# Create Event
 		provider_1_event = self.client.post('/home/volunteer_event/new/',
 								{'title' : 'Sickest Vol Evt evr!!',
@@ -234,9 +240,11 @@ class TestUser(APITestCase):
 								'event_state': '1',
 								'event_city': '1',
 								'details' : 'From 4:20',
-								'provider' : provider_1.data['id'],
+								'provider' : provider_1.data['user']['id'],
 								'event_begins' : int(time()), 
 								'event_ends' : int(time())+1000})
+
+		
 
 		# Delete Event (Authentiacted user and Provider are not same, should not delete)
 		is_deleted = self.client.delete("/home/volunteer_event/delete/", {"pk": provider_1_event.data['id']})
@@ -251,7 +259,7 @@ class TestUser(APITestCase):
 								'provider' : '1',
 								'event_begins' : int(time()), 
 								'event_ends' : int(time())+1000})
-		
+
 		is_deleted = self.client.delete("/home/volunteer_event/delete/", {"pk": response.data['id']})
 		self.assertEqual(is_deleted.data['deleted'], True)
 
@@ -317,11 +325,11 @@ class TestUser(APITestCase):
 
 	def test_view_volunteer_event_signup_API_post(self):
 		# User that is requesting from API
-		zeus = get_user_model().objects.get(pk=1)
-		self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(zeus.rest_token))
+		hercules = get_user_model().objects.get(pk=2)
+		self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(hercules.rest_token))
 
 		response = self.client.post("/home/volunteer_event_signup/new/", {
-											"volunteer_id" : 1,
+											"volunteer_id" : hercules.id,
 											"event_id" : 1
 											})
 
@@ -329,19 +337,20 @@ class TestUser(APITestCase):
 		self.assertEqual(response.data['volunteer']['user']['username'], "hercules", "Volunteer username does not match")	
 	def test_view_volunteer_event_signup_API_get(self):
 		# User that is requesting from API
-		zeus = get_user_model().objects.get(pk=1)
-		self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(zeus.rest_token))
+		hercules = get_user_model().objects.get(pk=2)
+		self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(hercules.rest_token))
 
 		response = self.client.post("/home/volunteer_event_signup/new/", {
-											"volunteer_id" : 1,
+											"volunteer_id" : hercules.id,
 											"event_id" : 1
 											})
 
 		response = self.client.get("/home/volunteer_event_signup/pk/1/")
+	
 		self.assertEqual(response.data['event']['title'], "Code4Cure", "Event Titles do not match")
 		self.assertEqual(response.data['volunteer']['user']['username'], "hercules", "Volunteer Usernames do not match")
 
-		response = self.client.get("/home/volunteer_event_signup/volunteer/1/")
+		response = self.client.get("/home/volunteer_event_signup/volunteer/{}/".format(hercules.id))
 		self.assertEqual(response.data['data'][0]['event']['title'], "Code4Cure", "Event Titles do not match")
 		self.assertEqual(response.data['data'][0]['volunteer']['user']['username'], "hercules", "Volunteer Usernames do not match")
 
@@ -354,7 +363,7 @@ class TestUser(APITestCase):
 		self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(zeus.rest_token))
 		# Credentails are not the volunteers
 		signup = self.client.post("/home/volunteer_event_signup/new/", {
-											"volunteer_id" : 1,
+											"volunteer_id" : 2,
 											"event_id" : 1
 											})
 		# Try to delete
@@ -535,7 +544,6 @@ class TestUser(APITestCase):
 		city = self.client.get("/home/location/city/")
 		
 		city_by_state = self.client.get("/home/location/city/state/{}/".format(state.data['data'][0]['id']))
-		print(city_by_state.data)
 
 		self.assertEqual(len(country.data) > 0, True, "Expected more data from Country API.")
 		self.assertEqual(len(state.data) > 0, True, "Expected more data from State API.")
