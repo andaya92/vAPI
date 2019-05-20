@@ -89,6 +89,14 @@ class VolunteerEventSerializer(serializers.ModelSerializer):
 		depth = 1	
 
 
+
+def img_to_data_url(img):
+	try:
+		return b64encode(img.read())
+	except:
+		return ""
+
+
 class VolunteerPostSerializer(serializers.ModelSerializer):
 	user = UserSerializer()
 	event = VolunteerEventSerializer()
@@ -101,9 +109,7 @@ class VolunteerPostSerializer(serializers.ModelSerializer):
 	def get_img(self, instance):
 		img = instance.img 
 		if img:
-
-			encoded = b64encode(img.read())
-			return "data:{};base64,{}".format("png", encoded)	
+			return "data:{};base64,{}".format("png", img_to_data_url(img))	
 			# with open(img_path, "rb") as f:
 			# 	data = f.read()
 
