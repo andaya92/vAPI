@@ -94,7 +94,7 @@ def img_to_data_url(img):
 	try:
 		return b64encode(img.read()).decode("ascii")
 	except:
-		return ""
+		return "no_image"
 
 
 class VolunteerPostSerializer(serializers.ModelSerializer):
