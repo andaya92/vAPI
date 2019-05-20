@@ -90,36 +90,16 @@ class VolunteerEventSerializer(serializers.ModelSerializer):
 
 
 
-def img_to_data_url(img):
-	try:
-		return b64encode(img.read()).decode("ascii")
-	except:
-		return "no_image"
 
 
 class VolunteerPostSerializer(serializers.ModelSerializer):
 	user = UserSerializer()
 	event = VolunteerEventSerializer()
-	img = serializers.SerializerMethodField()
+	
 	class Meta:
 		model = VolunteerPost
 		fields = "__all__"
 		depth = 1
-
-	def get_img(self, instance):
-		img = instance.img 
-		if img:
-			print("data:{};base64,{}".format("png", img_to_data_url(img)))
-			return "data:{};base64,{}".format("png", img_to_data_url(img))	
-			# with open(img_path, "rb") as f:
-			# 	data = f.read()
-
-			# 	encoded = b64encode(data)
-			# 	content_type, encoding = guess_type(filename)
-			# 	return "data:{};base64,{}".format(content_type, encoded)		
-		return ''
-
-
 
 
 class VolunteerEventSignUpSerializer(serializers.ModelSerializer):

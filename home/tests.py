@@ -282,6 +282,7 @@ class TestUser(APITestCase):
 
 		response = self.client.get("/home/volunteer_post/event/1/")
 		self.assertEqual(response.data['data'][0]['caption'], "This is my first photo!", "Caption does not match")
+		print(response.data['img'])
 	# def test_view_volunteer_post_post(self):
 	# 	# User that is requesting from API
 	# 	zeus = get_user_model().objects.get(pk=1)
