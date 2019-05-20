@@ -1,7 +1,8 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from .models import *
-
+from base64 import b64encode
+from mimetypes import guess_type
 
 class UserSerializer(serializers.ModelSerializer):
 	acct_type = serializers.SerializerMethodField()
@@ -91,10 +92,27 @@ class VolunteerEventSerializer(serializers.ModelSerializer):
 class VolunteerPostSerializer(serializers.ModelSerializer):
 	user = UserSerializer()
 	event = VolunteerEventSerializer()
+	img = serializers.SerializerMethodField()
 	class Meta:
 		model = VolunteerPost
 		fields = "__all__"
 		depth = 1
+
+	def get_img(self, instance):
+		img = instance.img 
+		if img:
+
+			encoded = b64encode(img.read())
+			return "data:{};base64,{}".format("png", encoded)	
+			# with open(img_path, "rb") as f:
+			# 	data = f.read()
+
+			# 	encoded = b64encode(data)
+			# 	content_type, encoding = guess_type(filename)
+			# 	return "data:{};base64,{}".format(content_type, encoded)		
+		return ''
+
+
 
 
 class VolunteerEventSignUpSerializer(serializers.ModelSerializer):
