@@ -468,21 +468,21 @@ class VolunteerEventAPI(APIView):
 		else:
 			return Response({"error" : "User is not a volunteer provider."})
 
-		try:
-			volunteer_event = VolunteerEvent()
-			volunteer_event.title = title
-			volunteer_event.location_state_id = state
-			volunteer_event.location_city_id = city
-			volunteer_event.desc = desc
-			volunteer_event.details = details
-			volunteer_event.provider_id = acct_id
-			volunteer_event.tags = tags if len(tags) > len(self.tags_min) else self.tagless
-			volunteer_event.event_begins = datetime.fromtimestamp(event_begins)
-			volunteer_event.event_ends = datetime.fromtimestamp(event_ends)
-			volunteer_event.save()
-			return Response(VolunteerEventSerializer(volunteer_event).data)
-		except:
-			return Response({"error" : "event not created"})
+		# try:
+		volunteer_event = VolunteerEvent()
+		volunteer_event.title = title
+		volunteer_event.location_state_id = state
+		volunteer_event.location_city_id = city
+		volunteer_event.desc = desc
+		volunteer_event.details = details
+		volunteer_event.provider_id = acct_id
+		volunteer_event.tags = tags if len(tags) > len(self.tags_min) else self.tagless
+		volunteer_event.event_begins = datetime.fromtimestamp(event_begins)
+		volunteer_event.event_ends = datetime.fromtimestamp(event_ends)
+		volunteer_event.save()
+		return Response(VolunteerEventSerializer(volunteer_event).data)
+		# except:
+		# 	return Response({"error" : "event not created"})
 
 	def delete(self, request):
 		pk = request.data['pk']
