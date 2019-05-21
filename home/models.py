@@ -5,6 +5,7 @@ from django.contrib.auth.models import AbstractUser
 
 from rest_framework.authtoken.models import Token
 
+import json
 from vAPI import settings
 import datetime
 from django.utils import timezone
@@ -124,6 +125,7 @@ class VolunteerEvent(models.Model):
 	desc = models.CharField(max_length=2000)
 	details = models.CharField(max_length=500)
 	provider = models.ForeignKey(VolunteerProvider, on_delete=models.CASCADE)
+	tags = models.CharField(max_length=2000, default = json.dumps({}))
 	event_begins = models.DateTimeField()
 	event_ends = models.DateTimeField()
 

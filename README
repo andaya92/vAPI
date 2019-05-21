@@ -1,9 +1,7 @@
 #### Huge problem
 
-List responses need to be wrapped in a Dict with key data
-because volley expects a response of JSONObjects not JSONArrays
-so if all lists are wrapped in data we can check type within Java code to make a JSON array or JSONObject to return to the rest of the android app
-
+Events need tags for interests and skills
+So a user can search for events by location and filter by interests & skills
 
 #############
 

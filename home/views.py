@@ -402,13 +402,27 @@ class VolunteerProviderAPI(APIView):
 class VolunteerEventAPI(APIView):
 	authentication_classes = (TokenAuthentication,)
 	permission_classes = (IsAuthenticated,)
+	def __init__(self):
+		super()
+		self.tags_min = json.dumps({"tags":['']})
+		self.tagless = json.dumps({"tags":['tagless']})
 
-	def get(self, request, pk=-1, city=-1, state=-1, provider=-1):
+	def get(self, request, pk=-1, city=-1, state=-1, provider=-1, tags="none"):
 		results = None
 		if pk != -1:
 			results = VolunteerEvent.objects.get(pk=pk)
 			if results:
 				return Response(VolunteerEventSerializer(results).data)
+		elif city != -1 and tags != "none":
+			tags = json.loads(tags) if len(tags) > len(self.tags_min) else json.loads(self.tagless)
+			# Query Evevnts by each tag and build a set
+			result_set = set()
+			for tag in tags['tags']:
+				results = VolunteerEvent.objects.filter(tags__contains=tag)
+				for r in results:
+					result_set.add(r)
+			results = result_set
+
 		elif state != -1:
 			results = VolunteerEvent.objects.filter(location_state_id=state)
 		elif city != -1:
@@ -425,7 +439,6 @@ class VolunteerEventAPI(APIView):
 			if acct_id != -1:
 				results = VolunteerEvent.objects.filter(provider_id=acct_id)
 		
-
 		if results:
 			qr = list() # list of query results
 			for r in results:
@@ -434,11 +447,15 @@ class VolunteerEventAPI(APIView):
 		return Response({})
 
 	def post(self, request):
+		# Used if no tags are given aka request.data['tags'] == ""
+		self.tags_min
+
 		title = request.data['title']
 		state = request.data['event_state']
 		city = request.data['event_city']
 		desc = request.data['desc']
 		details = request.data['details']
+		tags = request.data['tags']
 		event_begins = int(request.data['event_begins'])
 		event_ends = int(request.data['event_ends'])
 
@@ -459,6 +476,7 @@ class VolunteerEventAPI(APIView):
 			volunteer_event.desc = desc
 			volunteer_event.details = details
 			volunteer_event.provider_id = acct_id
+			volunteer_event.tags = tags if len(tags) > len(self.tags_min) else self.tagless
 			volunteer_event.event_begins = datetime.fromtimestamp(event_begins)
 			volunteer_event.event_ends = datetime.fromtimestamp(event_ends)
 			volunteer_event.save()

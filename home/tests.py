@@ -73,12 +73,15 @@ class TestUser(APITestCase):
 		populate_city_state()
 
 		# Create VolunteerEvent
+		tags = {"tags" : ['skill1', 'interest1', 'skill2']}
+		
 		event = VolunteerEvent()
 		event.title = "Code4Cure"
 		event.location_city_id = 1
 		event.location_state_id = 1
 		event.desc = "Code4purpose"
 		event.details = "l2code"
+		event.tags = json.dumps(tags)
 		event.provider_id = 1
 		event.event_begins = datetime.datetime.fromtimestamp(int(time()))
 		event.event_ends = datetime.datetime.fromtimestamp(int(time())+1000)
@@ -184,6 +187,36 @@ class TestUser(APITestCase):
 	# 	zeus = get_user_model().objects.get(pk=1)
 	# 	self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(zeus.rest_token))
 
+	# 	tagless_event = self.client.post('/home/volunteer_event/new/',
+	# 			{'title' : 'Post_tagless',
+	# 			'desc': 'Esta me casa',
+	# 			'event_state': '1',
+	# 			'event_city': '1',
+	# 			'details' : 'From 4:20',
+	# 			'provider' : '1',
+	# 			'tags' : "",
+	# 			'event_begins' : int(time()), 
+	# 			'event_ends' : int(time())+1000})
+		
+	# 	# must at least have one space for a valid URL
+	# 	response = self.client.get("/home/volunteer_event/city/tag/1/{}/".format(" "))
+	# 	self.assertEqual(response.data['data'][0]['title'], "Post_tagless", "Title does not match record expected")
+
+	# 	for index in range(10):
+	# 		ts = {"tags" : ['skill_{}'.format(index), 'interest_{}'.format(index), 'skill_b_{}'.format(index)]}
+			
+	# 		self.client.post('/home/volunteer_event/new/',
+	# 			{'title' : 'Post_{}'.format(index),
+	# 			'desc': '{}_Esta me casa'.format(index),
+	# 			'event_state': '1',
+	# 			'event_city': '1',
+	# 			'details' : 'From 4:20',
+	# 			'provider' : '1',
+	# 			'tags' : json.dumps(ts),
+	# 			'event_begins' : int(time()), 
+	# 			'event_ends' : int(time())+1000})
+
+
 	# 	response = self.client.get("/home/volunteer_event/pk/1/")		
 	# 	self.assertEqual(response.data['title'], "Code4Cure", "Title does not match record expected")
 
@@ -194,8 +227,13 @@ class TestUser(APITestCase):
 	# 	self.assertEqual(response.data['data'][0]['title'], "Code4Cure", "Title does not match record expected")
 		
 	# 	response = self.client.get("/home/volunteer_event/provider/1/")
-		
 	# 	self.assertEqual(response.data['data'][0]['title'], "Code4Cure", "Title does not match record expected")
+		
+	# 	tags = {"tags" : ['skill_3', 'interest_5', 'skill_b_7']}
+	# 	response = self.client.get("/home/volunteer_event/city/tag/1/{}/".format(json.dumps(tags)))
+
+	# 	self.assertEqual(len(response.data['data']), 3, "Expected 3 records")
+
 
 
 	# def test_view_volunteer_event_API_post(self):
@@ -204,6 +242,8 @@ class TestUser(APITestCase):
 	# 	self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(zeus.rest_token))
 
 	# 	init_count = VolunteerEvent.objects.count()
+	# 	tags = {"tags" : ['skill1', 'interest1', 'skill2']}
+
 	# 	response = self.client.post('/home/volunteer_event/new/',
 	# 							{'title' : 'My First Event',
 	# 							'desc': 'Its at my house',
@@ -211,6 +251,7 @@ class TestUser(APITestCase):
 	# 							'event_city': '1',
 	# 							'details' : 'From 4:20',
 	# 							'provider' : '1',
+	# 							'tags' : json.dumps(tags),
 	# 							'event_begins' : int(time()), 
 	# 							'event_ends' : int(time())+1000})
 		
@@ -218,6 +259,11 @@ class TestUser(APITestCase):
 	# 	self.assertEqual(init_count+1, count, "VolunteerEvent not created, counts not equal")
 	# 	self.assertEqual(response.data['provider']['user']['username'], 'zeus', "VolunteerProvider Usernames do not match")
 	# 	self.assertEqual(response.data['title'], 'My First Event', "Volunteer Event Titles do not match")
+	# 	self.assertEqual(json.loads(response.data['tags']), tags, "Volunteer Event Tags do not match")
+
+	# 	print(json.loads(response.data['tags']), tags)
+
+
 	# def test_view_volunteer_event_API_delete(self):
 	# 	# User that is requesting from API
 	# 	zeus = get_user_model().objects.get(pk=1)
@@ -263,26 +309,26 @@ class TestUser(APITestCase):
 	# 	is_deleted = self.client.delete("/home/volunteer_event/delete/", {"pk": response.data['id']})
 	# 	self.assertEqual(is_deleted.data['deleted'], True)
 
-	def test_view_volunteer_post_get(self):
-		# User that is requesting from API
-		zeus = get_user_model().objects.get(pk=1)
-		self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(zeus.rest_token))
+	# def test_view_volunteer_post_get(self):
+	# 	# User that is requesting from API
+	# 	zeus = get_user_model().objects.get(pk=1)
+	# 	self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(zeus.rest_token))
 
-		# Create dummy post
-		self.client.post("/home/volunteer_post/new/", {
-								"user_id" : 1,
-								"event_id" : 1,
-								"img" : TEST_IMG,
-								"caption" : "This is my first photo!"
-								})
+	# 	# Create dummy post
+	# 	self.client.post("/home/volunteer_post/new/", {
+	# 							"user_id" : 1,
+	# 							"event_id" : 1,
+	# 							"img" : TEST_IMG,
+	# 							"caption" : "This is my first photo!"
+	# 							})
 		
-		# get dummy post by user_id
-		response = self.client.get("/home/volunteer_post/user/1/")
-		self.assertEqual(response.data['data'][0]['caption'], "This is my first photo!", "Caption does not match")
+	# 	# get dummy post by user_id
+	# 	response = self.client.get("/home/volunteer_post/user/1/")
+	# 	self.assertEqual(response.data['data'][0]['caption'], "This is my first photo!", "Caption does not match")
 
-		response = self.client.get("/home/volunteer_post/event/1/")
-		self.assertEqual(response.data['data'][0]['caption'], "This is my first photo!", "Caption does not match")
-		print(response.data['img'])
+	# 	response = self.client.get("/home/volunteer_post/event/1/")
+	# 	self.assertEqual(response.data['data'][0]['caption'], "This is my first photo!", "Caption does not match")
+	# 	print(response.data['img'])
 	# def test_view_volunteer_post_post(self):
 	# 	# User that is requesting from API
 	# 	zeus = get_user_model().objects.get(pk=1)
