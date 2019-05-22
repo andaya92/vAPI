@@ -526,6 +526,8 @@ class VolunteerPostAPI(APIView):
 			except:
 				error = "Event_id must be an int"
 
+		print("Event Id: {}".format(event))
+
 		# Convert Image from png base64
 		fmt, imgstr = img.split(';base64,') 
 		ext = fmt.split('/')[-1] 
