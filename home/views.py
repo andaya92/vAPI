@@ -521,7 +521,7 @@ class VolunteerPostAPI(APIView):
 		caption = request.data['caption']
 		if "event_id" in request.data.keys():
 			try:
-				if len(request.data['event_id']) > 0:
+				if int(request.data['event_id']) > 0:
 					event = request.data['event_id']
 			except:
 				error = "Event_id must be an int"
