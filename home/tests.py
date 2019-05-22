@@ -329,20 +329,27 @@ class TestUser(APITestCase):
 	# 	response = self.client.get("/home/volunteer_post/event/1/")
 	# 	self.assertEqual(response.data['data'][0]['caption'], "This is my first photo!", "Caption does not match")
 	# 	print(response.data['img'])
-	# def test_view_volunteer_post_post(self):
-	# 	# User that is requesting from API
-	# 	zeus = get_user_model().objects.get(pk=1)
-	# 	self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(zeus.rest_token))
+	def test_view_volunteer_post_post(self):
+		# User that is requesting from API
+		zeus = get_user_model().objects.get(pk=1)
+		self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(zeus.rest_token))
 
-	# 	init_count = VolunteerPost.objects.count()
-	# 	response = self.client.post("/home/volunteer_post/new/", {
-	# 							"user_id" : 1,
-	# 							# "event_id" : 1, # do not include if no event
-	# 							"img" : TEST_IMG,
-	# 							"caption" : "Second Photo!"
-	# 							})
+		init_count = VolunteerPost.objects.count()
+		response = self.client.post("/home/volunteer_post/new/", {
+								"user_id" : 1,
+								# "event_id" : 1, # do not include if no event
+								"img" : TEST_IMG,
+								"caption" : "Second Photo!"
+								})
 
-	# 	self.assertEqual(init_count+1, VolunteerPost.objects.count(), "Did not create post")
+		response = self.client.post("/home/volunteer_post/new/", {
+								"user_id" : 2,
+								"event_id" : 0, # do not include if no event
+								"img" : TEST_IMG,
+								"caption" : "Second Photo!"
+								})
+
+		self.assertEqual(init_count+2, VolunteerPost.objects.count(), "Did not create post")
 	# def test_view_volunteer_post_delete(self):
 	# 	# User that is requesting from API
 	# 	zeus = get_user_model().objects.get(pk=1)

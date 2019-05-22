@@ -520,19 +520,24 @@ class VolunteerPostAPI(APIView):
 		png = None
 		caption = request.data['caption']
 		if "event_id" in request.data.keys():
-			event = request.data['event_id']
+			try:
+				if len(request.data['event_id']) > 0:
+					event = request.data['event_id']
+			except:
+				error = "Event_id must be an int"
 
 		# Convert Image from png base64
 		fmt, imgstr = img.split(';base64,') 
 		ext = fmt.split('/')[-1] 
-		# try:
-		png = ContentFile(base64.b64decode(imgstr), name='{}_vol_post.{}'.format("usernameHere", ext))
-		# except:
-		#     error = "Could not create img for post"
+		try:
+			png = ContentFile(base64.b64decode(imgstr), name='{}_vol_post.{}'.format("usernameHere", ext))
+		except:
+		    error = "Could not create img for post"
 
 		post = VolunteerPost()
 		post.user_id = user
-		post.event_id = event
+		if event:
+			post.event_id = event
 		post.img = png
 		post.caption = caption
 		post.save()
