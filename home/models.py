@@ -181,7 +181,7 @@ class UserDonation(models.Model):
 
 class UserDonationRefund(models.Model):
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
-	event = models.ForeignKey(DonationEvent, on_delete=models.CASCADE)
+	event = models.ForeignKey(DonationEvent, on_delete=models.CASCADE, null=True, blank=True)
 	amount = models.FloatField()
 	charge = models.CharField(max_length=50)
 	refund = models.CharField(max_length=50)

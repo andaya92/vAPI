@@ -502,9 +502,9 @@ class TestUser(APITestCase):
 	 		"beneficiary" : "Red Rover Robin Relief"
 	 		})
 	 	donation = self.client.post("/home/make_donation/", {
-	 								"user_stripe_token": "tok_1EdALgIgfiVd5gwhRkBdHKBc",
-	 								"donation_event_id" : donation_event.data['id'],
-	 								# "donation_event_id" : "-1", # rest of the test will fail because it expects a donation event to be created
+	 								"user_stripe_token": "tok_1EdAhiIgfiVd5gwh5eVmjyTV",
+	 								# "donation_event_id" : donation_event.data['id'],
+	 								"donation_event_id" : "-1", # rest of the test will fail because it expects a donation event to be created
 	 								"amount" : "7347"
 	 								})
 
@@ -517,7 +517,7 @@ class TestUser(APITestCase):
 		
 	 	# Get donation from DB
 	 	user_donations = self.client.get("/home/user_donation/user/1/")
-	 	user_donations = self.client.get("/home/user_donation/event/1/")
+	 	# user_donations = self.client.get("/home/user_donation/event/1/")
 	 	print(user_donations.data)
 	 	self.assertEqual(user_donations.data['data'][0]['charge'], charge_id,
 	 						"Stripe chrage id is incorrect {} - {}."

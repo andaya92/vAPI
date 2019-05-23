@@ -953,7 +953,6 @@ class DonationAPI(APIView):
 					ud.charge = charge.id
 					ud.save()
 				except:
-					print("Failed creating UserDonation record")
 					return Response({"data" : "Failed making UserDonation record"})
 					# send data in json format to database
 					# make process that checks database for rows and trys to save them again...
@@ -977,7 +976,8 @@ class DonationAPI(APIView):
 				try:		
 					refund = UserDonationRefund()
 					refund.user_id = result.user_id
-					refund.event_id = result.event_id
+					if result.event_id:
+						refund.event_id = result.event_id
 					refund.amount = result.amount
 					refund.refund = re.id
 					refund.charge = charge_id
