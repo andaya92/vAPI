@@ -329,27 +329,27 @@ class TestUser(APITestCase):
 	# 	response = self.client.get("/home/volunteer_post/event/1/")
 	# 	self.assertEqual(response.data['data'][0]['caption'], "This is my first photo!", "Caption does not match")
 	# 	print(response.data['img'])
-	def test_view_volunteer_post_post(self):
-		# User that is requesting from API
-		zeus = get_user_model().objects.get(pk=1)
-		self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(zeus.rest_token))
+	# def test_view_volunteer_post_post(self):
+	# 	# User that is requesting from API
+	# 	zeus = get_user_model().objects.get(pk=1)
+	# 	self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(zeus.rest_token))
 
-		init_count = VolunteerPost.objects.count()
-		response = self.client.post("/home/volunteer_post/new/", {
-								"user_id" : 1,
-								# "event_id" : 1, # do not include if no event
-								"img" : TEST_IMG,
-								"caption" : "Second Photo!"
-								})
+	# 	init_count = VolunteerPost.objects.count()
+	# 	response = self.client.post("/home/volunteer_post/new/", {
+	# 							"user_id" : 1,
+	# 							# "event_id" : 1, # do not include if no event
+	# 							"img" : TEST_IMG,
+	# 							"caption" : "Second Photo!"
+	# 							})
 
-		response = self.client.post("/home/volunteer_post/new/", {
-								"user_id" : 2,
-								"event_id" : 0, # do not include if no event
-								"img" : TEST_IMG,
-								"caption" : "Second Photo!"
-								})
+	# 	response = self.client.post("/home/volunteer_post/new/", {
+	# 							"user_id" : 2,
+	# 							"event_id" : 0, # do not include if no event
+	# 							"img" : TEST_IMG,
+	# 							"caption" : "Second Photo!"
+	# 							})
 
-		self.assertEqual(init_count+2, VolunteerPost.objects.count(), "Did not create post")
+	# 	self.assertEqual(init_count+2, VolunteerPost.objects.count(), "Did not create post")
 	# def test_view_volunteer_post_delete(self):
 	# 	# User that is requesting from API
 	# 	zeus = get_user_model().objects.get(pk=1)
@@ -489,49 +489,52 @@ class TestUser(APITestCase):
 	# 		})
 	# 	response = self.client.delete("/home/donation_event/delete/", {"pk" : response.data['id']})
 	
-	# def test_stripe_donation_system(self):
-	# 	# 	# Make donation
-	# 	# 	# 	# User that is requesting from API
-	#  	zeus = get_user_model().objects.get(pk=1)
-	#  	self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(zeus.rest_token))
+	def test_stripe_donation_system(self):
+		# 	# Make donation
+		# 	# 	# User that is requesting from API
+	 	zeus = get_user_model().objects.get(pk=1)
+	 	self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(zeus.rest_token))
 
-	#  	donation_event = self.client.post("/home/donation_event/new/", {
-	#  		"title" : "The big nasty disaster that befell your fellow neighbor.",
-	#  		"desc" : "A huge natural disaster has beseiged your neighboring town.",
-	#  		"details" : "Over 800billion in damages, eveyone homeless...",
-	#  		"beneficiary" : "Red Rover Robin Relief"
-	#  		})
-	#  	donation = self.client.post("/home/make_donation/", {
-	#  								"user_stripe_token": "tok_1EavBMIgfiVd5gwhftzXu5h3",
-	#  								"donation_event_id" : donation_event.data['id'],
-	#  								"amount" : "7347"
-	#  								})
+	 	donation_event = self.client.post("/home/donation_event/new/", {
+	 		"title" : "The big nasty disaster that befell your fellow neighbor.",
+	 		"desc" : "A huge natural disaster has beseiged your neighboring town.",
+	 		"details" : "Over 800billion in damages, eveyone homeless...",
+	 		"beneficiary" : "Red Rover Robin Relief"
+	 		})
+	 	donation = self.client.post("/home/make_donation/", {
+	 								"user_stripe_token": "tok_1EdALgIgfiVd5gwhRkBdHKBc",
+	 								"donation_event_id" : donation_event.data['id'],
+	 								# "donation_event_id" : "-1", # rest of the test will fail because it expects a donation event to be created
+	 								"amount" : "7347"
+	 								})
 
-	#  	self.assertEqual(donation.data['paid'], True, "Donation not paid")
+	 	print(donation.data)
+	 	self.assertEqual(donation.data['paid'], True, "Donation not paid")
 		
-	#  	# store charge_id
-	#  	charge_id = donation.data['id']
-	#  	self.assertEqual(charge_id[:3], "ch_", "Id is not a Stripe charge id")
+	 	# store charge_id
+	 	charge_id = donation.data['id']
+	 	self.assertEqual(charge_id[:3], "ch_", "Id is not a Stripe charge id")
 		
-	#  	# Get donation from DB
-	#  	user_donations = self.client.get("/home/user_donation/user/1/")
-	#  	user_donations = self.client.get("/home/user_donation/event/1/")
-	#  	self.assertEqual(user_donations.data['data'][0]['charge'], charge_id,
-	#  						"Stripe chrage id is incorrect {} - {}."
-	#  						.format(user_donations.data['data'][0]['charge'], charge_id))
+	 	# Get donation from DB
+	 	user_donations = self.client.get("/home/user_donation/user/1/")
+	 	user_donations = self.client.get("/home/user_donation/event/1/")
+	 	print(user_donations.data)
+	 	self.assertEqual(user_donations.data['data'][0]['charge'], charge_id,
+	 						"Stripe chrage id is incorrect {} - {}."
+	 						.format(user_donations.data['data'][0]['charge'], charge_id))
 		
-	#  	user_donation_id = user_donations.data['data'][0]['id']
+	 	user_donation_id = user_donations.data['data'][0]['id']
 
-	# 	# 	# Refund donation
-	#  	refund = self.client.delete("/home/refund_user_donation/", {"charge_id":charge_id})
-	#  	self.assertEqual(refund.data['charge'], charge_id, "Stripe chrage id is incorrect {} - {}."
-	#  						.format(refund.data['charge'], charge_id))
+		# 	# Refund donation
+	 	refund = self.client.delete("/home/refund_user_donation/", {"charge_id":charge_id})
+	 	self.assertEqual(refund.data['charge'], charge_id, "Stripe chrage id is incorrect {} - {}."
+	 						.format(refund.data['charge'], charge_id))
 
 
-	# 	# 	# Get refund
-	#  	refund = self.client.get("/home/user_donation_refund/charge/live/{}/0/".format(charge_id))
+		# 	# Get refund
+	 	refund = self.client.get("/home/user_donation_refund/charge/live/{}/0/".format(charge_id))
 	 	
-	#  	self.assertEqual(refund.data['user']['username'], "zeus", "Username does not match for refund")
+	 	self.assertEqual(refund.data['user']['username'], "zeus", "Username does not match for refund")
 
 	#   helper
 	# def print_news(self, data):

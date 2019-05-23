@@ -881,11 +881,19 @@ class DonationAPI(APIView):
 		user_stripe_token = request.data['user_stripe_token']
 		amount = request.data['amount']
 		donation_event_id = request.data['donation_event_id']
-		
-		de = DonationEvent.objects.get(pk=int(donation_event_id))
-
 		charge = None
+		de = None
+
+		if donation_event_id != "-1":
+			de = DonationEvent.objects.get(pk=int(donation_event_id))
+
 		try:
+			ids = json.dumps({"donation_event": donation_event_id})  
+			info = json.dumps({"title": (de.title if de != None else "no event"),
+								 "desc": (de.desc if de != None else "no event")})
+			details = de.details if de != None else "no event" 
+			beneficiary = de.beneficiary if de != None else "no event"
+
 			charge = stripe.Charge.create(
 				amount=int(amount)*100,
 				currency='usd',
@@ -895,9 +903,10 @@ class DonationAPI(APIView):
 					"username" : request.user.username,
 					"email" : request.user.email,
 					"charge_type" : "donation",
-					"ids" : json.dumps({"donation_event": donation_event_id }),
-					"info" : json.dumps({"title":de.title, "desc":de.desc,
-					"details":de.details, "beneficiary" : de.beneficiary})
+					"ids" : ids,
+					"info" : info,
+					"details" : details,
+					"beneficiary" : beneficiary
 				},
 				source= user_stripe_token
 			)
@@ -938,16 +947,19 @@ class DonationAPI(APIView):
 				try:
 					ud = UserDonation()
 					ud.user_id = request.user.id
-					ud.event_id = de.id
+					if de:
+						ud.event_id = de.id 
 					ud.amount = amount
 					ud.charge = charge.id
 					ud.save()
 				except:
 					print("Failed creating UserDonation record")
+					return Response({"data" : "Failed making UserDonation record"})
 					# send data in json format to database
 					# make process that checks database for rows and trys to save them again...
 				return Response(charge)
-		return Response()
+			return Response({"data" : "Failed paying for charge"})
+		return Response({"data" : "Failed making charge"})
 
 	def delete(self, request):
 		charge_id = request.data['charge_id']
