@@ -505,7 +505,7 @@ class TestUser(APITestCase):
 	 								"user_stripe_token": "tok_1EdAhiIgfiVd5gwh5eVmjyTV",
 	 								# "donation_event_id" : donation_event.data['id'],
 	 								"donation_event_id" : "-1", # rest of the test will fail because it expects a donation event to be created
-	 								"amount" : "7347"
+	 								"amount" : "7347.00"
 	 								})
 
 	 	print(donation.data)

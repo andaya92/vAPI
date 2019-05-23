@@ -895,7 +895,7 @@ class DonationAPI(APIView):
 		beneficiary = de.beneficiary if de != None else "no event"
 
 		charge = stripe.Charge.create(
-			amount=int(amount)*100,
+			amount=float(amount)*100.0,
 			currency='usd',
 			description='Example charge',
 			statement_descriptor= "Volunteer Me",
