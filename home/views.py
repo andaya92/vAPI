@@ -887,60 +887,60 @@ class DonationAPI(APIView):
 		if donation_event_id != "-1":
 			de = DonationEvent.objects.get(pk=int(donation_event_id))
 
-		try:
-			ids = json.dumps({"donation_event": donation_event_id})  
-			info = json.dumps({"title": (de.title if de != None else "no event"),
-								 "desc": (de.desc if de != None else "no event")})
-			details = de.details if de != None else "no event" 
-			beneficiary = de.beneficiary if de != None else "no event"
+		# try:
+		ids = json.dumps({"donation_event": donation_event_id})  
+		info = json.dumps({"title": (de.title if de != None else "no event"),
+							 "desc": (de.desc if de != None else "no event")})
+		details = de.details if de != None else "no event" 
+		beneficiary = de.beneficiary if de != None else "no event"
 
-			charge = stripe.Charge.create(
-				amount=int(amount)*100,
-				currency='usd',
-				description='Example charge',
-				statement_descriptor= "Volunteer Me",
-				metadata={
-					"username" : request.user.username,
-					"email" : request.user.email,
-					"charge_type" : "donation",
-					"ids" : ids,
-					"info" : info,
-					"details" : details,
-					"beneficiary" : beneficiary
-				},
-				source= user_stripe_token
-			)
-		except stripe.error.CardError as e:
-			# Since it's a decline, stripe.error.CardError will be caught
-			body = e.json_body
-			err  = body.get('error', {})
+		charge = stripe.Charge.create(
+			amount=int(amount)*100,
+			currency='usd',
+			description='Example charge',
+			statement_descriptor= "Volunteer Me",
+			metadata={
+				"username" : request.user.username,
+				"email" : request.user.email,
+				"charge_type" : "donation",
+				"ids" : ids,
+				"info" : info,
+				"details" : details,
+				"beneficiary" : beneficiary
+			},
+			source= user_stripe_token
+		)
+		# except stripe.error.CardError as e:
+		# 	# Since it's a decline, stripe.error.CardError will be caught
+		# 	body = e.json_body
+		# 	err  = body.get('error', {})
 
-			print ("Status is: {}".format(e.http_status))
-			print ("Type is: {}".format(err.get('type')))
-			print ("Code is: {}".format(err.get('code')))
-			# param is '' in this case
-			print ("Param is: {}".format(err.get('param')))
-			print ("Message is: {}".format(err.get('message')))
-			return Response({"data":str(e)})
-		except stripe.error.RateLimitError as e:
-		# Too many requests made to the API too quickly
-			return Response({"data":str(e)})
-		except stripe.error.InvalidRequestError as e:
-		# Invalid parameters were supplied to Stripe's API
-			return Response({"data":str(e)})
-		except stripe.error.AuthenticationError as e:
-		# Authentication with Stripe's API failed
-		# (maybe you changed API keys recently)
-			return Response({"data":str(e)})
-		except stripe.error.APIConnectionError as e:
-		# Network communication with Stripe failed
-			return Response({"data":str(e)})
-		except stripe.error.StripeError as e:
-		# Display a very generic error to the user, and maybe send
-		# yourself an email
-			return Response({"data":str(e)})
-		except:
-			return Response({"data":"Error creating charge"})
+		# 	print ("Status is: {}".format(e.http_status))
+		# 	print ("Type is: {}".format(err.get('type')))
+		# 	print ("Code is: {}".format(err.get('code')))
+		# 	# param is '' in this case
+		# 	print ("Param is: {}".format(err.get('param')))
+		# 	print ("Message is: {}".format(err.get('message')))
+		# 	return Response({"data":str(e)})
+		# except stripe.error.RateLimitError as e:
+		# # Too many requests made to the API too quickly
+		# 	return Response({"data":str(e)})
+		# except stripe.error.InvalidRequestError as e:
+		# # Invalid parameters were supplied to Stripe's API
+		# 	return Response({"data":str(e)})
+		# except stripe.error.AuthenticationError as e:
+		# # Authentication with Stripe's API failed
+		# # (maybe you changed API keys recently)
+		# 	return Response({"data":str(e)})
+		# except stripe.error.APIConnectionError as e:
+		# # Network communication with Stripe failed
+		# 	return Response({"data":str(e)})
+		# except stripe.error.StripeError as e:
+		# # Display a very generic error to the user, and maybe send
+		# # yourself an email
+		# 	return Response({"data":str(e)})
+		# except:
+		# 	return Response({"data":"Error creating charge"})
 		
 		if charge:
 			if charge.paid:
