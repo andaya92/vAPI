@@ -102,6 +102,7 @@ urlpatterns = [
 
 	path("donation_event/new/", views.DonationEventAPI.as_view(), name="donation_event"),
 	path("donation_event/delete/", views.DonationEventAPI.as_view(), name="donation_event_delete"),
+	path("donation_event/", views.DonationEventAPI.as_view(), name="get_donation_event"),
 	path("donation_event/pk/<int:pk>/", views.DonationEventAPI.as_view(), name="get_donation_event"),
 	path("donation_event/<str:field>/<str:query>/", views.DonationEventAPI.as_view(), name="get_donation_event"),
 

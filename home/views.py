@@ -817,6 +817,8 @@ class DonationEventAPI(APIView):
 				results = DonationEvent.objects.filter(title__contains=query)
 			elif field == "beneficiary":
 				results = DonationEvent.objects.filter(beneficiary__contains=query)
+		else:
+			results = DonationEvent.objects.all()
 
 		if results:
 			qr = list()
