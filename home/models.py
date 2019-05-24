@@ -177,7 +177,8 @@ class UserDonation(models.Model):
 	charge = models.CharField(max_length=50)
 
 	def __str__(self):
-		return "{} (PK:{}) {}--${}".format(self.user.email, self.id, self.event.title, self.amount)
+		event = self.event.title if self.event else "No Event"
+		return "{} (PK:{}) {}--${}".format(self.user.email, self.id, event, self.amount)
 
 class UserDonationRefund(models.Model):
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
