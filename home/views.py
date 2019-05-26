@@ -418,7 +418,7 @@ class VolunteerEventAPI(APIView):
 			# Query Evevnts by each tag and build a set
 			result_set = set()
 			for tag in tags['tags']:
-				results = VolunteerEvent.objects.filter(tags__contains=tag)
+				results = VolunteerEvent.objects.filter(tags__icontains=tag)
 				for r in results:
 					result_set.add(r)
 			results = result_set
@@ -625,7 +625,7 @@ class EventCityAPI(APIView):
 			city = EventCity.objects.get(pk=pk)
 			return Response(EventCitySerializer(city).data)
 		elif name != "none":
-			cities = EventCity.objects.filter(name__contains=name)
+			cities = EventCity.objects.filter(name__icontains=name)
 		elif state_id != -1:
 			cities = EventCity.objects.filter(state_id=state_id)
 		elif zipcode_id != -1:
@@ -674,7 +674,7 @@ class ZipCodeAPI(APIView):
 			zipcode = ZipCode.objects.get(pk=pk)
 			return Response(ZipCodeSerializer(zipcode).data)
 		elif name != "none":
-			zipcodes = ZipCode.objects.filter(zip_code__contains=name)
+			zipcodes = ZipCode.objects.filter(zip_code__icontains=name)
 		elif state_id != -1:
 			zipcodes = ZipCode.objects.filter(state_id=name)
 		else:
@@ -720,7 +720,7 @@ class EventStateAPI(APIView):
 			state = EventState.objects.get(pk=pk)
 			return Response(EventStateSerializer(state).data)
 		elif name != "none":
-			states = EventState.objects.filter(name__contains=name)
+			states = EventState.objects.filter(name__icontains=name)
 		elif country_id != -1:
 			states = EventState.objects.filter(country_id=country_id)
 		else:
@@ -765,7 +765,7 @@ class EventCountryAPI(APIView):
 			country = EventCountry.objects.get(pk=pk)
 			return Response(EventCountrySerializer(country).data)
 		elif name != "none":
-			countries = EventCountry.objects.filter(name__contains=name)
+			countries = EventCountry.objects.filter(name__icontains=name)
 		else:
 			countries = EventCountry.objects.all()
 		
@@ -813,9 +813,9 @@ class DonationEventAPI(APIView):
 			return Response(DonationEventSerializer(result).data)
 		elif field and query:
 			if field == "title":
-				results = DonationEvent.objects.filter(title__contains=query)
+				results = DonationEvent.objects.filter(title__icontains=query)
 			elif field == "beneficiary":
-				results = DonationEvent.objects.filter(beneficiary__contains=query)
+				results = DonationEvent.objects.filter(beneficiary__icontains=query)
 		else:
 			results = DonationEvent.objects.all()
 
