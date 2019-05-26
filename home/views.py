@@ -407,12 +407,27 @@ class VolunteerEventAPI(APIView):
 		self.tags_min = json.dumps({"tags":['']})
 		self.tagless = json.dumps({"tags":['tagless']})
 
-	def get(self, request, pk=-1, city=-1, state=-1, provider=-1, tags="none"):
+	def get(self, request, pk=-1, city=-1, state=-1,location="none", provider=-1, tags="none"):
 		results = None
+		result_set = set()
 		if pk != -1:
 			results = VolunteerEvent.objects.get(pk=pk)
 			if results:
 				return Response(VolunteerEventSerializer(results).data)
+		elif location != "none":
+			query_list = location.split(", ")
+			for query in query_list:
+				results = VolunteerEvent.objects.filter(location_city__name__icontains = query)
+				for r in results:
+						result_set.add(r)
+				results = VolunteerEvent.objects.filter(location_state__name__icontains = query)
+				for r in results:
+						result_set.add(r)
+				results = VolunteerEvent.objects.filter(location_city__zip_code__zip_code__icontains = query)
+				for r in results:
+						result_set.add(r)
+			results = result_set
+
 		elif tags != "none":
 			tags = json.loads(tags) if len(tags) > len(self.tags_min) else json.loads(self.tagless)
 			# Query Evevnts by each tag and build a set

@@ -237,6 +237,10 @@ class TestUser(APITestCase):
 		# Should allow select of city based on user's State (UserQuickQquestions; UQQ)
 		self.assertEqual(len(response.data['data']), 3, "Expected 3 records")
 
+		location = "tempe, AZ"
+		response = self.client.get("/home/volunteer_event/location/{}/".format(location))
+		print(response.data)
+
 
 
 	# def test_view_volunteer_event_API_post(self):

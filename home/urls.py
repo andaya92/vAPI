@@ -88,6 +88,7 @@ urlpatterns = [
 	path("volunteer_event/city/<int:city>/", views.VolunteerEventAPI.as_view(), name="get_vol_event"),
 	path("volunteer_event/provider/<int:provider>/", views.VolunteerEventAPI.as_view(), name="get_vol_event"),
 	path("volunteer_event/tag/<str:tags>/", views.VolunteerEventAPI.as_view(), name="get_vol_event"),
+	path("volunteer_event/location/<str:location>/", views.VolunteerEventAPI.as_view(), name="get_vol_event"),
 	# Posts
 	path("volunteer_post/new/", views.VolunteerPostAPI.as_view(), name="vol_post"),
 	path("volunteer_post/delete/", views.VolunteerPostAPI.as_view(), name="vol_post"),
