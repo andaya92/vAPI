@@ -413,7 +413,7 @@ class VolunteerEventAPI(APIView):
 			results = VolunteerEvent.objects.get(pk=pk)
 			if results:
 				return Response(VolunteerEventSerializer(results).data)
-		elif city != -1 and tags != "none":
+		elif tags != "none":
 			tags = json.loads(tags) if len(tags) > len(self.tags_min) else json.loads(self.tagless)
 			# Query Evevnts by each tag and build a set
 			result_set = set()

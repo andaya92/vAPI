@@ -182,57 +182,60 @@ class TestUser(APITestCase):
 	# 	response = self.client.get("/home/volunteer_provider/email/test@g.com/")
 	# 	self.assertEqual(response.data['user']['username'], "zeus", "Username does not match")
 
-	# def test_view_volunteer_event_API_get(self):
-	# 	# User that is requesting from API
-	# 	zeus = get_user_model().objects.get(pk=1)
-	# 	self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(zeus.rest_token))
+	def test_view_volunteer_event_API_get(self):
+		# User that is requesting from API
+		zeus = get_user_model().objects.get(pk=1)
+		self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(zeus.rest_token))
 
-	# 	tagless_event = self.client.post('/home/volunteer_event/new/',
-	# 			{'title' : 'Post_tagless',
-	# 			'desc': 'Esta me casa',
-	# 			'event_state': '1',
-	# 			'event_city': '1',
-	# 			'details' : 'From 4:20',
-	# 			'provider' : '1',
-	# 			'tags' : "",
-	# 			'event_begins' : int(time()), 
-	# 			'event_ends' : int(time())+1000})
+		tagless_event = self.client.post('/home/volunteer_event/new/',
+				{'title' : 'Post_tagless',
+				'desc': 'Esta me casa',
+				'event_state': '1',
+				'event_city': '1',
+				'details' : 'From 4:20',
+				'provider' : '1',
+				'tags' : "",
+				'event_begins' : int(time()), 
+				'event_ends' : int(time())+1000})
 		
-	# 	# must at least have one space for a valid URL
-	# 	response = self.client.get("/home/volunteer_event/city/tag/1/{}/".format(" "))
-	# 	self.assertEqual(response.data['data'][0]['title'], "Post_tagless", "Title does not match record expected")
+		# must at least have one space for a valid URL
+		response = self.client.get("/home/volunteer_event/tag/{}/".format(" "))
+		self.assertEqual(response.data['data'][0]['title'], "Post_tagless", "Title does not match record expected")
 
-	# 	for index in range(10):
-	# 		ts = {"tags" : ['skill_{}'.format(index), 'interest_{}'.format(index), 'skill_b_{}'.format(index)]}
+		for index in range(10):
+			ts = {"tags" : ['skill_{}'.format(index), 'interest_{}'.format(index), 'skill_b_{}'.format(index)]}
 			
-	# 		self.client.post('/home/volunteer_event/new/',
-	# 			{'title' : 'Post_{}'.format(index),
-	# 			'desc': '{}_Esta me casa'.format(index),
-	# 			'event_state': '1',
-	# 			'event_city': '1',
-	# 			'details' : 'From 4:20',
-	# 			'provider' : '1',
-	# 			'tags' : json.dumps(ts),
-	# 			'event_begins' : int(time()), 
-	# 			'event_ends' : int(time())+1000})
+			self.client.post('/home/volunteer_event/new/',
+				{'title' : 'Post_{}'.format(index),
+				'desc': '{}_Esta me casa'.format(index),
+				'event_state': '1',
+				'event_city': '1',
+				'details' : 'From 4:20',
+				'provider' : '1',
+				'tags' : json.dumps(ts),
+				'event_begins' : int(time()), 
+				'event_ends' : int(time())+1000})
 
 
-	# 	response = self.client.get("/home/volunteer_event/pk/1/")		
-	# 	self.assertEqual(response.data['title'], "Code4Cure", "Title does not match record expected")
+		response = self.client.get("/home/volunteer_event/pk/1/")		
+		self.assertEqual(response.data['title'], "Code4Cure", "Title does not match record expected")
 
-	# 	response = self.client.get("/home/volunteer_event/city/1/")
-	# 	self.assertEqual(response.data['data'][0]['title'], "Code4Cure", "Title does not match record expected")
+		response = self.client.get("/home/volunteer_event/city/1/")
+		self.assertEqual(response.data['data'][0]['title'], "Code4Cure", "Title does not match record expected")
 
-	# 	response = self.client.get("/home/volunteer_event/state/1/")
-	# 	self.assertEqual(response.data['data'][0]['title'], "Code4Cure", "Title does not match record expected")
+		response = self.client.get("/home/volunteer_event/state/1/")
+		self.assertEqual(response.data['data'][0]['title'], "Code4Cure", "Title does not match record expected")
 		
-	# 	response = self.client.get("/home/volunteer_event/provider/1/")
-	# 	self.assertEqual(response.data['data'][0]['title'], "Code4Cure", "Title does not match record expected")
+		response = self.client.get("/home/volunteer_event/provider/1/")
+		self.assertEqual(response.data['data'][0]['title'], "Code4Cure", "Title does not match record expected")
 		
-	# 	tags = {"tags" : ['skill_3', 'interest_5', 'skill_b_7']}
-	# 	response = self.client.get("/home/volunteer_event/city/tag/1/{}/".format(json.dumps(tags)))
-
-	# 	self.assertEqual(len(response.data['data']), 3, "Expected 3 records")
+		tags = {"tags" : ['skill_3', 'interest_5', 'skill_b_7']}
+		response = self.client.get("/home/volunteer_event/tag/{}/".format(json.dumps(tags)))
+		# in ANdroid
+		#	MultiSelect for intersts and skills
+		# Create JSONObject with key tags and value JSONArray which is a list of items form the mutliselect view
+		# Should allow select of city based on user's State (UserQuickQquestions; UQQ)
+		self.assertEqual(len(response.data['data']), 3, "Expected 3 records")
 
 
 
@@ -433,63 +436,63 @@ class TestUser(APITestCase):
 	# 	# Expect deletion 
 	# 	self.assertEqual(is_deleted.data['deleted'], True, "Signup not deleted when it shoudl've")
 
-	def test_view_dontaion_event_API_post(self):
-		# User that is requesting from API
-		zeus = get_user_model().objects.get(pk=1)
-		self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(zeus.rest_token))
+	# def test_view_dontaion_event_API_post(self):
+	# 	# User that is requesting from API
+	# 	zeus = get_user_model().objects.get(pk=1)
+	# 	self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(zeus.rest_token))
 
-		response = self.client.post("/home/donation_event/new/", {
-			"title" : "The big nasty disaster that befell your fellow neighbor.",
-			"desc" : "A huge natural disaster has beseiged your neighboring town.",
-			"details" : "Over 800billion in damages, eveyone homeless...",
-			"beneficiary" : "Red Rover Robin Relief"
-			})
-		self.assertEqual(response.data['id'], 1, "Should be the first entry in table")
-	def test_view_dontaion_event_API_get(self):
-		# User that is requesting from API
-		zeus = get_user_model().objects.get(pk=1)
-		self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(zeus.rest_token))
+	# 	response = self.client.post("/home/donation_event/new/", {
+	# 		"title" : "The big nasty disaster that befell your fellow neighbor.",
+	# 		"desc" : "A huge natural disaster has beseiged your neighboring town.",
+	# 		"details" : "Over 800billion in damages, eveyone homeless...",
+	# 		"beneficiary" : "Red Rover Robin Relief"
+	# 		})
+	# 	self.assertEqual(response.data['id'], 1, "Should be the first entry in table")
+	# def test_view_dontaion_event_API_get(self):
+	# 	# User that is requesting from API
+	# 	zeus = get_user_model().objects.get(pk=1)
+	# 	self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(zeus.rest_token))
 
-		response = self.client.post("/home/donation_event/new/", {
-			"title" : "Southern Califonia Fire Disaster",
-			"desc" : "A huge natural disaster has beseiged your neighboring town.",
-			"details" : "Fires. Everywhere. River of flames riveting through town.",
-			"beneficiary" : "Smokey Fire Bear"
-			})
+	# 	response = self.client.post("/home/donation_event/new/", {
+	# 		"title" : "Southern Califonia Fire Disaster",
+	# 		"desc" : "A huge natural disaster has beseiged your neighboring town.",
+	# 		"details" : "Fires. Everywhere. River of flames riveting through town.",
+	# 		"beneficiary" : "Smokey Fire Bear"
+	# 		})
 
-		response = self.client.post("/home/donation_event/new/", {
-			"title" : "Flood in Big Name Area.",
-			"desc" : "Dat wet wet here. Wetter the better they said...",
-			"details" : "Everything is soaked",
-			"beneficiary" : "Noah & Sons"
-			})
+	# 	response = self.client.post("/home/donation_event/new/", {
+	# 		"title" : "Flood in Big Name Area.",
+	# 		"desc" : "Dat wet wet here. Wetter the better they said...",
+	# 		"details" : "Everything is soaked",
+	# 		"beneficiary" : "Noah & Sons"
+	# 		})
 
-		response = self.client.post("/home/donation_event/new/", {
-			"title" : "Terror in insert church/school/concert/airport/huge building/ here.",
-			"desc" : "So many ded. vry sad.",
-			"details" : "We need help, send monies...",
-			"beneficiary" : "Church of Saints"
-			})
+	# 	response = self.client.post("/home/donation_event/new/", {
+	# 		"title" : "Terror in insert church/school/concert/airport/huge building/ here.",
+	# 		"desc" : "So many ded. vry sad.",
+	# 		"details" : "We need help, send monies...",
+	# 		"beneficiary" : "Church of Saints"
+	# 		})
 
 
-		response = self.client.get("/home/donation_event/pk/1/")
-		self.assertEqual(response.data['title'], "Southern Califonia Fire Disaster", "Wrong title; Expected different title")
+	# 	response = self.client.get("/home/donation_event/pk/1/")
+	# 	self.assertEqual(response.data['title'], "Southern Califonia Fire Disaster", "Wrong title; Expected different title")
 
-		response = self.client.get("/home/donation_event/title/in/")
-		self.assertEqual(len(response.data['data']), 2, "Should be 2 result")
+	# 	response = self.client.get("/home/donation_event/title/in/")
+	# 	self.assertEqual(len(response.data['data']), 2, "Should be 2 result")
 
-		response = self.client.get("/home/donation_event/beneficiary/church/")
-		self.assertEqual(len(response.data['data']), 1, "Should be 1 result")
+	# 	response = self.client.get("/home/donation_event/beneficiary/church/")
+	# 	self.assertEqual(len(response.data['data']), 1, "Should be 1 result")
 
 		
-	def test_view_dontaion_event_API_delete(self):
-		response = self.client.post("/home/donation_event/new/", {
-			"title" : "The big nasty disaster that befell your fellow neighbor.",
-			"desc" : "A huge natural disaster has beseiged your neighboring town.",
-			"details" : "Over 800billion in damages, eveyone homeless...",
-			"beneficiary" : "Red Rover Robin Relief"
-			})
-		response = self.client.delete("/home/donation_event/delete/", {"pk" : response.data['id']})
+	# def test_view_dontaion_event_API_delete(self):
+	# 	response = self.client.post("/home/donation_event/new/", {
+	# 		"title" : "The big nasty disaster that befell your fellow neighbor.",
+	# 		"desc" : "A huge natural disaster has beseiged your neighboring town.",
+	# 		"details" : "Over 800billion in damages, eveyone homeless...",
+	# 		"beneficiary" : "Red Rover Robin Relief"
+	# 		})
+	# 	response = self.client.delete("/home/donation_event/delete/", {"pk" : response.data['id']})
 	
 	# def test_stripe_donation_system(self):
 	# 	# 	# Make donation
