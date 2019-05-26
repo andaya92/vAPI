@@ -182,64 +182,64 @@ class TestUser(APITestCase):
 	# 	response = self.client.get("/home/volunteer_provider/email/test@g.com/")
 	# 	self.assertEqual(response.data['user']['username'], "zeus", "Username does not match")
 
-	def test_view_volunteer_event_API_get(self):
-		# User that is requesting from API
-		zeus = get_user_model().objects.get(pk=1)
-		self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(zeus.rest_token))
+	# def test_view_volunteer_event_API_get(self):
+	# 	# User that is requesting from API
+	# 	zeus = get_user_model().objects.get(pk=1)
+	# 	self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(zeus.rest_token))
 
-		tagless_event = self.client.post('/home/volunteer_event/new/',
-				{'title' : 'Post_tagless',
-				'desc': 'Esta me casa',
-				'event_state': '1',
-				'event_city': '1',
-				'details' : 'From 4:20',
-				'provider' : '1',
-				'tags' : "",
-				'event_begins' : int(time()), 
-				'event_ends' : int(time())+1000})
+	# 	tagless_event = self.client.post('/home/volunteer_event/new/',
+	# 			{'title' : 'Post_tagless',
+	# 			'desc': 'Esta me casa',
+	# 			'event_state': '1',
+	# 			'event_city': '1',
+	# 			'details' : 'From 4:20',
+	# 			'provider' : '1',
+	# 			'tags' : "",
+	# 			'event_begins' : int(time()), 
+	# 			'event_ends' : int(time())+1000})
 		
-		# must at least have one space for a valid URL
-		response = self.client.get("/home/volunteer_event/tag/{}/".format(" "))
-		self.assertEqual(response.data['data'][0]['title'], "Post_tagless", "Title does not match record expected")
+	# 	# must at least have one space for a valid URL
+	# 	response = self.client.get("/home/volunteer_event/tag/{}/".format(" "))
+	# 	self.assertEqual(response.data['data'][0]['title'], "Post_tagless", "Title does not match record expected")
 
-		for index in range(10):
-			ts = {"tags" : ['skill_{}'.format(index), 'interest_{}'.format(index), 'skill_b_{}'.format(index)]}
+	# 	for index in range(10):
+	# 		ts = {"tags" : ['skill_{}'.format(index), 'interest_{}'.format(index), 'skill_b_{}'.format(index)]}
 			
-			self.client.post('/home/volunteer_event/new/',
-				{'title' : 'Post_{}'.format(index),
-				'desc': '{}_Esta me casa'.format(index),
-				'event_state': '1',
-				'event_city': '1',
-				'details' : 'From 4:20',
-				'provider' : '1',
-				'tags' : json.dumps(ts),
-				'event_begins' : int(time()), 
-				'event_ends' : int(time())+1000})
+	# 		self.client.post('/home/volunteer_event/new/',
+	# 			{'title' : 'Post_{}'.format(index),
+	# 			'desc': '{}_Esta me casa'.format(index),
+	# 			'event_state': '1',
+	# 			'event_city': '1',
+	# 			'details' : 'From 4:20',
+	# 			'provider' : '1',
+	# 			'tags' : json.dumps(ts),
+	# 			'event_begins' : int(time()), 
+	# 			'event_ends' : int(time())+1000})
 
 
-		response = self.client.get("/home/volunteer_event/pk/1/")		
-		self.assertEqual(response.data['title'], "Code4Cure", "Title does not match record expected")
+	# 	response = self.client.get("/home/volunteer_event/pk/1/")		
+	# 	self.assertEqual(response.data['title'], "Code4Cure", "Title does not match record expected")
 
-		response = self.client.get("/home/volunteer_event/city/1/")
-		self.assertEqual(response.data['data'][0]['title'], "Code4Cure", "Title does not match record expected")
+	# 	response = self.client.get("/home/volunteer_event/city/1/")
+	# 	self.assertEqual(response.data['data'][0]['title'], "Code4Cure", "Title does not match record expected")
 
-		response = self.client.get("/home/volunteer_event/state/1/")
-		self.assertEqual(response.data['data'][0]['title'], "Code4Cure", "Title does not match record expected")
+	# 	response = self.client.get("/home/volunteer_event/state/1/")
+	# 	self.assertEqual(response.data['data'][0]['title'], "Code4Cure", "Title does not match record expected")
 		
-		response = self.client.get("/home/volunteer_event/provider/1/")
-		self.assertEqual(response.data['data'][0]['title'], "Code4Cure", "Title does not match record expected")
+	# 	response = self.client.get("/home/volunteer_event/provider/1/")
+	# 	self.assertEqual(response.data['data'][0]['title'], "Code4Cure", "Title does not match record expected")
 		
-		tags = {"tags" : ['skill_3', 'interest_5', 'skill_b_7']}
-		response = self.client.get("/home/volunteer_event/tag/{}/".format(json.dumps(tags)))
-		# in ANdroid
-		#	MultiSelect for intersts and skills
-		# Create JSONObject with key tags and value JSONArray which is a list of items form the mutliselect view
-		# Should allow select of city based on user's State (UserQuickQquestions; UQQ)
-		self.assertEqual(len(response.data['data']), 3, "Expected 3 records")
+	# 	tags = {"tags" : ['skill_3', 'interest_5', 'skill_b_7']}
+	# 	response = self.client.get("/home/volunteer_event/tag/{}/".format(json.dumps(tags)))
+	# 	# in ANdroid
+	# 	#	MultiSelect for intersts and skills
+	# 	# Create JSONObject with key tags and value JSONArray which is a list of items form the mutliselect view
+	# 	# Should allow select of city based on user's State (UserQuickQquestions; UQQ)
+	# 	self.assertEqual(len(response.data['data']), 3, "Expected 3 records")
 
-		location = "tempe, AZ"
-		response = self.client.get("/home/volunteer_event/location/{}/".format(location))
-		print(response.data)
+	# 	location = "tempe, AZ"
+	# 	response = self.client.get("/home/volunteer_event/location/{}/".format(location))
+	# 	print(response.data)
 
 
 
@@ -545,41 +545,41 @@ class TestUser(APITestCase):
 	 	
 	#  	self.assertEqual(refund.data['user']['username'], "zeus", "Username does not match for refund")
 
-	#   helper
-	# def print_news(self, data):
-	# 	# list of news entries
-	# 	# <class 'feedparser.FeedParserDict'>
-	# 	for e in data:
-	# 		print("Entry Type:")
-	# 		print(type(e))
-	# 		print("Title: \n ---{}".format(e.title))
-	# 		# California Governor Declares State of Emergency in Eight Counties, Including Mariposa County, Due to Winter Storms - Sierra Sun Times
-	# 		print(e.link)
-	# 		# https://goldrushcam.com/sierrasuntimes/index.php/news/local-news/18230-california-governor-declares-state-of-emergency-in-eight-counties-including-mariposa-county-due-to-winter-storms
-	# 		print(e.summary)
-	# 		print(e.published)
-	# 		# <a href="https://goldrushcam.com/sierrasuntimes/index.php/news/local-news/18230-california-governor-declares-state-of-emergency-in-eight-counties-including-mariposa-county-due-to-winter-storms" target="_blank">California Governor Declares State of Emergency in Eight Counties, Including Mariposa County, Due to Winter Storms</a>&nbsp;&nbsp;<font color="#6f6f6f">Sierra Sun Times</font><p>April 13, 2019 - SACRAMENTO — Governor Gavin Newsom on Friday issued an emergency proclamation for the counties of Butte, Colusa, Del Norte, Mariposa, ...</p>'
-	# 		print(e.source.href)
-	# 		# https://goldrushcam.com
-	# 		print(e.source.title)
-	# 		# Sierra Sun Times
-	# 		if "media_content" in e.keys():
-	# 			# <class 'dict'>
-	# 			for c in e.media_content:
-	# 				print(c['url']) if "url" in c.keys() else print("no url")
-	# 				# https://lh4.googleusercontent.com/proxy/jcPiFk6AIyqAwAhHEdYkxZrEBb0o5u8wm1nv_03hjYdjFHEstekQWFQmQS6dYdkEQo6QsQmFVGHzi31hf92yNVrLN54pMto3SPyOaeBLpRX1nuC-4nGwKZXz_1KKIedju_VB36E=-w150-h150-c
-	# 				print(c['medium']) if "medium" in c.keys() else print("no medium")
-	# 				# image
-	# 		print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-	# def test_view_news_API(self):
-	# 	city_state_news = self.client.get("/home/news/city/state/Sacramento/California/terror/")
-	# 	state_news = self.client.get("/home/news/state/California/state of emergency/")
+	#   # helper
+	def print_news(self, data):
+		# list of news entries
+		# <class 'feedparser.FeedParserDict'>
+		for e in data:
+			print("Entry Type:")
+			print(type(e))
+			print("Title: \n ---{}".format(e.title))
+			# California Governor Declares State of Emergency in Eight Counties, Including Mariposa County, Due to Winter Storms - Sierra Sun Times
+			print(e.link)
+			# https://goldrushcam.com/sierrasuntimes/index.php/news/local-news/18230-california-governor-declares-state-of-emergency-in-eight-counties-including-mariposa-county-due-to-winter-storms
+			print(e.summary)
+			print(e.published)
+			# <a href="https://goldrushcam.com/sierrasuntimes/index.php/news/local-news/18230-california-governor-declares-state-of-emergency-in-eight-counties-including-mariposa-county-due-to-winter-storms" target="_blank">California Governor Declares State of Emergency in Eight Counties, Including Mariposa County, Due to Winter Storms</a>&nbsp;&nbsp;<font color="#6f6f6f">Sierra Sun Times</font><p>April 13, 2019 - SACRAMENTO — Governor Gavin Newsom on Friday issued an emergency proclamation for the counties of Butte, Colusa, Del Norte, Mariposa, ...</p>'
+			print(e.source.href)
+			# https://goldrushcam.com
+			print(e.source.title)
+			# Sierra Sun Times
+			if "media_content" in e.keys():
+				# <class 'dict'>
+				for c in e.media_content:
+					print(c['url']) if "url" in c.keys() else print("no url")
+					# https://lh4.googleusercontent.com/proxy/jcPiFk6AIyqAwAhHEdYkxZrEBb0o5u8wm1nv_03hjYdjFHEstekQWFQmQS6dYdkEQo6QsQmFVGHzi31hf92yNVrLN54pMto3SPyOaeBLpRX1nuC-4nGwKZXz_1KKIedju_VB36E=-w150-h150-c
+					print(c['medium']) if "medium" in c.keys() else print("no medium")
+					# image
+			print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+	def test_view_news_API(self):
+		city_state_news = self.client.get("/home/news/city/state/Sacramento/California/terror/")
+		state_news = self.client.get("/home/news/state/California/state of emergency/")
 		
-	# 	self.assertNotEqual(len(city_state_news.data), 0, "Feed length zero, no news returned")
-	# 	self.assertNotEqual(city_state_news.data, None, "Feed == 'None' ")
+		self.assertNotEqual(len(city_state_news.data), 0, "Feed length zero, no news returned")
+		self.assertNotEqual(city_state_news.data, None, "Feed == 'None' ")
 
-	# 	# self.print_news(city_state_news.data)
-	# 	# self.print_news(state_news.data)
+		self.print_news(city_state_news.data)
+		self.print_news(state_news.data)
 		
 	# def test_locations_API(self):
 	# 	country = self.client.post("/home/location/country/new/", {"name" : 'USA'})

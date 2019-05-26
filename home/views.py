@@ -1055,8 +1055,20 @@ class NewsAPI(APIView):
 			news = feedparser.parse("https://news.google.com/rss/search?q={}&hl=en-US&gl=US&ceid=US:en".format(self.build_query(city, state, keyword)))
 		except:
 			print("Failed to get rss feed")
+		
+		filtered_news = list()
 		if news:
-			return Response(news['entries'])
+			# Filter stories with images only
+			for e in news['entries']:
+				if "media_content" in e.keys():
+					# <class 'dict'>
+					has_image = False
+					for c in e.media_content:
+						if "medium" in c.keys():
+							if c['medium'] == "image":
+								filtered_news.append(e)
+			if len(filtered_news) > 0:
+				return Response(filtered_news)
 		return Response({})
 
 
