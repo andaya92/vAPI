@@ -448,7 +448,6 @@ class VolunteerEventAPI(APIView):
 
 	def post(self, request):
 		# Used if no tags are given aka request.data['tags'] == ""
-		self.tags_min
 
 		title = request.data['title']
 		state = request.data['event_state']
@@ -476,7 +475,7 @@ class VolunteerEventAPI(APIView):
 			volunteer_event.desc = desc
 			volunteer_event.details = details
 			volunteer_event.provider_id = acct_id
-			volunteer_event.tags = tags if len(tags) > len(self.tags_min) else self.tagless
+			volunteer_event.tags = tags if (len(tags) > 1 and tags != " ") else self.tagless
 			volunteer_event.event_begins = datetime.fromtimestamp(event_begins)
 			volunteer_event.event_ends = datetime.fromtimestamp(event_ends)
 			volunteer_event.save()
