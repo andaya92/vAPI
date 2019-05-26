@@ -415,7 +415,7 @@ class VolunteerEventAPI(APIView):
 			if results:
 				return Response(VolunteerEventSerializer(results).data)
 		elif location != "none":
-			query_list = location.split(", ")
+			query_list = location.split(",")
 			for query in query_list:
 				results = VolunteerEvent.objects.filter(location_city__name__icontains = query)
 				for r in results:
