@@ -578,8 +578,8 @@ class TestUser(APITestCase):
 		self.assertNotEqual(len(city_state_news.data), 0, "Feed length zero, no news returned")
 		self.assertNotEqual(city_state_news.data, None, "Feed == 'None' ")
 
-		self.print_news(city_state_news.data)
-		self.print_news(state_news.data)
+		# print(city_state_news.data[0])
+		print(state_news.data[0])
 		
 	# def test_locations_API(self):
 	# 	country = self.client.post("/home/location/country/new/", {"name" : 'USA'})

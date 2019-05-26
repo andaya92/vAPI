@@ -1068,8 +1068,8 @@ class NewsAPI(APIView):
 							if c['medium'] == "image":
 								filtered_news.append(e)
 			if len(filtered_news) > 0:
-				return Response(filtered_news)
-		return Response({})
+				return Response({"data":filtered_news})
+		return Response({"data":[]})
 
 
 #######################
