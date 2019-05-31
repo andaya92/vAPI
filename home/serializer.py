@@ -4,6 +4,40 @@ from .models import *
 from base64 import b64encode
 from mimetypes import guess_type
 
+#######################
+## Location
+########################
+class EventCountrySerializer(serializers.ModelSerializer): 
+	class Meta:
+		model = EventCountry
+		fields = "__all__"
+		depth = 1	
+class EventStateSerializer(serializers.ModelSerializer): 
+	country = EventCountrySerializer()
+	class Meta:
+		model = EventState
+		fields = "__all__"
+		depth = 1
+class ZipCodeSerializer(serializers.ModelSerializer):
+	state = EventStateSerializer()
+	class Meta:
+		model = ZipCode
+		fields = "__all__"
+		depth = 1
+class EventCitySerializer(serializers.ModelSerializer):
+	state = EventStateSerializer()
+	zip_code = ZipCodeSerializer()
+	class Meta:
+		model = EventCity
+		fields = "__all__"
+		depth = 1		
+
+
+
+#######################
+## Account Features
+########################
+
 class UserSerializer(serializers.ModelSerializer):
 	acct_type = serializers.SerializerMethodField()
 	class Meta:
@@ -26,58 +60,18 @@ class UserSerializer(serializers.ModelSerializer):
 		elif type(acct_type) == type(VolunteerProvider()):
 			return "VolunteerProvider"
 		return "None"
-
 class VolunteerSerializer(serializers.ModelSerializer):
 	user = UserSerializer()
 	class Meta:
 		model = Volunteer
 		fields = "__all__"
 		depth = 1
-
 class VolunteerProviderSerializer(serializers.ModelSerializer):
 	user = UserSerializer()
 	class Meta:
 		model = VolunteerProvider
 		fields = "__all__"
 		depth = 1	
-
-class EventCountrySerializer(serializers.ModelSerializer): 
-	class Meta:
-		model = EventCountry
-		fields = "__all__"
-		depth = 1	
-
-class EventStateSerializer(serializers.ModelSerializer): 
-	country = EventCountrySerializer()
-	class Meta:
-		model = EventState
-		fields = "__all__"
-		depth = 1
-
-class EventCitySerializer(serializers.ModelSerializer):
-	state = EventStateSerializer()
-	class Meta:
-		model = EventCity
-		fields = "__all__"
-		depth = 1
-
-
-class ZipCodeSerializer(serializers.ModelSerializer):
-	state = EventStateSerializer()
-	class Meta:
-		model = ZipCode
-		fields = "__all__"
-		depth = 1
-
-
-class EventCitySerializer(serializers.ModelSerializer):
-	state = EventStateSerializer()
-	zip_code = ZipCodeSerializer()
-	class Meta:
-		model = EventCity
-		fields = "__all__"
-		depth = 1		
-
 class VolunteerEventSerializer(serializers.ModelSerializer):
 	provider = VolunteerProviderSerializer()
 	location_state = EventStateSerializer()
@@ -87,11 +81,6 @@ class VolunteerEventSerializer(serializers.ModelSerializer):
 		model = VolunteerEvent
 		fields = "__all__"
 		depth = 1	
-
-
-
-
-
 class VolunteerPostSerializer(serializers.ModelSerializer):
 	user = UserSerializer()
 	event = VolunteerEventSerializer()
@@ -100,8 +89,6 @@ class VolunteerPostSerializer(serializers.ModelSerializer):
 		model = VolunteerPost
 		fields = "__all__"
 		depth = 1
-
-
 class VolunteerEventSignUpSerializer(serializers.ModelSerializer):
 	volunteer = VolunteerSerializer()
 	event = VolunteerEventSerializer()
@@ -110,13 +97,15 @@ class VolunteerEventSignUpSerializer(serializers.ModelSerializer):
 		fields = "__all__"
 		depth = 1
 
+
+#######################
+## Donations
+########################
 class DonationEventSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = DonationEvent
 		fields = "__all__"
 		depth = 1
-
-
 class UserDonationSerializer(serializers.ModelSerializer):
 	user = UserSerializer()
 	event = DonationEventSerializer()
@@ -124,7 +113,6 @@ class UserDonationSerializer(serializers.ModelSerializer):
 		model = UserDonation
 		fields = "__all__"
 		depth = 1
-
 class UserDonationRefundSerializer(serializers.ModelSerializer):
 	user = UserSerializer()
 	event = DonationEventSerializer()
@@ -134,68 +122,33 @@ class UserDonationRefundSerializer(serializers.ModelSerializer):
 		depth = 1
 
 
+#######################
+## userQuickQuestions
+########################		
 class VolunteerSkillSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = VolunteerSkill
 		fields = "__all__"
 		depth = 1
-
-class UserVolunteerSkillSerializer(serializers.ModelSerializer):
-	user = UserSerializer()
-	volunteer_skill = VolunteerSkillSerializer()
-	class Meta:
-		model = UserVolunteerSkill
-		fields = "__all__"
-		depth = 1
-
 class VolunteerInterestSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = VolunteerInterest
 		fields = "__all__"
 		depth = 1	
-
-class UserVolunteerInterestSerializer(serializers.ModelSerializer):
+class UserLocationSerializer(serializers.ModelSerializer):
 	user = UserSerializer()
-	volunteer_interest = VolunteerInterestSerializer()
+	city = EventCitySerializer()
+	state = EventStateSerializer()
 	class Meta:
-		model = UserVolunteerInterest
+		model = UserLocation
 		fields = "__all__"
-		depth = 1		
-
-class UserVolunteerLocationSerializer(serializers.ModelSerializer):
+		depth = 1
+class UserInterestSkillTagsSerializer(serializers.ModelSerializer):
 	user = UserSerializer()
-	city = EventCity()
-	state = EventState()
-	country = EventCountrySerializer()
-	zip_code = ZipCodeSerializer()
-
 	class Meta:
-		model = UserVolunteerLocation
-		fields = "__all__"
-		depth = 1		
-
-class VolunteerInterestSerializer(serializers.ModelSerializer):
-	class Meta:
-		model = VolunteerInterest
+		model = UserInterestSkillTags
 		fields = "__all__"
 		depth = 1
 
-class UserVolunteerInterestSerializer(serializers.ModelSerializer):
-	user = UserSerializer()
-	class Meta:
-		model = UserVolunteerInterest
-		fields = "__all__"
-		depth = 1
 
-class VolunteerSkillSerializer(serializers.ModelSerializer):
-	class Meta:
-		model = VolunteerSkill
-		fields = "__all__"
-		depth = 1
 
-class UserVolunteerSkillSerializer(serializers.ModelSerializer):
-	user = UserSerializer()
-	class Meta:
-		model = UserVolunteerSkill
-		fields = "__all__"
-		depth = 1

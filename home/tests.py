@@ -546,40 +546,40 @@ class TestUser(APITestCase):
 	#  	self.assertEqual(refund.data['user']['username'], "zeus", "Username does not match for refund")
 
 	#   # helper
-	def print_news(self, data):
-		# list of news entries
-		# <class 'feedparser.FeedParserDict'>
-		for e in data:
-			print("Entry Type:")
-			print(type(e))
-			print("Title: \n ---{}".format(e.title))
-			# California Governor Declares State of Emergency in Eight Counties, Including Mariposa County, Due to Winter Storms - Sierra Sun Times
-			print(e.link)
-			# https://goldrushcam.com/sierrasuntimes/index.php/news/local-news/18230-california-governor-declares-state-of-emergency-in-eight-counties-including-mariposa-county-due-to-winter-storms
-			print(e.summary)
-			print(e.published)
-			# <a href="https://goldrushcam.com/sierrasuntimes/index.php/news/local-news/18230-california-governor-declares-state-of-emergency-in-eight-counties-including-mariposa-county-due-to-winter-storms" target="_blank">California Governor Declares State of Emergency in Eight Counties, Including Mariposa County, Due to Winter Storms</a>&nbsp;&nbsp;<font color="#6f6f6f">Sierra Sun Times</font><p>April 13, 2019 - SACRAMENTO — Governor Gavin Newsom on Friday issued an emergency proclamation for the counties of Butte, Colusa, Del Norte, Mariposa, ...</p>'
-			print(e.source.href)
-			# https://goldrushcam.com
-			print(e.source.title)
-			# Sierra Sun Times
-			if "media_content" in e.keys():
-				# <class 'dict'>
-				for c in e.media_content:
-					print(c['url']) if "url" in c.keys() else print("no url")
-					# https://lh4.googleusercontent.com/proxy/jcPiFk6AIyqAwAhHEdYkxZrEBb0o5u8wm1nv_03hjYdjFHEstekQWFQmQS6dYdkEQo6QsQmFVGHzi31hf92yNVrLN54pMto3SPyOaeBLpRX1nuC-4nGwKZXz_1KKIedju_VB36E=-w150-h150-c
-					print(c['medium']) if "medium" in c.keys() else print("no medium")
-					# image
-			print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-	def test_view_news_API(self):
-		city_state_news = self.client.get("/home/news/city/state/Sacramento/California/terror/")
-		state_news = self.client.get("/home/news/state/California/state of emergency/")
+	# def print_news(self, data):
+	# 	# list of news entries
+	# 	# <class 'feedparser.FeedParserDict'>
+	# 	for e in data:
+	# 		print("Entry Type:")
+	# 		print(type(e))
+	# 		print("Title: \n ---{}".format(e.title))
+	# 		# California Governor Declares State of Emergency in Eight Counties, Including Mariposa County, Due to Winter Storms - Sierra Sun Times
+	# 		print(e.link)
+	# 		# https://goldrushcam.com/sierrasuntimes/index.php/news/local-news/18230-california-governor-declares-state-of-emergency-in-eight-counties-including-mariposa-county-due-to-winter-storms
+	# 		print(e.summary)
+	# 		print(e.published)
+	# 		# <a href="https://goldrushcam.com/sierrasuntimes/index.php/news/local-news/18230-california-governor-declares-state-of-emergency-in-eight-counties-including-mariposa-county-due-to-winter-storms" target="_blank">California Governor Declares State of Emergency in Eight Counties, Including Mariposa County, Due to Winter Storms</a>&nbsp;&nbsp;<font color="#6f6f6f">Sierra Sun Times</font><p>April 13, 2019 - SACRAMENTO — Governor Gavin Newsom on Friday issued an emergency proclamation for the counties of Butte, Colusa, Del Norte, Mariposa, ...</p>'
+	# 		print(e.source.href)
+	# 		# https://goldrushcam.com
+	# 		print(e.source.title)
+	# 		# Sierra Sun Times
+	# 		if "media_content" in e.keys():
+	# 			# <class 'dict'>
+	# 			for c in e.media_content:
+	# 				print(c['url']) if "url" in c.keys() else print("no url")
+	# 				# https://lh4.googleusercontent.com/proxy/jcPiFk6AIyqAwAhHEdYkxZrEBb0o5u8wm1nv_03hjYdjFHEstekQWFQmQS6dYdkEQo6QsQmFVGHzi31hf92yNVrLN54pMto3SPyOaeBLpRX1nuC-4nGwKZXz_1KKIedju_VB36E=-w150-h150-c
+	# 				print(c['medium']) if "medium" in c.keys() else print("no medium")
+	# 				# image
+	# 		print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+	# def test_view_news_API(self):
+	# 	city_state_news = self.client.get("/home/news/city/state/Sacramento/California/terror/")
+	# 	state_news = self.client.get("/home/news/state/California/state of emergency/")
 		
-		self.assertNotEqual(len(city_state_news.data), 0, "Feed length zero, no news returned")
-		self.assertNotEqual(city_state_news.data, None, "Feed == 'None' ")
+	# 	self.assertNotEqual(len(city_state_news.data), 0, "Feed length zero, no news returned")
+	# 	self.assertNotEqual(city_state_news.data, None, "Feed == 'None' ")
 
-		# print(city_state_news.data[0])
-		print(state_news.data[0])
+	# 	# print(city_state_news.data[0])
+	# 	print(state_news.data[0])
 		
 	# def test_locations_API(self):
 	# 	country = self.client.post("/home/location/country/new/", {"name" : 'USA'})
@@ -680,44 +680,66 @@ class TestUser(APITestCase):
 	# 	deleted = self.client.delete("/home/skills/delete/", {"pk" : vol_skill.data['id']})
 	# 	self.assertEqual(deleted.data['deleted'], True, "Data not deleted")
 
-	# 	###############
-	# 	# User Interests
-	# 	###############
 
-	# def test_view_user_volunteer_interest_post(self):
-	# 	interest = self.client.post("/home/interests/new/", {"name":"Helping", "desc":"You like hleping others"})
-	# 	interest = self.client.post("/home/interests/user/new/", {"user_id":"1", "volunteer_interest_id": interest.data['id']})
 
-	# def test_view_user_volunteer_interest_get_delete(self):
-	# 	vol_interest = self.client.post("/home/interests/new/", {"name":"Helping", "desc":"You like hleping others"})
-	# 	interest = self.client.post("/home/interests/user/new/", {"user_id":"1", "volunteer_interest_id": vol_interest.data['id']})
+	# def test_view_UserLocationAPI_post(self):
+		user_location = self.client.post("/home/uqq/location/new/",
+							{"user_id" : 1,
+							"city_id":1, 
+							"state_id":1,
+							"country_id":1
+							})
+		self.assertEqual(UserLocation.objects.count(), 1, "Expected one object to be in UserLocations")
+
+		# Test update
+		user_location = self.client.post("/home/uqq/location/new/",
+							{"user_id" : 1,
+							"city_id":3, 
+							"state_id":2,
+							"_update":1
+							})
+		self.assertEqual(UserLocation.objects.count(), 1, "Expected one object to be in UserLocations")
 		
-	# 	user_interest = self.client.get("/home/interests/user/pk/1/")
-		
-	# 	user_interests = self.client.get("/home/interests/user/1/")
-	# 	all_user_interests_records = self.client.get("/home/interests/user/")
-
-	# 	deleted = self.client.delete("/home/interests/user/delete/", {"pk" : interest.data['id']})
-	# 	self.assertEqual(deleted.data['deleted'], True, "Data not deleted")
-
-	# 	###############
-	# 	# User Skills
-	# 	###############
-
-	# def test_view_user_volunteer_skill_post(self):
-	# 	skill = self.client.post("/home/skills/new/", {"name":"Helping", "desc":"You like hleping others"})
-	# 	skill = self.client.post("/home/skills/user/new/", {"user_id":"1", "volunteer_skill_id": skill.data['id']})
+		self.assertEqual(user_location.data['city']['name'], "Atwater", "Expected city to be atwater")
 
 
-	# def test_view_user_volunteer_skill_get_delete(self):
-	# 	vol_skill = self.client.post("/home/skills/new/", {"name":"Typing", "desc":"You like typing lots"})
-	# 	skill = self.client.post("/home/skills/user/new/", {"user_id":"1", "volunteer_skill_id": vol_skill.data['id']})
-		
-	# 	user_skill = self.client.get("/home/skills/user/pk/1/")
-		
-	# 	user_skills = self.client.get("/home/skills/user/1/")
-	# 	all_user_skills_records = self.client.get("/home/skills/user/")
+	# def test_view_UserLocationAPI_get(self):
+	# 	user_location = self.client.post("/home/uqq/location/new/",
+	# 						{"user_id" : 1,
+	# 						"city_id":1, 
+	# 						"state_id":1,
+	# 						"country_id":1
+	# 						})
+
+	# 	user_location = self.client.get("/home/uqq/location/{}/".format(user_location.data['user']['id']))
 
 		
-	# 	deleted = self.client.delete("/home/skills/user/delete/", {"pk" : skill.data['id']})
-	# 	self.assertEqual(deleted.data['deleted'], True, "Data not deleted")
+	# 	self.assertEqual(user_location.data['user']['id'], 1, "Expected user id to be 1")
+
+	# def test_view_UserInterstSkillTags_post(self):
+	# 	user_tags = self.client.post("/home/uqq/tags/new/", {
+	# 		"user_id": "1",
+	# 		"tags" : json.dumps(['Tag1', 'Tag2', "Tag3"])
+	# 		})
+		
+	# 	self.assertEqual(json.loads(user_tags.data['tags'])[0], "Tag1", "Expected first tag to be Tag1")
+
+	# 	user_tags = self.client.post("/home/uqq/tags/update/", {
+	# 		"user_id": "1",
+	# 		"tags" : json.dumps(['Skill1', 'Interest2', "Tag3"]),
+	# 		"_update" : 0
+	# 		})
+	# 	print(user_tags.data)
+
+	# 	self.assertEqual(json.loads(user_tags.data['tags'])[0], "Skill1", "Expected first tag to be Skill1")
+		
+
+	def test_view_UserInterstSkillTags_get(self):
+		user_tags = self.client.post("/home/uqq/tags/new/", {
+			"user_id": "1",
+			"tags" : json.dumps(['Tag1', 'Tag2', "Tag3"])
+			})
+
+		
+		user_tags = self.client.get("/home/uqq/tags/1/")
+		self.assertEqual(json.loads(user_tags.data['tags'])[0], "Tag1", "Expected first tag to be Tag1")

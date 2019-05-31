@@ -137,48 +137,6 @@ class VolunteerInterestAPI(APIView):
 		except:
 			print("Error deleting VolunteerInterest with pk: {}".format(pk))
 		return Response({"deleted":False})
-
-class UserVolunteerInterestAPI(APIView):
-	def get(self, request, pk=-1, user_id=-1):
-		interests = None
-		if pk != -1:
-			vol_int = UserVolunteerInterest.objects.get(pk=pk)
-			return Response(UserVolunteerInterestSerializer(vol_int).data)
-		elif user_id != -1:
-			interests = UserVolunteerInterest.objects.filter(user_id=user_id)
-		else:
-			interests = UserVolunteerInterest.objects.all()
-
-		if interests:
-			qr = list()
-			for i in interests:
-				qr.append(UserVolunteerInterestSerializer(i).data)
-			return Response({"data":qr})
-		return Response({})
-
-	def post(self, request):
-		user_id = request.data['user_id']
-		volunteer_interest_id = request.data['volunteer_interest_id']
-		try:
-			vol_int = UserVolunteerInterest()
-			vol_int.user_id = user_id
-			vol_int.volunteer_interest_id = volunteer_interest_id
-			vol_int.save()
-			return Response(UserVolunteerInterestSerializer(vol_int).data)
-		except:
-			print("Failed to create User Volunteer Interest")
-		return Response({})
-
-	def delete(self, request):
-		pk = request.data['pk']
-		try:
-			obj = UserVolunteerInterest.objects.get(pk=pk)
-			obj.delete()
-			return Response({"deleted":True})
-		except:
-			print("Error deleting UserVolunteerInterest with pk: {}".format(pk))
-		return Response({"deleted":False})
-
 class VolunteerSkillAPI(APIView):
 	def get(self, request, pk=-1):
 		skills = None
@@ -218,46 +176,70 @@ class VolunteerSkillAPI(APIView):
 			print("Error deleting VolunteerSkill with pk: {}".format(pk))
 		return Response({"deleted":False})
 
-class UserVolunteerSkillAPI(APIView):
-	def get(self, request, pk=-1, user_id=-1):
-		skills = None
-		if pk != -1:
-			vol_int = UserVolunteerSkill.objects.get(pk=pk)
-			return Response(UserVolunteerSkillSerializer(vol_int).data)
-		elif user_id != -1:
-			skills = UserVolunteerSkill.objects.filter(user_id=user_id)
-		else:
-			skills = UserVolunteerSkill.objects.all()
+class UserLocationAPI(APIView):
+	def get(self, request, user_id=-1):
+		if user_id != -1:
+			try:
+				user_location = UserLocation.objects.filter(user_id=user_id).first()
+				return Response(UserLocationSerializer(user_location).data)
+			except:
+				return Response({"data": "Failed getting User Location for user({})".format(user_id)})
+		return Response({'data':"Must provide user_id."})
 
-		if skills:
-			qr = list()
-			for i in skills:
-				qr.append(UserVolunteerSkillSerializer(i).data)
-			return Response({"data":qr})
+	def post(self, request):
+		user_id = request.data['user_id']
+		city_id = request.data['city_id']
+		state_id = request.data['state_id']
+		if "_update" in request.data.keys():
+			try:
+				user_location = UserLocation.objects.filter(user_id=user_id).first()
+				user_location.city_id = city_id
+				user_location.state_id = state_id
+				user_location.save()
+				return Response(UserLocationSerializer(user_location).data)
+			except:
+				return Response({'data':"Error updating User Location", "error":True})
+		elif user_id and city_id and state_id:
+				try:
+					user_location = UserLocation()
+					user_location.user_id = user_id
+					user_location.city_id = city_id
+					user_location.state_id = state_id
+					user_location.save()
+					return Response(UserLocationSerializer(user_location).data)
+				except:
+					print("Failed creating user location.")
+					return Response({"data":"Failed creating user location.", "error":True})
+		return Response({"data":"Must provide user_id({}), city_id({}) and, state_id({})".format(user_id, city_id, state_id), 
+							"error":True})
+
+class UserInterestSkillTagsAPI(APIView):
+	def get(self, request, user_id=-1):
+		if user_id != -1:
+			user_tags = UserInterestSkillTags.objects.filter(user_id=user_id).first()
+			return Response(UserInterestSkillTagsSerializer(user_tags).data)
 		return Response({})
 
 	def post(self, request):
 		user_id = request.data['user_id']
-		volunteer_skill_id = request.data['volunteer_skill_id']
-		try:
-			vol_int = UserVolunteerSkill()
-			vol_int.user_id = user_id
-			vol_int.volunteer_skill_id = volunteer_skill_id
-			vol_int.save()
-			return Response(UserVolunteerSkillSerializer(vol_int).data)
-		except:
-			print("Failed to create User Volunteer Skill")
-		return Response({})
+		tags = request.data['tags']
+		if "_update" in request.data.keys():
+			user_tags = UserInterestSkillTags.objects.filter(user_id=user_id).first()
+			user_tags.tags = tags
+			user_tags.save()
+			return Response(UserInterestSkillTagsSerializer(user_tags).data)
+		elif user_id and tags:
+			try:
+				user_tags = UserInterestSkillTags()
+				user_tags.user_id = user_id
+				user_tags.tags = tags
+				user_tags.save()
+				return Response(UserInterestSkillTagsSerializer(user_tags).data)
+			except:
+				return Response({'data':"error createing User Interest and Skill Tags", "error":True})
+		return Response({"error":True})
 
-	def delete(self, request):
-		pk = request.data['pk']
-		try:
-			obj = UserVolunteerSkill.objects.get(pk=pk)
-			obj.delete()
-			return Response({"deleted":True})
-		except:
-			print("Error deleting UserVolunteerSkill with pk: {}".format(pk))
-		return Response({"deleted":False})
+
 
 #######################
 ## Account Features
@@ -570,8 +552,6 @@ class VolunteerPostAPI(APIView):
 			except:
 				print("Failed deleting Volunteer Post")
 		return Response({"deleted":False})
-
-
 
 class VolunteerEventSignUpAPI(APIView):
 	authentication_classes = (TokenAuthentication,)
