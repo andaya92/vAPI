@@ -33,6 +33,6 @@ heroku pg:psql # logs into heroku psql instance
 - increase AVD device memory in manager settings (click on the pencil)
 
 DJANGO Commands
-./manage populate_db
+./manage scripts
 - Creates Interests and Skills tables
 - Creates Country, State, Zipcode, City tables 
