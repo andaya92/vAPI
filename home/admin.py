@@ -21,3 +21,6 @@ admin.site.register(UserDonationRefund)
 
 admin.site.register(VolunteerInterest)
 admin.site.register(VolunteerSkill)
+
+admin.site.register(UserLocation)
+admin.site.register(UserInterestSkillTags)
