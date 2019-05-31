@@ -1,11 +1,12 @@
 from django.core.management.base import BaseCommand
 from home.models import *
-
+import logging
+logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
 
-	def get_interests_skills():
+	def get_interests_skills(self):
 		return ['Advocacy & Human Rights', 'Animals', 'Arts & Culture',
 			'Board Development', 'Children & Youth', 'Community', 'Computers & Technology',
 			'Crisis Support', 'Disaster Relief', 'Education & Literacy', 'Emergency & Safety', 
@@ -18,7 +19,8 @@ class Command(BaseCommand):
 
 
 	def populate_interests_skills(self):
-		interest, skills = self.get_interests_skills()
+		logger.info("populate")
+		interests, skills = self.get_interests_skills()
 		try:
 			for interest in interests:
 				tmp = VolunteerInterest()
@@ -33,7 +35,7 @@ class Command(BaseCommand):
 		except:
 			print("failed")
 
-	def populate_city_state():
+	def populate_city_state(self):
 		countries = {
 			"United States"	: {
 				"AZ" : {
@@ -68,3 +70,4 @@ class Command(BaseCommand):
 
 	def handle(self, *args, **options):
 		self.populate_interests_skills()
+		self.populate_city_state()
