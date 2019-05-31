@@ -24,7 +24,15 @@ git push heroku master
 heroku login
 heroku run bash
 
+Postgres on heroku
+heroku pg:psql # logs into heroku psql instance
+
 
 # Android
 # app APK install fail
 - increase AVD device memory in manager settings (click on the pencil)
+
+DJANGO Commands
+./manage populate_db
+- Creates Interests and Skills tables
+- Creates Country, State, Zipcode, City tables 

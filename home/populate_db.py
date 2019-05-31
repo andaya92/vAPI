@@ -14,7 +14,7 @@ class Command(BaseCommand):
 			'People With Disabilities', 'Politics', 'Race & Ethnicity', 'Relief/Emergency', 'Seniors',
 			'Sports & Recreation', 'Veterans & Military Families', 'Women'],['Accounting', 'Event’s/Event Setup', 'Fundraising', 'Leadership', 'Manual Labor',
 			'Organization', 'Problem Solving', 'Public Relations/Promotion', 'Report Writing',
-			'Time Management', 'OR', 'Amiable', 'Analytical', 'Driver', 'Expressive']
+			'Time Management', 'Amiable', 'Analytical', 'Driver', 'Expressive']
 
 
 	def populate_interests_skills(self):
@@ -37,10 +37,10 @@ class Command(BaseCommand):
 		countries = {
 			"United States"	: {
 				"AZ" : {
-					"95382" : ["Turlock", "Tracy"] 
+					"26587" : ["Tempe", "Winslow", "Flagstaff"] 
 				},
 				"CA" : {
-					"89999" : ['Atwater', "Manteca", "Modesto", "Ripon", "Sacramento"]	
+					"95382" : ['Atwater', "Manteca", "Modesto", "Ripon", "Sacramento"]	
 				}
 			}
 		}
