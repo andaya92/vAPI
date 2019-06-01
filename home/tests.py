@@ -683,24 +683,32 @@ class TestUser(APITestCase):
 
 
 	# def test_view_UserLocationAPI_post(self):
-		user_location = self.client.post("/home/uqq/location/new/",
-							{"user_id" : 1,
-							"city_id":1, 
-							"state_id":1,
-							"country_id":1
-							})
-		self.assertEqual(UserLocation.objects.count(), 1, "Expected one object to be in UserLocations")
+	# 	user_location = self.client.post("/home/uqq/location/new/",
+	# 						{"user_id" : 1,
+	# 						"city_id":1, 
+	# 						"state_id":1,
+	# 						"country_id":1
+	# 						})
+	# 	self.assertEqual(UserLocation.objects.count(), 1, "Expected one object to be in UserLocations")
 
-		# Test update
-		user_location = self.client.post("/home/uqq/location/new/",
-							{"user_id" : 1,
-							"city_id":3, 
-							"state_id":2,
-							"_update":1
-							})
-		self.assertEqual(UserLocation.objects.count(), 1, "Expected one object to be in UserLocations")
+	# 	# Test update
+	# 	user_location = self.client.post("/home/uqq/location/new/",
+	# 						{"user_id" : 1,
+	# 						"city_id":3, 
+	# 						"state_id":2,
+	# 						"_update":1
+	# 						})
+	# 	self.assertEqual(UserLocation.objects.count(), 1, "Expected one object to be in UserLocations")
 		
-		self.assertEqual(user_location.data['city']['name'], "Atwater", "Expected city to be atwater")
+	# 	self.assertEqual(user_location.data['city']['name'], "Atwater", "Expected city to be atwater")
+
+	# 	user_location = self.client.post("/home/uqq/location/new/",
+	# 						{"user_id" : 2,
+	# 						"city_id":3, 
+	# 						"state_id":2,
+	# 						"_update":1
+	# 						})
+	# 	print(user_location.data)
 
 
 	# def test_view_UserLocationAPI_get(self):
@@ -729,17 +737,23 @@ class TestUser(APITestCase):
 	# 		"tags" : json.dumps(['Skill1', 'Interest2', "Tag3"]),
 	# 		"_update" : 0
 	# 		})
+
+	# 	user_tags = self.client.post("/home/uqq/tags/update/", {
+	# 		"user_id": "2",
+	# 		"tags" : json.dumps(['Skill1', 'Interest2', "Tag3"]),
+	# 		"_update" : 0
+	# 		})
 	# 	print(user_tags.data)
 
 	# 	self.assertEqual(json.loads(user_tags.data['tags'])[0], "Skill1", "Expected first tag to be Skill1")
 		
 
-	def test_view_UserInterstSkillTags_get(self):
-		user_tags = self.client.post("/home/uqq/tags/new/", {
-			"user_id": "1",
-			"tags" : json.dumps(['Tag1', 'Tag2', "Tag3"])
-			})
+	# def test_view_UserInterstSkillTags_get(self):
+	# 	user_tags = self.client.post("/home/uqq/tags/new/", {
+	# 		"user_id": "1",
+	# 		"tags" : json.dumps(['Tag1', 'Tag2', "Tag3"])
+	# 		})
 
 		
-		user_tags = self.client.get("/home/uqq/tags/1/")
-		self.assertEqual(json.loads(user_tags.data['tags'])[0], "Tag1", "Expected first tag to be Tag1")
+	# 	user_tags = self.client.get("/home/uqq/tags/1/")
+	# 	self.assertEqual(json.loads(user_tags.data['tags'])[0], "Tag1", "Expected first tag to be Tag1")

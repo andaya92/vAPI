@@ -186,30 +186,35 @@ class UserLocationAPI(APIView):
 				return Response({"data": "Failed getting User Location for user({})".format(user_id)})
 		return Response({'data':"Must provide user_id."})
 
+	def create_new_user_location(self, user_id, city_id, state_id):
+		try:
+			user_location = UserLocation()
+			user_location.user_id = user_id
+			user_location.city_id = city_id
+			user_location.state_id = state_id
+			user_location.save()
+			return Response(UserLocationSerializer(user_location).data)
+		except:
+			return Response({"data":"Failed creating user location.", "error":True})
+
 	def post(self, request):
 		user_id = request.data['user_id']
 		city_id = request.data['city_id']
 		state_id = request.data['state_id']
 		if "_update" in request.data.keys():
-			try:
-				user_location = UserLocation.objects.filter(user_id=user_id).first()
-				user_location.city_id = city_id
-				user_location.state_id = state_id
-				user_location.save()
-				return Response(UserLocationSerializer(user_location).data)
-			except:
-				return Response({'data':"Error updating User Location", "error":True})
-		elif user_id and city_id and state_id:
+			user_location = UserLocation.objects.filter(user_id=user_id).first()
+			if user_location:
 				try:
-					user_location = UserLocation()
-					user_location.user_id = user_id
 					user_location.city_id = city_id
 					user_location.state_id = state_id
 					user_location.save()
 					return Response(UserLocationSerializer(user_location).data)
 				except:
-					print("Failed creating user location.")
-					return Response({"data":"Failed creating user location.", "error":True})
+					return Response({'data':"Error updating User Location", "error":True})
+			# If no entry create new
+			return self.create_new_user_location(user_id, city_id, state_id)
+		elif user_id and city_id and state_id:
+				self.create_new_user_location(user_id, city_id, state_id)
 		return Response({"data":"Must provide user_id({}), city_id({}) and, state_id({})".format(user_id, city_id, state_id), 
 							"error":True})
 
@@ -220,24 +225,36 @@ class UserInterestSkillTagsAPI(APIView):
 			return Response(UserInterestSkillTagsSerializer(user_tags).data)
 		return Response({})
 
+	def create_new_user_tag(self, user_id, tags):
+		try:
+			user_tags = UserInterestSkillTags()
+			user_tags.user_id = user_id
+			user_tags.tags = tags
+			user_tags.save()
+			return Response(UserInterestSkillTagsSerializer(user_tags).data)
+		except:
+			return Response({'data':"error createing User Interest and Skill Tags", "error":True})
+
+
 	def post(self, request):
 		user_id = request.data['user_id']
 		tags = request.data['tags']
 		if "_update" in request.data.keys():
 			user_tags = UserInterestSkillTags.objects.filter(user_id=user_id).first()
-			user_tags.tags = tags
-			user_tags.save()
-			return Response(UserInterestSkillTagsSerializer(user_tags).data)
+			# if entry exists
+			if user_tags:
+				try:
+					user_tags.tags = tags
+					user_tags.save()
+					return Response(UserInterestSkillTagsSerializer(user_tags).data)
+				except:
+					return Response({'error' : "failed updating tags"})
+			# if doesnt exist
+			return self.create_new_user_tag(user_id, tags)
+		
 		elif user_id and tags:
-			try:
-				user_tags = UserInterestSkillTags()
-				user_tags.user_id = user_id
-				user_tags.tags = tags
-				user_tags.save()
-				return Response(UserInterestSkillTagsSerializer(user_tags).data)
-			except:
-				return Response({'data':"error createing User Interest and Skill Tags", "error":True})
-		return Response({"error":True})
+			return self.create_new_user_tag(user_id, tags)	
+		return Response({"error": "User id and tags required"})
 
 
 
