@@ -711,18 +711,19 @@ class TestUser(APITestCase):
 	# 	print(user_location.data)
 
 
-	# def test_view_UserLocationAPI_get(self):
-	# 	user_location = self.client.post("/home/uqq/location/new/",
-	# 						{"user_id" : 1,
-	# 						"city_id":1, 
-	# 						"state_id":1,
-	# 						"country_id":1
-	# 						})
+	def test_view_UserLocationAPI_get(self):
+		user_location = self.client.post("/home/uqq/location/new/",
+							{"user_id" : 1,
+							"city_id":1, 
+							"state_id":1,
+							"country_id":1
+							})
 
-	# 	user_location = self.client.get("/home/uqq/location/{}/".format(user_location.data['user']['id']))
-
+		print(user_location.data)
+		user_location = self.client.get("/home/uqq/location/{}/".format(user_location.data['user']['id']))
+		print(user_location.data)
 		
-	# 	self.assertEqual(user_location.data['user']['id'], 1, "Expected user id to be 1")
+		self.assertEqual(user_location.data['user']['id'], 1, "Expected user id to be 1")
 
 	# def test_view_UserInterstSkillTags_post(self):
 	# 	user_tags = self.client.post("/home/uqq/tags/new/", {
@@ -743,17 +744,25 @@ class TestUser(APITestCase):
 	# 		"tags" : json.dumps(['Skill1', 'Interest2', "Tag3"]),
 	# 		"_update" : 0
 	# 		})
-	# 	print(user_tags.data)
-
 	# 	self.assertEqual(json.loads(user_tags.data['tags'])[0], "Skill1", "Expected first tag to be Skill1")
 		
+	# 	user_tags = self.client.post("/home/uqq/tags/update/", {
+	# 				"user_id": "2",
+	# 				"tags" : json.dumps([]),
+	# 				"_update" : 0
+	# 				})
+		
+	# 	print(user_tags.data)
+	# 	self.assertEqual(len(json.loads(user_tags.data['tags'])), 0, "Expected first tag to be Skill1")
+		
 
-	# def test_view_UserInterstSkillTags_get(self):
-	# 	user_tags = self.client.post("/home/uqq/tags/new/", {
-	# 		"user_id": "1",
-	# 		"tags" : json.dumps(['Tag1', 'Tag2', "Tag3"])
-	# 		})
+	def test_view_UserInterstSkillTags_get(self):
+		user_tags = self.client.post("/home/uqq/tags/new/", {
+			"user_id": "1",
+			"tags" : json.dumps(['Tag1', 'Tag2', "Tag3"])
+			})
 
 		
-	# 	user_tags = self.client.get("/home/uqq/tags/1/")
-	# 	self.assertEqual(json.loads(user_tags.data['tags'])[0], "Tag1", "Expected first tag to be Tag1")
+		user_tags = self.client.get("/home/uqq/tags/1/")
+		print(user_tags.data)
+		self.assertEqual(json.loads(user_tags.data['tags'])[0], "Tag1", "Expected first tag to be Tag1")

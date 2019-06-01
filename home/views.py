@@ -214,7 +214,7 @@ class UserLocationAPI(APIView):
 			# If no entry create new
 			return self.create_new_user_location(user_id, city_id, state_id)
 		elif user_id and city_id and state_id:
-				self.create_new_user_location(user_id, city_id, state_id)
+				return self.create_new_user_location(user_id, city_id, state_id)
 		return Response({"data":"Must provide user_id({}), city_id({}) and, state_id({})".format(user_id, city_id, state_id), 
 							"error":True})
 
