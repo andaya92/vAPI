@@ -305,14 +305,13 @@ class CreateUser(APIView):
 				if account_type == "volunteer":
 					account = Volunteer(user=user)
 					account.save()
-					return Response(VolunteerSerializer(account).data)
 				elif account_type == "volunteer_provider":
 					account = VolunteerProvider(user=user)
-					account.save()
-					return Response(VolunteerProviderSerializer(account).data)
+					account.save()	
 				else:
 					print("Error creating user")
 					return Response({"error": "Account type error"})
+				return Response({"user": UserSerializer(user).data, "rest_token" : user.rest_token})
 			except IntegrityError as e:
 				print("Error creating user {}".format(str(e)))
 				print(e.args)

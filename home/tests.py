@@ -87,46 +87,45 @@ class TestUser(APITestCase):
 		event.event_ends = datetime.datetime.fromtimestamp(int(time())+1000)
 		event.save()
 		
-	# def test_view_create_user_delete_user(self):
-	# # 	# Create
-	# 	factory = APIRequestFactory()
-		
-	# 	init_count = Volunteer.objects.count()
-	# 	response = self.client.post('/home/account/new/',
-	# 							{'account_type' : 'volunteer',
-	# 							'username': 'godlike',
-	# 							'email' : 'g@ga.com',
-	# 							'password' : 'kidskids@2',
-	# 							'password_confirm' : 'kidskids@2'})
+	def test_view_create_user_delete_user(self):
+		init_count = Volunteer.objects.count()
+		response = self.client.post('/home/account/new/',
+								{'account_type' : 'volunteer',
+								'username': 'godlike',
+								'email' : 'g@ga.com',
+								'password' : 'kidskids@2',
+								'password_confirm' : 'kidskids@2'})
 	
-	# 	count = Volunteer.objects.count()
+		count = Volunteer.objects.count()
 		
-	# 	self.assertEqual(init_count+1, count, "Volunteer not created, counts not equal")
-	# 	self.assertEqual(response.data['user']['username'], 'godlike', "Volunteer Usernames do not match")
+		self.assertEqual(init_count+1, count, "Volunteer not created, counts not equal")
+		self.assertEqual(response.data['user']['username'], 'godlike', "Volunteer Usernames do not match")
 
-	# 	init_count = VolunteerProvider.objects.count()
-	# 	response = self.client.post('/home/account/new/',
-	# 							{'account_type' : 'volunteer_provider',
-	# 							'username': 'ekildog',
-	# 							'email' : 'e@g.com',
-	# 							'password' : 'kidskids@2',
-	# 							'password_confirm' : 'kidskids@2'})
+		init_count = VolunteerProvider.objects.count()
+		response = self.client.post('/home/account/new/',
+								{'account_type' : 'volunteer_provider',
+								'username': 'ekildog',
+								'email' : 'e@g.com',
+								'password' : 'kidskids@2',
+								'password_confirm' : 'kidskids@2'})
 
 	
-	# 	count = VolunteerProvider.objects.count()
+		count = VolunteerProvider.objects.count()
 		
-	# 	self.assertEqual(init_count+1, count, "VolunteerProvider not created, counts not equal")
-	# 	self.assertEqual(response.data['user']['username'], 'ekildog', "Usernames do not match")
+		self.assertEqual(init_count+1, count, "VolunteerProvider not created, counts not equal")
+		self.assertEqual(response.data['user']['username'], 'ekildog', "Usernames do not match")
 
-	# 	# Delete User 
-	# 	User = get_user_model()
-	# 	init_count = User.objects.count()
-	# 	user = User.objects.create_user("t34t_u$34", "t3st@g.com", "letmein")
-	# 	response = self.client.delete("/home/account/delete/", {"pk":user.id})
-	# 	self.assertEqual(response.data['deleted'], True, "User not deleted when it should've")
 
-	# 	response = self.client.delete("/home/account/delete/", {"pk":-1})
-	# 	self.assertEqual(response.data['deleted'], False, "User deleted when it shouldn't've")
+
+		# Delete User 
+		User = get_user_model()
+		init_count = User.objects.count()
+		user = User.objects.create_user("t34t_u$34", "t3st@g.com", "letmein")
+		response = self.client.delete("/home/account/delete/", {"pk":user.id})
+		self.assertEqual(response.data['deleted'], True, "User not deleted when it should've")
+
+		response = self.client.delete("/home/account/delete/", {"pk":-1})
+		self.assertEqual(response.data['deleted'], False, "User deleted when it shouldn't've")
 
 	# def test_view_auth_user_API(self):
 	# 	factory = APIRequestFactory()
@@ -711,19 +710,19 @@ class TestUser(APITestCase):
 	# 	print(user_location.data)
 
 
-	def test_view_UserLocationAPI_get(self):
-		user_location = self.client.post("/home/uqq/location/new/",
-							{"user_id" : 1,
-							"city_id":1, 
-							"state_id":1,
-							"country_id":1
-							})
+	# def test_view_UserLocationAPI_get(self):
+	# 	user_location = self.client.post("/home/uqq/location/new/",
+	# 						{"user_id" : 1,
+	# 						"city_id":1, 
+	# 						"state_id":1,
+	# 						"country_id":1
+	# 						})
 
-		print(user_location.data)
-		user_location = self.client.get("/home/uqq/location/{}/".format(user_location.data['user']['id']))
-		print(user_location.data)
+	# 	print(user_location.data)
+	# 	user_location = self.client.get("/home/uqq/location/{}/".format(user_location.data['user']['id']))
+	# 	print(user_location.data)
 		
-		self.assertEqual(user_location.data['user']['id'], 1, "Expected user id to be 1")
+	# 	self.assertEqual(user_location.data['user']['id'], 1, "Expected user id to be 1")
 
 	# def test_view_UserInterstSkillTags_post(self):
 	# 	user_tags = self.client.post("/home/uqq/tags/new/", {
@@ -756,13 +755,13 @@ class TestUser(APITestCase):
 	# 	self.assertEqual(len(json.loads(user_tags.data['tags'])), 0, "Expected first tag to be Skill1")
 		
 
-	def test_view_UserInterstSkillTags_get(self):
-		user_tags = self.client.post("/home/uqq/tags/new/", {
-			"user_id": "1",
-			"tags" : json.dumps(['Tag1', 'Tag2', "Tag3"])
-			})
+	# def test_view_UserInterstSkillTags_get(self):
+	# 	user_tags = self.client.post("/home/uqq/tags/new/", {
+	# 		"user_id": "1",
+	# 		"tags" : json.dumps(['Tag1', 'Tag2', "Tag3"])
+	# 		})
 
 		
-		user_tags = self.client.get("/home/uqq/tags/1/")
-		print(user_tags.data)
-		self.assertEqual(json.loads(user_tags.data['tags'])[0], "Tag1", "Expected first tag to be Tag1")
+	# 	user_tags = self.client.get("/home/uqq/tags/1/")
+	# 	print(user_tags.data)
+	# 	self.assertEqual(json.loads(user_tags.data['tags'])[0], "Tag1", "Expected first tag to be Tag1")
