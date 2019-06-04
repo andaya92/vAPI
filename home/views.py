@@ -628,14 +628,18 @@ class VolunteerEventSignUpAPI(APIView):
 			acct_id = get_users_account_id(user_id)
 		else:
 			print("Only volunteers can sign up for events!")
+			return Response({'error':"Only volunteers can sign up for events!"})
 
 		if acct_id != -1:
-			vol_event_signup = VolunteerEventSignUp()
-			vol_event_signup.volunteer_id = acct_id
-			vol_event_signup.event_id = event
-			vol_event_signup.save()
-			return Response(VolunteerEventSignUpSerializer(vol_event_signup).data)
-		return Response({"Error":"Failed to create Sign up"})
+			try:
+				vol_event_signup = VolunteerEventSignUp()
+				vol_event_signup.volunteer_id = acct_id
+				vol_event_signup.event_id = event
+				vol_event_signup.save()
+				return Response(VolunteerEventSignUpSerializer(vol_event_signup).data)
+			except IntegrityError as e:
+				return Response({'error':'You have already signed up for this event!'})
+		return Response({"Error":"Failed to Sign Up for event."})
 
 	def delete(self, request):
 		pk = request.data['pk']
