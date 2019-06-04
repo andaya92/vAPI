@@ -20,6 +20,7 @@ urlpatterns = [
 	path("account/delete/", views.CreateUser.as_view(), name="register"),
 	path("auth_user/", views.AuthUserAPI.as_view(), name="auth_user"),
 	path("change_password/", views.ChangePassword.as_view(), name="change_password"),
+	path("upload_photo/", views.UploadProfileImg.as_view(), name="upload_photo"),
 	#	Volunteers
 	path("volunteer/all/", views.VolunteerAPI.as_view(), name="get_volunteer"),
 	path("volunteer/pk/<int:pk>/", views.VolunteerAPI.as_view(), name="get_volunteer"),

@@ -87,45 +87,45 @@ class TestUser(APITestCase):
 		event.event_ends = datetime.datetime.fromtimestamp(int(time())+1000)
 		event.save()
 		
-	def test_view_create_user_delete_user(self):
-		init_count = Volunteer.objects.count()
-		response = self.client.post('/home/account/new/',
-								{'account_type' : 'volunteer',
-								'username': 'godlike',
-								'email' : 'g@ga.com',
-								'password' : 'kidskids@2',
-								'password_confirm' : 'kidskids@2'})
+	# def test_view_create_user_delete_user(self):
+	# 	init_count = Volunteer.objects.count()
+	# 	response = self.client.post('/home/account/new/',
+	# 							{'account_type' : 'volunteer',
+	# 							'username': 'godlike',
+	# 							'email' : 'g@ga.com',
+	# 							'password' : 'kidskids@2',
+	# 							'password_confirm' : 'kidskids@2'})
 	
-		count = Volunteer.objects.count()
+	# 	count = Volunteer.objects.count()
 		
-		self.assertEqual(init_count+1, count, "Volunteer not created, counts not equal")
-		self.assertEqual(response.data['user']['username'], 'godlike', "Volunteer Usernames do not match")
+	# 	self.assertEqual(init_count+1, count, "Volunteer not created, counts not equal")
+	# 	self.assertEqual(response.data['user']['username'], 'godlike', "Volunteer Usernames do not match")
 
-		init_count = VolunteerProvider.objects.count()
-		response = self.client.post('/home/account/new/',
-								{'account_type' : 'volunteer_provider',
-								'username': 'ekildog',
-								'email' : 'e@g.com',
-								'password' : 'kidskids@2',
-								'password_confirm' : 'kidskids@2'})
+	# 	init_count = VolunteerProvider.objects.count()
+	# 	response = self.client.post('/home/account/new/',
+	# 							{'account_type' : 'volunteer_provider',
+	# 							'username': 'ekildog',
+	# 							'email' : 'e@g.com',
+	# 							'password' : 'kidskids@2',
+	# 							'password_confirm' : 'kidskids@2'})
 
 	
-		count = VolunteerProvider.objects.count()
+	# 	count = VolunteerProvider.objects.count()
 		
-		self.assertEqual(init_count+1, count, "VolunteerProvider not created, counts not equal")
-		self.assertEqual(response.data['user']['username'], 'ekildog', "Usernames do not match")
+	# 	self.assertEqual(init_count+1, count, "VolunteerProvider not created, counts not equal")
+	# 	self.assertEqual(response.data['user']['username'], 'ekildog', "Usernames do not match")
 
 
 
-		# Delete User 
-		User = get_user_model()
-		init_count = User.objects.count()
-		user = User.objects.create_user("t34t_u$34", "t3st@g.com", "letmein")
-		response = self.client.delete("/home/account/delete/", {"pk":user.id})
-		self.assertEqual(response.data['deleted'], True, "User not deleted when it should've")
+	# 	# Delete User 
+	# 	User = get_user_model()
+	# 	init_count = User.objects.count()
+	# 	user = User.objects.create_user("t34t_u$34", "t3st@g.com", "letmein")
+	# 	response = self.client.delete("/home/account/delete/", {"pk":user.id})
+	# 	self.assertEqual(response.data['deleted'], True, "User not deleted when it should've")
 
-		response = self.client.delete("/home/account/delete/", {"pk":-1})
-		self.assertEqual(response.data['deleted'], False, "User deleted when it shouldn't've")
+	# 	response = self.client.delete("/home/account/delete/", {"pk":-1})
+	# 	self.assertEqual(response.data['deleted'], False, "User deleted when it shouldn't've")
 
 	# def test_view_auth_user_API(self):
 	# 	factory = APIRequestFactory()
@@ -155,6 +155,17 @@ class TestUser(APITestCase):
 	# 							"password_confirm": "chuckisgod1337"
 	# 							})
 	# 	self.assertEqual(response.data['password_changed'], True)
+
+	def test_view_UploadProfileImg_post(self):
+		# User that is requesting from API
+		hercules = get_user_model().objects.get(pk=2)
+		self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(hercules.rest_token))
+
+		resp = self.client.post("/home/upload_photo/", {'img': TEST_IMG})
+		self.assertEqual("img" in resp.data.keys(), True, "Response should contain an image and not an error")
+		
+
+
 	# def test_view_volunteer_API(self):
 	# 	# User that is requesting from API
 	# 	zeus = get_user_model().objects.get(pk=1)

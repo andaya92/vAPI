@@ -256,7 +256,14 @@ class UserInterestSkillTagsAPI(APIView):
 			return self.create_new_user_tag(user_id, tags)	
 		return Response({"error": "User id and tags required"})
 
-
+def createFileFromB64(b64_img):
+	# Convert Image from png base64
+	fmt, imgstr = b64_img.split(';base64,')
+	ext = fmt.split('/')[-1] 
+	try:
+		return ContentFile(base64.b64decode(imgstr), name='{}_vol_post.{}'.format("usernameHere", ext))
+	except:
+	    return None
 
 #######################
 ## Account Features
@@ -354,6 +361,22 @@ class ChangePassword(APIView):
 		elif checked_password['error']:
 			print(checked_password['msg'])
 		return Response({"password_changed":False})
+
+class UploadProfileImg(APIView):
+	authentication_classes = (TokenAuthentication,)
+	permission_classes = (IsAuthenticated,)
+	def post(self, request):
+		img = request.data['img']
+		png = createFileFromB64(img)
+		if png:
+			try:
+				request.user.photo = png
+				request.user.save()
+				return Response({'img':request.user.photo.url})
+			except:
+				return Response({'error':"Failed saving new photo to user"})
+		return Response({'error':"Failed creating photo file"})
+
 
 class VolunteerAPI(APIView):
 	authentication_classes = (TokenAuthentication,)
