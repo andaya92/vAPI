@@ -21,6 +21,8 @@ import feedparser
 import pandas as pd
 from datetime import datetime, timedelta
 
+from decimal import Decimal
+
 def is_volunteer(user_id):
 	user = get_user_model().objects.get(pk=user_id)
 	volunteer_id = -1
@@ -575,10 +577,8 @@ class VolunteerPostAPI(APIView):
 					post.event_id = event
 				post.img = png
 				post.caption = caption
-				print("Volunteer Hours!!!!!!!!!!!!!")
-				print(type(hours), hours)
 				try:
-					post.hours = float(hours)
+					post.hours = Decimal(hours)
 				except:
 					return Response({'error':"Failed converting hours into float. Aborting save."})
 				post.save()
