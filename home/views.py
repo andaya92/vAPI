@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
 from django.views.generic.base import TemplateView
 from django.db.utils import IntegrityError
+from django.db.models import Sum
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -554,32 +555,32 @@ class VolunteerPostAPI(APIView):
 		img = request.data['img'] # expects base64 encoded png
 		png = None
 		caption = request.data['caption']
+		hours = request.data['hours']
+		# event id from client allowed to be any int or not given
+		# Event is optional
 		if "event_id" in request.data.keys():
 			try:
 				if int(request.data['event_id']) > 0:
 					event = request.data['event_id']
 			except:
-				error = "Event_id must be an int"
+				return Response({'error':"Event_id must be an int"})
+				
 
-		print("Event Id: {}".format(event))
-
-		# Convert Image from png base64
-		fmt, imgstr = img.split(';base64,') 
-		ext = fmt.split('/')[-1] 
-		try:
-			png = ContentFile(base64.b64decode(imgstr), name='{}_vol_post.{}'.format("usernameHere", ext))
-		except:
-		    error = "Could not create img for post"
-
-		post = VolunteerPost()
-		post.user_id = user
-		if event:
-			post.event_id = event
-		post.img = png
-		post.caption = caption
-		post.save()
-
-		return Response(VolunteerPostSerializer(post).data)
+		png = createFileFromB64(img)
+		if png:
+			try:
+				post = VolunteerPost()
+				post.user_id = user
+				if event:
+					post.event_id = event
+				post.img = png
+				post.caption = caption
+				post.hours = hours
+				post.save()
+				return Response(VolunteerPostSerializer(post).data)
+			except:
+				return Response({'error':'Failed saving post'})
+		return Response({'error':"Failed creating PNG image"})
 
 	def delete(self, request):
 		pk = request.data['pk']
@@ -591,6 +592,14 @@ class VolunteerPostAPI(APIView):
 			except:
 				print("Failed deleting Volunteer Post")
 		return Response({"deleted":False})
+
+class VolunteerHoursAPI(APIView):
+	def get(self, request, user_id=-1):
+		if user_id != -1:
+			hours = VolunteerPost.objects.filter(user_id=user_id).aggregate(Sum('hours'))
+			return Response(hours)
+		return Response({"error":"User id not valid: ()".format(user_id)})
+
 
 class VolunteerEventSignUpAPI(APIView):
 	authentication_classes = (TokenAuthentication,)

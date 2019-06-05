@@ -101,6 +101,7 @@ class VolunteerPost(models.Model):
 	event = models.ForeignKey(VolunteerEvent, on_delete=models.SET_NULL, null=True, blank=True)
 	img = models.ImageField(upload_to="user_posts", default='empty_user_post.png')
 	caption =models.CharField(max_length=480) #two tweets
+	hours = models.DecimalField(max_digits=9, decimal_places=2, default=0.00)
 	created = models.DateTimeField(editable=False)
 	modified = models.DateTimeField(editable=False)
 	

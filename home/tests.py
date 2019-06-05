@@ -156,13 +156,13 @@ class TestUser(APITestCase):
 	# 							})
 	# 	self.assertEqual(response.data['password_changed'], True)
 
-	def test_view_UploadProfileImg_post(self):
-		# User that is requesting from API
-		hercules = get_user_model().objects.get(pk=2)
-		self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(hercules.rest_token))
+	# def test_view_UploadProfileImg_post(self):
+	# 	# User that is requesting from API
+	# 	hercules = get_user_model().objects.get(pk=2)
+	# 	self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(hercules.rest_token))
 
-		resp = self.client.post("/home/upload_photo/", {'img': TEST_IMG})
-		self.assertEqual("img" in resp.data.keys(), True, "Response should contain an image and not an error")
+	# 	resp = self.client.post("/home/upload_photo/", {'img': TEST_IMG})
+	# 	self.assertEqual("img" in resp.data.keys(), True, "Response should contain an image and not an error")
 		
 
 
@@ -356,17 +356,21 @@ class TestUser(APITestCase):
 	# 							"user_id" : 1,
 	# 							# "event_id" : 1, # do not include if no event
 	# 							"img" : TEST_IMG,
-	# 							"caption" : "Second Photo!"
+	# 							"caption" : "Second Photo!",
+	# 							"hours" : 0.5
 	# 							})
 
 	# 	response = self.client.post("/home/volunteer_post/new/", {
 	# 							"user_id" : 2,
 	# 							"event_id" : 0, # do not include if no event
 	# 							"img" : TEST_IMG,
-	# 							"caption" : "Second Photo!"
+	# 							"caption" : "Second Photo!",
+	# 							"hours" : 1.75
 	# 							})
+	# 	print(response.data)
 
 	# 	self.assertEqual(init_count+2, VolunteerPost.objects.count(), "Did not create post")
+
 	# def test_view_volunteer_post_delete(self):
 	# 	# User that is requesting from API
 	# 	zeus = get_user_model().objects.get(pk=1)
@@ -393,6 +397,28 @@ class TestUser(APITestCase):
 
 	# 	is_deleted = self.client.delete('/home/volunteer_post/delete/', {'pk': post.data['id']})
 	# 	self.assertEqual(is_deleted.data['deleted'], True)
+
+	def test_view_volunteer_hours_get(self):
+		# User that is requesting from API
+		zeus = get_user_model().objects.get(pk=1)
+		self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(zeus.rest_token))
+
+		init_count = VolunteerPost.objects.count()
+
+		for i in range(10):
+			self.client.post("/home/volunteer_post/new/", {
+								"user_id" : 1,
+								# "event_id" : 1, # do not include if no event
+								"img" : TEST_IMG,
+								"caption" : "Second Photo!",
+								"hours" : float(i)
+								})
+		
+		# self.assertEqual(post.data['hours'], 0.5, "Expected hours to be 0.5")
+		hours = self.client.get("/home/volunteer_post/hours/{}/".format(zeus.id))
+		self.assertEqual(float(hours.data['hours__sum']), 45.0, "Expeted user to have 45 hours of volunteer time.")
+
+
 
 	# def test_view_volunteer_event_signup_API_post(self):
 	# 	# User that is requesting from API
