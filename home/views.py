@@ -575,10 +575,12 @@ class VolunteerPostAPI(APIView):
 					post.event_id = event
 				post.img = png
 				post.caption = caption
+				print("Volunteer Hours!!!!!!!!!!!!!")
+				print(type(hours), hours)
 				try:
 					post.hours = float(hours)
 				except:
-					return Response(){'error':"Failed converting hours into float. Aborting save."}
+					return Response({'error':"Failed converting hours into float. Aborting save."})
 				post.save()
 				return Response(VolunteerPostSerializer(post).data)
 			except:
