@@ -570,21 +570,21 @@ class VolunteerPostAPI(APIView):
 
 		png = createFileFromB64(img)
 		if png:
-			try:
-				post = VolunteerPost()
-				post.user_id = user
-				if event:
-					post.event_id = event
-				post.img = png
-				post.caption = caption
-				try:
-					post.hours = Decimal(hours)
-				except:
-					return Response({'error':"Failed converting hours into float. Aborting save."})
-				post.save()
-				return Response(VolunteerPostSerializer(post).data)
-			except:
-				return Response({'error':'Failed saving post'})
+			# try:
+			post = VolunteerPost()
+			post.user_id = user
+			if event:
+				post.event_id = event
+			post.img = png
+			post.caption = caption
+			# try:
+			post.hours = Decimal(hours)
+			# except:
+			# 	return Response({'error':"Failed converting hours into float. Aborting save."})
+			post.save()
+			return Response(VolunteerPostSerializer(post).data)
+			# except:
+			# 	return Response({'error':'Failed saving post'})
 		return Response({'error':"Failed creating PNG image"})
 
 	def delete(self, request):
