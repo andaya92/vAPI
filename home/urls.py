@@ -99,7 +99,7 @@ urlpatterns = [
 	path("volunteer_event/location/<str:location>/", views.VolunteerEventAPI.as_view(), name="get_vol_event"),
 	# Posts
 	path("volunteer_post/new/", views.VolunteerPostAPI.as_view(), name="vol_post"),
-	path("volunteer_post/delete/", views.VolunteerPostAPI.as_view(), name="vol_post"),
+	path("volunteer_post/delete/", views.VolunteerPostDeleteAPI.as_view(), name="vol_post"),
 	path("volunteer_post/user/<int:user_id>/", views.VolunteerPostAPI.as_view(), name="get_vol_post"),
 	path("volunteer_post/event/<int:event_id>/", views.VolunteerPostAPI.as_view(), name="get_vol_post"),
 	path("volunteer_post/hours/<int:user_id>/", views.VolunteerHoursAPI.as_view(), name="vol_hours"),

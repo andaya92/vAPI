@@ -384,7 +384,7 @@ class TestUser(APITestCase):
 	# 							"caption" : "Not Zeus's Photo!"
 	# 							})
 
-	# 	is_deleted = self.client.delete('/home/volunteer_post/delete/', {'pk': post.data['id']})
+	# 	is_deleted = self.client.post('/home/volunteer_post/delete/', {'pk': post.data['id']})
 	# 	self.assertEqual(is_deleted.data['deleted'], False)
 
 	# 	# Create post
@@ -395,28 +395,28 @@ class TestUser(APITestCase):
 	# 							"caption" : "Zeus Photo!"
 	# 							})
 
-	# 	is_deleted = self.client.delete('/home/volunteer_post/delete/', {'pk': post.data['id']})
+	# 	is_deleted = self.client.post('/home/volunteer_post/delete/', {'pk': post.data['id']})
 	# 	self.assertEqual(is_deleted.data['deleted'], True)
 
-	def test_view_volunteer_hours_get(self):
-		# User that is requesting from API
-		zeus = get_user_model().objects.get(pk=1)
-		self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(zeus.rest_token))
+	# def test_view_volunteer_hours_get(self):
+	# 	# User that is requesting from API
+	# 	zeus = get_user_model().objects.get(pk=1)
+	# 	self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(zeus.rest_token))
 
-		init_count = VolunteerPost.objects.count()
+	# 	init_count = VolunteerPost.objects.count()
 
-		for i in range(10):
-			self.client.post("/home/volunteer_post/new/", {
-								"user_id" : 1,
-								# "event_id" : 1, # do not include if no event
-								"img" : TEST_IMG,
-								"caption" : "Second Photo!",
-								"hours" : float(i)
-								})
+	# 	for i in range(10):
+	# 		self.client.post("/home/volunteer_post/new/", {
+	# 							"user_id" : 1,
+	# 							# "event_id" : 1, # do not include if no event
+	# 							"img" : TEST_IMG,
+	# 							"caption" : "Second Photo!",
+	# 							"hours" : float(i)
+	# 							})
 		
-		# self.assertEqual(post.data['hours'], 0.5, "Expected hours to be 0.5")
-		hours = self.client.get("/home/volunteer_post/hours/{}/".format(zeus.id))
-		self.assertEqual(float(hours.data['hours__sum']), 45.0, "Expeted user to have 45 hours of volunteer time.")
+	# 	# self.assertEqual(post.data['hours'], 0.5, "Expected hours to be 0.5")
+	# 	hours = self.client.get("/home/volunteer_post/hours/{}/".format(zeus.id))
+	# 	self.assertEqual(float(hours.data['hours__sum']), 45.0, "Expeted user to have 45 hours of volunteer time.")
 
 
 

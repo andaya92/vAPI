@@ -557,7 +557,9 @@ class VolunteerPostAPI(APIView):
 		img = request.data['img'] # expects base64 encoded png
 		png = None
 		caption = request.data['caption']
-		hours = request.data['hours']
+		hours = 0
+		if "hours" in request.data.keys():
+			hours = request.data['hours']
 		# event id from client allowed to be any int or not given
 		# Event is optional
 		if "event_id" in request.data.keys():
@@ -587,7 +589,11 @@ class VolunteerPostAPI(APIView):
 				return Response({'error':'Failed saving post'})
 		return Response({'error':"Failed creating PNG image"})
 
-	def delete(self, request):
+
+class VolunteerPostDeleteAPI(APIView):
+	authentication_classes = (TokenAuthentication,)
+	permission_classes = (IsAuthenticated,)
+	def post(self, request):
 		pk = request.data['pk']
 		vol_post = VolunteerPost.objects.get(pk=pk)
 		if request.user.id == vol_post.user.id:
