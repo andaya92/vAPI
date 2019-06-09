@@ -90,7 +90,7 @@ urlpatterns = [
 	#######################
 	# Events1
 	path("volunteer_event/new/", views.VolunteerEventAPI.as_view(), name="vol_event"),
-	path("volunteer_event/delete/", views.VolunteerEventAPI.as_view(), name="vol_event"),
+	path("volunteer_event/delete/", views.VolunteerEventDeleteAPI.as_view(), name="vol_event"),
 	path("volunteer_event/pk/<int:pk>/", views.VolunteerEventAPI.as_view(), name="get_vol_event"),
 	path("volunteer_event/state/<int:state>/", views.VolunteerEventAPI.as_view(), name="get_vol_event"),
 	path("volunteer_event/city/<int:city>/", views.VolunteerEventAPI.as_view(), name="get_vol_event"),
@@ -105,7 +105,7 @@ urlpatterns = [
 	path("volunteer_post/hours/<int:user_id>/", views.VolunteerHoursAPI.as_view(), name="vol_hours"),
 	# Signups
 	path("volunteer_event_signup/new/", views.VolunteerEventSignUpAPI.as_view(), name="volunteer_event_signup"),
-	path("volunteer_event_signup/delete/", views.VolunteerEventDeleteAPI.as_view(), name="volunteer_event_signup"),
+	path("volunteer_event_signup/delete/", views.VolunteerEventSignUpAPI.as_view(), name="volunteer_event_signup"),
 	path("volunteer_event_signup/pk/<int:pk>/", views.VolunteerEventSignUpAPI.as_view(), name="get_volunteer_event_signup"),
 	path("volunteer_event_signup/volunteer/<int:volunteer_id>/", views.VolunteerEventSignUpAPI.as_view(), name="get_volunteer_event_signup"),
 	path("volunteer_event_signup/event/<int:event_id>/", views.VolunteerEventSignUpAPI.as_view(), name="get_volunteer_event_signup"),
