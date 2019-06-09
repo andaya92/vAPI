@@ -105,7 +105,7 @@ urlpatterns = [
 	path("volunteer_post/hours/<int:user_id>/", views.VolunteerHoursAPI.as_view(), name="vol_hours"),
 	# Signups
 	path("volunteer_event_signup/new/", views.VolunteerEventSignUpAPI.as_view(), name="volunteer_event_signup"),
-	path("volunteer_event_signup/delete/", views.VolunteerEventSignUpAPI.as_view(), name="volunteer_event_signup"),
+	path("volunteer_event_signup/delete/", views.VolunteerEventDeleteAPI.as_view(), name="volunteer_event_signup"),
 	path("volunteer_event_signup/pk/<int:pk>/", views.VolunteerEventSignUpAPI.as_view(), name="get_volunteer_event_signup"),
 	path("volunteer_event_signup/volunteer/<int:volunteer_id>/", views.VolunteerEventSignUpAPI.as_view(), name="get_volunteer_event_signup"),
 	path("volunteer_event_signup/event/<int:event_id>/", views.VolunteerEventSignUpAPI.as_view(), name="get_volunteer_event_signup"),

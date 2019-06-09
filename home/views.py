@@ -522,7 +522,12 @@ class VolunteerEventAPI(APIView):
 		except:
 			return Response({"error" : "event not created"})
 
-	def delete(self, request):
+
+class VolunteerEventDeleteAPI(APIView):
+	authentication_classes = (TokenAuthentication,)
+	permission_classes = (IsAuthenticated,)
+
+	def post(self, request):
 		pk = request.data['pk']
 		vol_event = VolunteerEvent.objects.get(pk=pk)
 		if request.user.id == vol_event.provider.user_id:
@@ -532,7 +537,6 @@ class VolunteerEventAPI(APIView):
 			except:
 				print("Failed to delete event")
 		return Response({"deleted":False})
-
 class VolunteerPostAPI(APIView):
 	authentication_classes = (TokenAuthentication,)
 	permission_classes = (IsAuthenticated,)
