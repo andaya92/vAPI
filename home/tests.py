@@ -87,452 +87,457 @@ class TestUser(APITestCase):
 		event.event_ends = datetime.datetime.fromtimestamp(int(time())+1000)
 		event.save()
 		
-	# def test_view_create_user_delete_user(self):
-	# 	init_count = Volunteer.objects.count()
-	# 	response = self.client.post('/home/account/new/',
-	# 							{'account_type' : 'volunteer',
-	# 							'username': 'godlike',
-	# 							'email' : 'g@ga.com',
-	# 							'password' : 'kidskids@2',
-	# 							'password_confirm' : 'kidskids@2'})
+	def test_view_create_user_delete_user(self):
+		init_count = Volunteer.objects.count()
+		response = self.client.post('/home/account/new/',
+								{'account_type' : 'volunteer',
+								'username': 'godlike',
+								'email' : 'g@ga.com',
+								'password' : 'kidskids@2',
+								'password_confirm' : 'kidskids@2'})
 	
-	# 	count = Volunteer.objects.count()
+		count = Volunteer.objects.count()
 		
-	# 	self.assertEqual(init_count+1, count, "Volunteer not created, counts not equal")
-	# 	self.assertEqual(response.data['user']['username'], 'godlike', "Volunteer Usernames do not match")
+		self.assertEqual(init_count+1, count, "Volunteer not created, counts not equal")
+		self.assertEqual(response.data['user']['username'], 'godlike', "Volunteer Usernames do not match")
 
-	# 	init_count = VolunteerProvider.objects.count()
-	# 	response = self.client.post('/home/account/new/',
-	# 							{'account_type' : 'volunteer_provider',
-	# 							'username': 'ekildog',
-	# 							'email' : 'e@g.com',
-	# 							'password' : 'kidskids@2',
-	# 							'password_confirm' : 'kidskids@2'})
+		init_count = VolunteerProvider.objects.count()
+		response = self.client.post('/home/account/new/',
+								{'account_type' : 'volunteer_provider',
+								'username': 'ekildog',
+								'email' : 'e@g.com',
+								'password' : 'kidskids@2',
+								'password_confirm' : 'kidskids@2'})
 
 	
-	# 	count = VolunteerProvider.objects.count()
+		count = VolunteerProvider.objects.count()
 		
-	# 	self.assertEqual(init_count+1, count, "VolunteerProvider not created, counts not equal")
-	# 	self.assertEqual(response.data['user']['username'], 'ekildog', "Usernames do not match")
+		self.assertEqual(init_count+1, count, "VolunteerProvider not created, counts not equal")
+		self.assertEqual(response.data['user']['username'], 'ekildog', "Usernames do not match")
 
 
 
-	# 	# Delete User 
-	# 	User = get_user_model()
-	# 	init_count = User.objects.count()
-	# 	user = User.objects.create_user("t34t_u$34", "t3st@g.com", "letmein")
-	# 	response = self.client.delete("/home/account/delete/", {"pk":user.id})
-	# 	self.assertEqual(response.data['deleted'], True, "User not deleted when it should've")
+		# Delete User 
+		User = get_user_model()
+		init_count = User.objects.count()
+		user = User.objects.create_user("t34t_u$34", "t3st@g.com", "letmein")
+		response = self.client.delete("/home/account/delete/", {"pk":user.id})
+		self.assertEqual(response.data['deleted'], True, "User not deleted when it should've")
 
-	# 	response = self.client.delete("/home/account/delete/", {"pk":-1})
-	# 	self.assertEqual(response.data['deleted'], False, "User deleted when it shouldn't've")
+		response = self.client.delete("/home/account/delete/", {"pk":-1})
+		self.assertEqual(response.data['deleted'], False, "User deleted when it shouldn't've")
 
-	# def test_view_auth_user_API(self):
-	# 	factory = APIRequestFactory()
-	# 	request = factory.post('/home/auth_user/',
-	# 							{'email' : 'tester@g.com',
-	# 							'password': 'kidskids@2'})
+	def test_view_auth_user_API(self):
+		factory = APIRequestFactory()
+		request = factory.post('/home/auth_user/',
+								{'email' : 'tester@g.com',
+								'password': 'kidskids@2'})
 		
-	# 	view = AuthUserAPI.as_view()
-	# 	response = view(request)
-	# 	self.assertEqual(response.data['user']['username'], 'hercules', "Username does not match user's email")
-	# def test_view_change_password(self):
-	# # 	# User that is requesting from API
-	# 	zeus = get_user_model().objects.get(pk=1)
-	# 	self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(zeus.rest_token))
-
-	# 	response = self.client.post("/home/change_password/", {
-	# 							"current_password": "kidskidz@2",
-	# 							"password": "chuckisgod1337",
-	# 							"password_confirm": "chuckisgod1337"
-	# 							})
-		
-	# 	self.assertEqual(response.data['password_changed'], False)
-
-	# 	response = self.client.post("/home/change_password/", {
-	# 							"current_password": "kidskids@2",
-	# 							"password": "chuckisgod1337",
-	# 							"password_confirm": "chuckisgod1337"
-	# 							})
-	# 	self.assertEqual(response.data['password_changed'], True)
-
-	# def test_view_UploadProfileImg_post(self):
+		view = AuthUserAPI.as_view()
+		response = view(request)
+		self.assertEqual(response.data['user']['username'], 'hercules', "Username does not match user's email")
+	def test_view_change_password(self):
 	# 	# User that is requesting from API
-	# 	hercules = get_user_model().objects.get(pk=2)
-	# 	self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(hercules.rest_token))
+		zeus = get_user_model().objects.get(pk=1)
+		self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(zeus.rest_token))
 
-	# 	resp = self.client.post("/home/upload_photo/", {'img': TEST_IMG})
-	# 	self.assertEqual("img" in resp.data.keys(), True, "Response should contain an image and not an error")
+		response = self.client.post("/home/change_password/", {
+								"current_password": "kidskidz@2",
+								"password": "chuckisgod1337",
+								"password_confirm": "chuckisgod1337"
+								})
+		
+		self.assertEqual(response.data['password_changed'], False)
+
+		response = self.client.post("/home/change_password/", {
+								"current_password": "kidskids@2",
+								"password": "chuckisgod1337",
+								"password_confirm": "chuckisgod1337"
+								})
+		self.assertEqual(response.data['password_changed'], True)
+
+	def test_view_UploadProfileImg_post(self):
+		# User that is requesting from API
+		hercules = get_user_model().objects.get(pk=2)
+		self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(hercules.rest_token))
+
+		resp = self.client.post("/home/upload_photo/", {'img': TEST_IMG})
+		self.assertEqual("img" in resp.data.keys(), True, "Response should contain an image and not an error")
 		
 
 
-	# def test_view_volunteer_API(self):
-	# 	# User that is requesting from API
-	# 	zeus = get_user_model().objects.get(pk=1)
-	# 	self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(zeus.rest_token))
+	def test_view_volunteer_API(self):
+		# User that is requesting from API
+		zeus = get_user_model().objects.get(pk=1)
+		self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(zeus.rest_token))
 
-	# 	response = self.client.get("/home/volunteer/all/")
-	# 	self.assertEqual(response.data['data'][0]['user']['username'], "hercules", "Username does not match")
+		response = self.client.get("/home/volunteer/all/")
+		self.assertEqual(response.data['data'][0]['user']['username'], "hercules", "Username does not match")
 
-	# 	response = self.client.get("/home/volunteer/pk/1/")
-	# 	self.assertEqual(response.data['user']['username'], "hercules", "Username does not match")		
-	# 	response = self.client.get("/home/volunteer/email/tester@g.com/")
-	# 	self.assertEqual(response.data['user']['username'], "hercules", "Username does not match")
-	# def test_view_volunteer_providers_API(self):
-	# 	# User that is requesting from API
-	# 	zeus = get_user_model().objects.get(pk=1)
-	# 	self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(zeus.rest_token))
+		response = self.client.get("/home/volunteer/pk/1/")
+		self.assertEqual(response.data['user']['username'], "hercules", "Username does not match")		
+		response = self.client.get("/home/volunteer/email/tester@g.com/")
+		self.assertEqual(response.data['user']['username'], "hercules", "Username does not match")
+	def test_view_volunteer_providers_API(self):
+		# User that is requesting from API
+		zeus = get_user_model().objects.get(pk=1)
+		self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(zeus.rest_token))
 
-	# 	response = self.client.get("/home/volunteer_provider/all/")
-	# 	self.assertEqual(response.data['data'][0]['user']['username'], "zeus", "Username does not match")
+		response = self.client.get("/home/volunteer_provider/all/")
+		self.assertEqual(response.data['data'][0]['user']['username'], "zeus", "Username does not match")
 
-	# 	response = self.client.get("/home/volunteer_provider/pk/1/")
-	# 	self.assertEqual(response.data['user']['username'], "zeus", "Username does not match")
+		response = self.client.get("/home/volunteer_provider/pk/1/")
+		self.assertEqual(response.data['user']['username'], "zeus", "Username does not match")
 
-	# 	response = self.client.get("/home/volunteer_provider/email/test@g.com/")
-	# 	self.assertEqual(response.data['user']['username'], "zeus", "Username does not match")
+		response = self.client.get("/home/volunteer_provider/email/test@g.com/")
+		self.assertEqual(response.data['user']['username'], "zeus", "Username does not match")
 
-	# def test_view_volunteer_event_API_get(self):
-	# 	# User that is requesting from API
-	# 	zeus = get_user_model().objects.get(pk=1)
-	# 	self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(zeus.rest_token))
+	def test_view_volunteer_event_API_get(self):
+		# User that is requesting from API
+		zeus = get_user_model().objects.get(pk=1)
+		self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(zeus.rest_token))
 
-	# 	tagless_event = self.client.post('/home/volunteer_event/new/',
-	# 			{'title' : 'Post_tagless',
-	# 			'desc': 'Esta me casa',
-	# 			'event_state': '1',
-	# 			'event_city': '1',
-	# 			'details' : 'From 4:20',
-	# 			'provider' : '1',
-	# 			'tags' : "",
-	# 			'event_begins' : int(time()), 
-	# 			'event_ends' : int(time())+1000})
+		tagless_event = self.client.post('/home/volunteer_event/new/',
+				{'title' : 'Post_tagless',
+				'desc': 'Esta me casa',
+				'event_state': '1',
+				'event_city': '1',
+				'details' : 'From 4:20',
+				'provider' : '1',
+				'tags' : "",
+				'event_begins' : int(time()), 
+				'event_ends' : int(time())+1000})
 		
-	# 	# must at least have one space for a valid URL
-	# 	response = self.client.get("/home/volunteer_event/tag/{}/".format(" "))
-	# 	self.assertEqual(response.data['data'][0]['title'], "Post_tagless", "Title does not match record expected")
+		# must at least have one space for a valid URL
+		response = self.client.get("/home/volunteer_event/tag/{}/".format(" "))
+		self.assertEqual(response.data['data'][0]['title'], "Post_tagless", "Title does not match record expected")
 
-	# 	for index in range(10):
-	# 		ts = {"tags" : ['skill_{}'.format(index), 'interest_{}'.format(index), 'skill_b_{}'.format(index)]}
+		for index in range(10):
+			ts = {"tags" : ['skill_{}'.format(index), 'interest_{}'.format(index), 'skill_b_{}'.format(index)]}
 			
-	# 		self.client.post('/home/volunteer_event/new/',
-	# 			{'title' : 'Post_{}'.format(index),
-	# 			'desc': '{}_Esta me casa'.format(index),
-	# 			'event_state': '1',
-	# 			'event_city': '1',
-	# 			'details' : 'From 4:20',
-	# 			'provider' : '1',
-	# 			'tags' : json.dumps(ts),
-	# 			'event_begins' : int(time()), 
-	# 			'event_ends' : int(time())+1000})
+			self.client.post('/home/volunteer_event/new/',
+				{'title' : 'Post_{}'.format(index),
+				'desc': '{}_Esta me casa'.format(index),
+				'event_state': '1',
+				'event_city': '1',
+				'details' : 'From 4:20',
+				'provider' : '1',
+				'tags' : json.dumps(ts),
+				'event_begins' : int(time()), 
+				'event_ends' : int(time())+1000})
 
 
-	# 	response = self.client.get("/home/volunteer_event/pk/1/")		
-	# 	self.assertEqual(response.data['title'], "Code4Cure", "Title does not match record expected")
+		response = self.client.get("/home/volunteer_event/pk/1/")		
+		self.assertEqual(response.data['title'], "Code4Cure", "Title does not match record expected")
 
-	# 	response = self.client.get("/home/volunteer_event/city/1/")
-	# 	self.assertEqual(response.data['data'][0]['title'], "Code4Cure", "Title does not match record expected")
+		response = self.client.get("/home/volunteer_event/city/1/")
+		self.assertEqual(response.data['data'][0]['title'], "Code4Cure", "Title does not match record expected")
 
-	# 	response = self.client.get("/home/volunteer_event/state/1/")
-	# 	self.assertEqual(response.data['data'][0]['title'], "Code4Cure", "Title does not match record expected")
+		response = self.client.get("/home/volunteer_event/state/1/")
+		self.assertEqual(response.data['data'][0]['title'], "Code4Cure", "Title does not match record expected")
 		
-	# 	response = self.client.get("/home/volunteer_event/provider/1/")
-	# 	self.assertEqual(response.data['data'][0]['title'], "Code4Cure", "Title does not match record expected")
+		response = self.client.get("/home/volunteer_event/provider/1/")
+		self.assertEqual(response.data['data'][0]['title'], "Code4Cure", "Title does not match record expected")
 		
-	# 	tags = {"tags" : ['skill_3', 'interest_5', 'skill_b_7']}
-	# 	response = self.client.get("/home/volunteer_event/tag/{}/".format(json.dumps(tags)))
-	# 	# in ANdroid
-	# 	#	MultiSelect for intersts and skills
-	# 	# Create JSONObject with key tags and value JSONArray which is a list of items form the mutliselect view
-	# 	# Should allow select of city based on user's State (UserQuickQquestions; UQQ)
-	# 	self.assertEqual(len(response.data['data']), 3, "Expected 3 records")
+		tags = {"tags" : ['skill_3', 'interest_5', 'skill_b_7']}
+		response = self.client.get("/home/volunteer_event/tag/{}/".format(json.dumps(tags)))
+		# in ANdroid
+		#	MultiSelect for intersts and skills
+		# Create JSONObject with key tags and value JSONArray which is a list of items form the mutliselect view
+		# Should allow select of city based on user's State (UserQuickQquestions; UQQ)
+		self.assertEqual(len(response.data['data']), 3, "Expected 3 records")
 
-	# 	location = "tempe, AZ"
-	# 	response = self.client.get("/home/volunteer_event/location/{}/".format(location))
-	# 	print(response.data)
-
-
-
-	# def test_view_volunteer_event_API_post(self):
-	# 	# User that is requesting from API
-	# 	zeus = get_user_model().objects.get(pk=1)
-	# 	self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(zeus.rest_token))
-
-	# 	init_count = VolunteerEvent.objects.count()
-	# 	tags = {"tags" : ['skill1', 'interest1', 'skill2']}
-
-	# 	response = self.client.post('/home/volunteer_event/new/',
-	# 							{'title' : 'My First Event',
-	# 							'desc': 'Its at my house',
-	# 							'event_state': '1',
-	# 							'event_city': '1',
-	# 							'details' : 'From 4:20',
-	# 							'provider' : '1',
-	# 							'tags' : json.dumps(tags),
-	# 							'event_begins' : int(time()), 
-	# 							'event_ends' : int(time())+1000})
+		location = "tempe, AZ"
+		response = self.client.get("/home/volunteer_event/location/{}/".format(location))
 		
-	# 	count = VolunteerEvent.objects.count()
-	# 	self.assertEqual(init_count+1, count, "VolunteerEvent not created, counts not equal")
-	# 	self.assertEqual(response.data['provider']['user']['username'], 'zeus', "VolunteerProvider Usernames do not match")
-	# 	self.assertEqual(response.data['title'], 'My First Event', "Volunteer Event Titles do not match")
-	# 	self.assertEqual(json.loads(response.data['tags']), tags, "Volunteer Event Tags do not match")
-
-	# 	print(json.loads(response.data['tags']), tags)
 
 
-	# def test_view_volunteer_event_API_delete(self):
-	# 	# User that is requesting from API
-	# 	zeus = get_user_model().objects.get(pk=1)
-	# 	self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(zeus.rest_token))
 
-	# 	# Create Provider
-	# 	provider_1 = self.client.post('/home/account/new/',
-	# 							{'account_type' : 'volunteer_provider',
-	# 							'username': 'ult_pr0v1dr',
-	# 							'email' : 'abc@g.com',
-	# 							'password' : 'kidskids@2',
-	# 							'password_confirm' : 'kidskids@2'})
+	def test_view_volunteer_event_API_post(self):
+		# User that is requesting from API
+		zeus = get_user_model().objects.get(pk=1)
+		self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(zeus.rest_token))
+
+		init_count = VolunteerEvent.objects.count()
+		tags = {"tags" : ['skill1', 'interest1', 'skill2']}
+
+		response = self.client.post('/home/volunteer_event/new/',
+								{'title' : 'My First Event',
+								'desc': 'Its at my house',
+								'event_state': '1',
+								'event_city': '1',
+								'details' : 'From 4:20',
+								'provider' : '1',
+								'tags' : json.dumps(tags),
+								'event_begins' : int(time()), 
+								'event_ends' : int(time())+1000})
+		
+		count = VolunteerEvent.objects.count()
+		self.assertEqual(init_count+1, count, "VolunteerEvent not created, counts not equal")
+		self.assertEqual(response.data['provider']['user']['username'], 'zeus', "VolunteerProvider Usernames do not match")
+		self.assertEqual(response.data['title'], 'My First Event', "Volunteer Event Titles do not match")
+		self.assertEqual(json.loads(response.data['tags']), tags, "Volunteer Event Tags do not match")
+
+		
+
+
+	def test_view_volunteer_event_API_delete(self):
+		# User that is requesting from API
+		zeus = get_user_model().objects.get(pk=1)
+		self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(zeus.rest_token))
+
+		# Create Provider
+		provider_1 = self.client.post('/home/account/new/',
+								{'account_type' : 'volunteer_provider',
+								'username': 'ult_pr0v1dr',
+								'email' : 'abc@g.com',
+								'password' : 'kidskids@2',
+								'password_confirm' : 'kidskids@2'})
 
 	
 
-	# 	# Create Event
-	# 	provider_1_event = self.client.post('/home/volunteer_event/new/',
-	# 							{'title' : 'Sickest Vol Evt evr!!',
-	# 							'desc': 'Its at my house',
-	# 							'event_state': '1',
-	# 							'event_city': '1',
-	# 							'details' : 'From 4:20',
-	# 							'provider' : provider_1.data['user']['id'],
-	# 							'event_begins' : int(time()), 
-	# 							'event_ends' : int(time())+1000})
+		# Create Event
+		provider_1_event = self.client.post('/home/volunteer_event/new/',
+								{'title' : 'Sickest Vol Evt evr!!',
+								'desc': 'Its at my house',
+								'event_state': '1',
+								'event_city': '1',
+								'details' : 'From 4:20',
+								'provider' : provider_1.data['user']['id'],
+								'event_begins' : int(time()), 
+								'event_ends' : int(time())+1000,
+								'tags': json.dumps(['Tag1', 'Tag2', "Tag3"])
+								})
 
 		
 
-	# 	# Delete Event (Authentiacted user and Provider are not same, should not delete)
-	# 	is_deleted = self.client.delete("/home/volunteer_event/delete/", {"pk": provider_1_event.data['id']})
-	# 	self.assertEqual(is_deleted.data['deleted'], False)
+		# Delete Event (Authentiacted user and Provider are not same, should not delete)
+		is_deleted = self.client.post("/home/volunteer_event/delete/", {"pk": provider_1_event.data['id']})
+		print(is_deleted.data)
+		self.assertEqual(is_deleted.data['deleted'], False)
 
-	# 	response = self.client.post('/home/volunteer_event/new/',
-	# 							{'title' : 'Sickest Vol Evt evr!!',
-	# 							'desc': 'Its at my house',
-	# 							'event_state': '1',
-	# 							'event_city': '1',
-	# 							'details' : 'From 4:20',
-	# 							'provider' : '1',
-	# 							'event_begins' : int(time()), 
-	# 							'event_ends' : int(time())+1000})
+		response = self.client.post('/home/volunteer_event/new/',
+								{'title' : 'Sickest Vol Evt evr!!',
+								'desc': 'Its at my house',
+								'event_state': '1',
+								'event_city': '1',
+								'details' : 'From 4:20',
+								'provider' : '1',
+								'event_begins' : int(time()), 
+								'event_ends' : int(time())+1000,
+								'tags' : json.dumps(['Taggy'])
+								})
 
-	# 	is_deleted = self.client.delete("/home/volunteer_event/delete/", {"pk": response.data['id']})
-	# 	self.assertEqual(is_deleted.data['deleted'], True)
+		is_deleted = self.client.post("/home/volunteer_event/delete/", {"pk": response.data['id']})
+		self.assertEqual(is_deleted.data['deleted'], True)
 
-	# def test_view_volunteer_post_get(self):
-	# 	# User that is requesting from API
-	# 	zeus = get_user_model().objects.get(pk=1)
-	# 	self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(zeus.rest_token))
+	def test_view_volunteer_post_get(self):
+		# User that is requesting from API
+		zeus = get_user_model().objects.get(pk=1)
+		self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(zeus.rest_token))
 
-	# 	# Create dummy post
-	# 	self.client.post("/home/volunteer_post/new/", {
-	# 							"user_id" : 1,
-	# 							"event_id" : 1,
-	# 							"img" : TEST_IMG,
-	# 							"caption" : "This is my first photo!"
-	# 							})
+		# Create dummy post
+		self.client.post("/home/volunteer_post/new/", {
+								"user_id" : 1,
+								"event_id" : 1,
+								"img" : TEST_IMG,
+								"caption" : "This is my first photo!"
+								})
 		
-	# 	# get dummy post by user_id
-	# 	response = self.client.get("/home/volunteer_post/user/1/")
-	# 	self.assertEqual(response.data['data'][0]['caption'], "This is my first photo!", "Caption does not match")
+		# get dummy post by user_id
+		response = self.client.get("/home/volunteer_post/user/1/")
+		self.assertEqual(response.data['data'][0]['caption'], "This is my first photo!", "Caption does not match")
 
-	# 	response = self.client.get("/home/volunteer_post/event/1/")
-	# 	self.assertEqual(response.data['data'][0]['caption'], "This is my first photo!", "Caption does not match")
-	# 	print(response.data['img'])
-	# def test_view_volunteer_post_post(self):
-	# 	# User that is requesting from API
-	# 	zeus = get_user_model().objects.get(pk=1)
-	# 	self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(zeus.rest_token))
-
-	# 	init_count = VolunteerPost.objects.count()
-	# 	response = self.client.post("/home/volunteer_post/new/", {
-	# 							"user_id" : 1,
-	# 							# "event_id" : 1, # do not include if no event
-	# 							"img" : TEST_IMG,
-	# 							"caption" : "Second Photo!",
-	# 							"hours" : 0.5
-	# 							})
-
-	# 	response = self.client.post("/home/volunteer_post/new/", {
-	# 							"user_id" : 2,
-	# 							"event_id" : 0, # do not include if no event
-	# 							"img" : TEST_IMG,
-	# 							"caption" : "Second Photo!",
-	# 							"hours" : 1.75
-	# 							})
-	# 	print(response.data)
-
-	# 	self.assertEqual(init_count+2, VolunteerPost.objects.count(), "Did not create post")
-
-	# def test_view_volunteer_post_delete(self):
-	# 	# User that is requesting from API
-	# 	zeus = get_user_model().objects.get(pk=1)
-	# 	self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(zeus.rest_token))
-
-	# 	# Create post
-	# 	post = self.client.post("/home/volunteer_post/new/", {
-	# 							"user_id" : 2,
-	# 							# "event_id" : 1, # do not include if no event
-	# 							"img" : TEST_IMG,
-	# 							"caption" : "Not Zeus's Photo!"
-	# 							})
-
-	# 	is_deleted = self.client.post('/home/volunteer_post/delete/', {'pk': post.data['id']})
-	# 	self.assertEqual(is_deleted.data['deleted'], False)
-
-	# 	# Create post
-	# 	post = self.client.post("/home/volunteer_post/new/", {
-	# 							"user_id" : zeus.id,
-	# 							# "event_id" : 1, # do not include if no event
-	# 							"img" : TEST_IMG,
-	# 							"caption" : "Zeus Photo!"
-	# 							})
-
-	# 	is_deleted = self.client.post('/home/volunteer_post/delete/', {'pk': post.data['id']})
-	# 	self.assertEqual(is_deleted.data['deleted'], True)
-
-	# def test_view_volunteer_hours_get(self):
-	# 	# User that is requesting from API
-	# 	zeus = get_user_model().objects.get(pk=1)
-	# 	self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(zeus.rest_token))
-
-	# 	init_count = VolunteerPost.objects.count()
-
-	# 	for i in range(10):
-	# 		self.client.post("/home/volunteer_post/new/", {
-	# 							"user_id" : 1,
-	# 							# "event_id" : 1, # do not include if no event
-	# 							"img" : TEST_IMG,
-	# 							"caption" : "Second Photo!",
-	# 							"hours" : float(i)
-	# 							})
+		response = self.client.get("/home/volunteer_post/event/1/")
+		self.assertEqual(response.data['data'][0]['caption'], "This is my first photo!", "Caption does not match")
 		
-	# 	# self.assertEqual(post.data['hours'], 0.5, "Expected hours to be 0.5")
-	# 	hours = self.client.get("/home/volunteer_post/hours/{}/".format(zeus.id))
-	# 	self.assertEqual(float(hours.data['hours__sum']), 45.0, "Expeted user to have 45 hours of volunteer time.")
+	def test_view_volunteer_post_post(self):
+		# User that is requesting from API
+		zeus = get_user_model().objects.get(pk=1)
+		self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(zeus.rest_token))
+
+		init_count = VolunteerPost.objects.count()
+		response = self.client.post("/home/volunteer_post/new/", {
+								"user_id" : 1,
+								# "event_id" : 1, # do not include if no event
+								"img" : TEST_IMG,
+								"caption" : "Second Photo!",
+								"hours" : 0.5
+								})
+
+		response = self.client.post("/home/volunteer_post/new/", {
+								"user_id" : 2,
+								"event_id" : 0, # do not include if no event
+								"img" : TEST_IMG,
+								"caption" : "Second Photo!",
+								"hours" : 1.75
+								})
+		
+
+		self.assertEqual(init_count+2, VolunteerPost.objects.count(), "Did not create post")
+
+	def test_view_volunteer_post_delete(self):
+		# User that is requesting from API
+		zeus = get_user_model().objects.get(pk=1)
+		self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(zeus.rest_token))
+
+		# Create post
+		post = self.client.post("/home/volunteer_post/new/", {
+								"user_id" : 2,
+								# "event_id" : 1, # do not include if no event
+								"img" : TEST_IMG,
+								"caption" : "Not Zeus's Photo!"
+								})
+
+		is_deleted = self.client.post('/home/volunteer_post/delete/', {'pk': post.data['id']})
+		self.assertEqual(is_deleted.data['deleted'], False)
+
+		# Create post
+		post = self.client.post("/home/volunteer_post/new/", {
+								"user_id" : zeus.id,
+								# "event_id" : 1, # do not include if no event
+								"img" : TEST_IMG,
+								"caption" : "Zeus Photo!"
+								})
+
+		is_deleted = self.client.post('/home/volunteer_post/delete/', {'pk': post.data['id']})
+		self.assertEqual(is_deleted.data['deleted'], True)
+
+	def test_view_volunteer_hours_get(self):
+		# User that is requesting from API
+		zeus = get_user_model().objects.get(pk=1)
+		self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(zeus.rest_token))
+
+		init_count = VolunteerPost.objects.count()
+
+		for i in range(10):
+			self.client.post("/home/volunteer_post/new/", {
+								"user_id" : 1,
+								# "event_id" : 1, # do not include if no event
+								"img" : TEST_IMG,
+								"caption" : "Second Photo!",
+								"hours" : float(i)
+								})
+		
+		# self.assertEqual(post.data['hours'], 0.5, "Expected hours to be 0.5")
+		hours = self.client.get("/home/volunteer_post/hours/{}/".format(zeus.id))
+		self.assertEqual(float(hours.data['hours__sum']), 45.0, "Expeted user to have 45 hours of volunteer time.")
 
 
 
-	# def test_view_volunteer_event_signup_API_post(self):
-	# 	# User that is requesting from API
-	# 	hercules = get_user_model().objects.get(pk=2)
-	# 	self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(hercules.rest_token))
+	def test_view_volunteer_event_signup_API_post(self):
+		# User that is requesting from API
+		hercules = get_user_model().objects.get(pk=2)
+		self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(hercules.rest_token))
 
-	# 	response = self.client.post("/home/volunteer_event_signup/new/", {
-	# 										"volunteer_id" : hercules.id,
-	# 										"event_id" : 1
-	# 										})
+		response = self.client.post("/home/volunteer_event_signup/new/", {
+											"volunteer_id" : hercules.id,
+											"event_id" : 1
+											})
 
-	# 	self.assertEqual(response.data['event']['title'], "Code4Cure", "EVent titles does not match")
-	# 	self.assertEqual(response.data['volunteer']['user']['username'], "hercules", "Volunteer username does not match")	
-	# def test_view_volunteer_event_signup_API_get(self):
-	# 	# User that is requesting from API
-	# 	hercules = get_user_model().objects.get(pk=2)
-	# 	self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(hercules.rest_token))
+		self.assertEqual(response.data['event']['title'], "Code4Cure", "EVent titles does not match")
+		self.assertEqual(response.data['volunteer']['user']['username'], "hercules", "Volunteer username does not match")	
+	def test_view_volunteer_event_signup_API_get(self):
+		# User that is requesting from API
+		hercules = get_user_model().objects.get(pk=2)
+		self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(hercules.rest_token))
 
-	# 	response = self.client.post("/home/volunteer_event_signup/new/", {
-	# 										"volunteer_id" : hercules.id,
-	# 										"event_id" : 1
-	# 										})
+		response = self.client.post("/home/volunteer_event_signup/new/", {
+											"volunteer_id" : hercules.id,
+											"event_id" : 1
+											})
 
-	# 	response = self.client.get("/home/volunteer_event_signup/pk/1/")
+		response = self.client.get("/home/volunteer_event_signup/pk/1/")
 	
-	# 	self.assertEqual(response.data['event']['title'], "Code4Cure", "Event Titles do not match")
-	# 	self.assertEqual(response.data['volunteer']['user']['username'], "hercules", "Volunteer Usernames do not match")
+		self.assertEqual(response.data['event']['title'], "Code4Cure", "Event Titles do not match")
+		self.assertEqual(response.data['volunteer']['user']['username'], "hercules", "Volunteer Usernames do not match")
 
-	# 	response = self.client.get("/home/volunteer_event_signup/volunteer/{}/".format(hercules.id))
-	# 	self.assertEqual(response.data['data'][0]['event']['title'], "Code4Cure", "Event Titles do not match")
-	# 	self.assertEqual(response.data['data'][0]['volunteer']['user']['username'], "hercules", "Volunteer Usernames do not match")
+		response = self.client.get("/home/volunteer_event_signup/volunteer/{}/".format(hercules.id))
+		self.assertEqual(response.data['data'][0]['event']['title'], "Code4Cure", "Event Titles do not match")
+		self.assertEqual(response.data['data'][0]['volunteer']['user']['username'], "hercules", "Volunteer Usernames do not match")
 
-	# 	response = self.client.get("/home/volunteer_event_signup/event/1/")
-	# 	self.assertEqual(response.data['data'][0]['event']['title'], "Code4Cure", "Event Titles do not match")
-	# 	self.assertEqual(response.data['data'][0]['volunteer']['user']['username'], "hercules", "Volunteer Usernames do not match")
-	# def test_view_volunteer_event_signup_API_delete(self):
-	# 	# User that is requesting from API
-	# 	zeus = get_user_model().objects.get(pk=1)
-	# 	self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(zeus.rest_token))
-	# 	# Credentails are not the volunteers
-	# 	signup = self.client.post("/home/volunteer_event_signup/new/", {
-	# 										"volunteer_id" : 2,
-	# 										"event_id" : 1
-	# 										})
-	# 	# Try to delete
-	# 	is_deleted = self.client.delete("/home/volunteer_event_signup/delete/", {"pk" : signup.data['id']})
-	# 	# Expect Fail
-	# 	self.assertEqual(is_deleted.data['deleted'], False, "Signup deleted when it shoudln't've")
+		response = self.client.get("/home/volunteer_event_signup/event/1/")
+		self.assertEqual(response.data['data'][0]['event']['title'], "Code4Cure", "Event Titles do not match")
+		self.assertEqual(response.data['data'][0]['volunteer']['user']['username'], "hercules", "Volunteer Usernames do not match")
+	def test_view_volunteer_event_signup_API_delete(self):
+		# User that is requesting from API
+		zeus = get_user_model().objects.get(pk=1)
+		self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(zeus.rest_token))
+		# Credentails are not the volunteers
+		signup = self.client.post("/home/volunteer_event_signup/new/", {
+											"volunteer_id" : 2,
+											"event_id" : 1
+											})
+		# Try to delete
+		is_deleted = self.client.delete("/home/volunteer_event_signup/delete/", {"pk" : signup.data['id']})
+		# Expect Fail
+		self.assertEqual(is_deleted.data['deleted'], False, "Signup deleted when it shoudln't've")
 
-	# 	# Change Credentails to volunteer that signed up for event
-	# 	hercules = get_user_model().objects.get(pk=2)
-	# 	self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(hercules.rest_token))
-	# 	# Try to delete
-	# 	is_deleted = self.client.delete("/home/volunteer_event_signup/delete/", {"pk" : signup.data['id']})		
-	# 	# Expect deletion 
-	# 	self.assertEqual(is_deleted.data['deleted'], True, "Signup not deleted when it shoudl've")
+		# Change Credentails to volunteer that signed up for event
+		hercules = get_user_model().objects.get(pk=2)
+		self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(hercules.rest_token))
+		# Try to delete
+		is_deleted = self.client.delete("/home/volunteer_event_signup/delete/", {"pk" : signup.data['id']})		
+		# Expect deletion 
+		self.assertEqual(is_deleted.data['deleted'], True, "Signup not deleted when it shoudl've")
 
-	# def test_view_dontaion_event_API_post(self):
-	# 	# User that is requesting from API
-	# 	zeus = get_user_model().objects.get(pk=1)
-	# 	self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(zeus.rest_token))
+	def test_view_dontaion_event_API_post(self):
+		# User that is requesting from API
+		zeus = get_user_model().objects.get(pk=1)
+		self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(zeus.rest_token))
 
-	# 	response = self.client.post("/home/donation_event/new/", {
-	# 		"title" : "The big nasty disaster that befell your fellow neighbor.",
-	# 		"desc" : "A huge natural disaster has beseiged your neighboring town.",
-	# 		"details" : "Over 800billion in damages, eveyone homeless...",
-	# 		"beneficiary" : "Red Rover Robin Relief"
-	# 		})
-	# 	self.assertEqual(response.data['id'], 1, "Should be the first entry in table")
-	# def test_view_dontaion_event_API_get(self):
-	# 	# User that is requesting from API
-	# 	zeus = get_user_model().objects.get(pk=1)
-	# 	self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(zeus.rest_token))
+		response = self.client.post("/home/donation_event/new/", {
+			"title" : "The big nasty disaster that befell your fellow neighbor.",
+			"desc" : "A huge natural disaster has beseiged your neighboring town.",
+			"details" : "Over 800billion in damages, eveyone homeless...",
+			"beneficiary" : "Red Rover Robin Relief"
+			})
+		self.assertEqual(response.data['id'], 1, "Should be the first entry in table")
+	def test_view_dontaion_event_API_get(self):
+		# User that is requesting from API
+		zeus = get_user_model().objects.get(pk=1)
+		self.client.credentials(HTTP_AUTHORIZATION="Token {}".format(zeus.rest_token))
 
-	# 	response = self.client.post("/home/donation_event/new/", {
-	# 		"title" : "Southern Califonia Fire Disaster",
-	# 		"desc" : "A huge natural disaster has beseiged your neighboring town.",
-	# 		"details" : "Fires. Everywhere. River of flames riveting through town.",
-	# 		"beneficiary" : "Smokey Fire Bear"
-	# 		})
+		response = self.client.post("/home/donation_event/new/", {
+			"title" : "Southern Califonia Fire Disaster",
+			"desc" : "A huge natural disaster has beseiged your neighboring town.",
+			"details" : "Fires. Everywhere. River of flames riveting through town.",
+			"beneficiary" : "Smokey Fire Bear"
+			})
 
-	# 	response = self.client.post("/home/donation_event/new/", {
-	# 		"title" : "Flood in Big Name Area.",
-	# 		"desc" : "Dat wet wet here. Wetter the better they said...",
-	# 		"details" : "Everything is soaked",
-	# 		"beneficiary" : "Noah & Sons"
-	# 		})
+		response = self.client.post("/home/donation_event/new/", {
+			"title" : "Flood in Big Name Area.",
+			"desc" : "Dat wet wet here. Wetter the better they said...",
+			"details" : "Everything is soaked",
+			"beneficiary" : "Noah & Sons"
+			})
 
-	# 	response = self.client.post("/home/donation_event/new/", {
-	# 		"title" : "Terror in insert church/school/concert/airport/huge building/ here.",
-	# 		"desc" : "So many ded. vry sad.",
-	# 		"details" : "We need help, send monies...",
-	# 		"beneficiary" : "Church of Saints"
-	# 		})
+		response = self.client.post("/home/donation_event/new/", {
+			"title" : "Terror in insert church/school/concert/airport/huge building/ here.",
+			"desc" : "So many ded. vry sad.",
+			"details" : "We need help, send monies...",
+			"beneficiary" : "Church of Saints"
+			})
 
 
-	# 	response = self.client.get("/home/donation_event/pk/1/")
-	# 	self.assertEqual(response.data['title'], "Southern Califonia Fire Disaster", "Wrong title; Expected different title")
+		response = self.client.get("/home/donation_event/pk/1/")
+		self.assertEqual(response.data['title'], "Southern Califonia Fire Disaster", "Wrong title; Expected different title")
 
-	# 	response = self.client.get("/home/donation_event/title/in/")
-	# 	self.assertEqual(len(response.data['data']), 2, "Should be 2 result")
+		response = self.client.get("/home/donation_event/title/in/")
+		self.assertEqual(len(response.data['data']), 2, "Should be 2 result")
 
-	# 	response = self.client.get("/home/donation_event/beneficiary/church/")
-	# 	self.assertEqual(len(response.data['data']), 1, "Should be 1 result")
+		response = self.client.get("/home/donation_event/beneficiary/church/")
+		self.assertEqual(len(response.data['data']), 1, "Should be 1 result")
 
 		
-	# def test_view_dontaion_event_API_delete(self):
-	# 	response = self.client.post("/home/donation_event/new/", {
-	# 		"title" : "The big nasty disaster that befell your fellow neighbor.",
-	# 		"desc" : "A huge natural disaster has beseiged your neighboring town.",
-	# 		"details" : "Over 800billion in damages, eveyone homeless...",
-	# 		"beneficiary" : "Red Rover Robin Relief"
-	# 		})
-	# 	response = self.client.delete("/home/donation_event/delete/", {"pk" : response.data['id']})
+	def test_view_dontaion_event_API_delete(self):
+		response = self.client.post("/home/donation_event/new/", {
+			"title" : "The big nasty disaster that befell your fellow neighbor.",
+			"desc" : "A huge natural disaster has beseiged your neighboring town.",
+			"details" : "Over 800billion in damages, eveyone homeless...",
+			"beneficiary" : "Red Rover Robin Relief"
+			})
+		response = self.client.delete("/home/donation_event/delete/", {"pk" : response.data['id']})
 	
 	# def test_stripe_donation_system(self):
 	# 	# 	# Make donation
@@ -582,223 +587,223 @@ class TestUser(APITestCase):
 	#  	self.assertEqual(refund.data['user']['username'], "zeus", "Username does not match for refund")
 
 	#   # helper
-	# def print_news(self, data):
-	# 	# list of news entries
-	# 	# <class 'feedparser.FeedParserDict'>
-	# 	for e in data:
-	# 		print("Entry Type:")
-	# 		print(type(e))
-	# 		print("Title: \n ---{}".format(e.title))
-	# 		# California Governor Declares State of Emergency in Eight Counties, Including Mariposa County, Due to Winter Storms - Sierra Sun Times
-	# 		print(e.link)
-	# 		# https://goldrushcam.com/sierrasuntimes/index.php/news/local-news/18230-california-governor-declares-state-of-emergency-in-eight-counties-including-mariposa-county-due-to-winter-storms
-	# 		print(e.summary)
-	# 		print(e.published)
-	# 		# <a href="https://goldrushcam.com/sierrasuntimes/index.php/news/local-news/18230-california-governor-declares-state-of-emergency-in-eight-counties-including-mariposa-county-due-to-winter-storms" target="_blank">California Governor Declares State of Emergency in Eight Counties, Including Mariposa County, Due to Winter Storms</a>&nbsp;&nbsp;<font color="#6f6f6f">Sierra Sun Times</font><p>April 13, 2019 - SACRAMENTO — Governor Gavin Newsom on Friday issued an emergency proclamation for the counties of Butte, Colusa, Del Norte, Mariposa, ...</p>'
-	# 		print(e.source.href)
-	# 		# https://goldrushcam.com
-	# 		print(e.source.title)
-	# 		# Sierra Sun Times
-	# 		if "media_content" in e.keys():
-	# 			# <class 'dict'>
-	# 			for c in e.media_content:
-	# 				print(c['url']) if "url" in c.keys() else print("no url")
-	# 				# https://lh4.googleusercontent.com/proxy/jcPiFk6AIyqAwAhHEdYkxZrEBb0o5u8wm1nv_03hjYdjFHEstekQWFQmQS6dYdkEQo6QsQmFVGHzi31hf92yNVrLN54pMto3SPyOaeBLpRX1nuC-4nGwKZXz_1KKIedju_VB36E=-w150-h150-c
-	# 				print(c['medium']) if "medium" in c.keys() else print("no medium")
-	# 				# image
-	# 		print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-	# def test_view_news_API(self):
-	# 	city_state_news = self.client.get("/home/news/city/state/Sacramento/California/terror/")
-	# 	state_news = self.client.get("/home/news/state/California/state of emergency/")
+	def print_news(self, data):
+		# list of news entries
+		# <class 'feedparser.FeedParserDict'>
+		for e in data:
+			print("Entry Type:")
+			print(type(e))
+			print("Title: \n ---{}".format(e.title))
+			# California Governor Declares State of Emergency in Eight Counties, Including Mariposa County, Due to Winter Storms - Sierra Sun Times
+			print(e.link)
+			# https://goldrushcam.com/sierrasuntimes/index.php/news/local-news/18230-california-governor-declares-state-of-emergency-in-eight-counties-including-mariposa-county-due-to-winter-storms
+			print(e.summary)
+			print(e.published)
+			# <a href="https://goldrushcam.com/sierrasuntimes/index.php/news/local-news/18230-california-governor-declares-state-of-emergency-in-eight-counties-including-mariposa-county-due-to-winter-storms" target="_blank">California Governor Declares State of Emergency in Eight Counties, Including Mariposa County, Due to Winter Storms</a>&nbsp;&nbsp;<font color="#6f6f6f">Sierra Sun Times</font><p>April 13, 2019 - SACRAMENTO — Governor Gavin Newsom on Friday issued an emergency proclamation for the counties of Butte, Colusa, Del Norte, Mariposa, ...</p>'
+			print(e.source.href)
+			# https://goldrushcam.com
+			print(e.source.title)
+			# Sierra Sun Times
+			if "media_content" in e.keys():
+				# <class 'dict'>
+				for c in e.media_content:
+					print(c['url']) if "url" in c.keys() else print("no url")
+					# https://lh4.googleusercontent.com/proxy/jcPiFk6AIyqAwAhHEdYkxZrEBb0o5u8wm1nv_03hjYdjFHEstekQWFQmQS6dYdkEQo6QsQmFVGHzi31hf92yNVrLN54pMto3SPyOaeBLpRX1nuC-4nGwKZXz_1KKIedju_VB36E=-w150-h150-c
+					print(c['medium']) if "medium" in c.keys() else print("no medium")
+					# image
+			print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+	def test_view_news_API(self):
+		city_state_news = self.client.get("/home/news/city/state/Sacramento/California/terror/")
+		state_news = self.client.get("/home/news/state/California/state of emergency/")
 		
-	# 	self.assertNotEqual(len(city_state_news.data), 0, "Feed length zero, no news returned")
-	# 	self.assertNotEqual(city_state_news.data, None, "Feed == 'None' ")
+		self.assertNotEqual(len(city_state_news.data), 0, "Feed length zero, no news returned")
+		self.assertNotEqual(city_state_news.data, None, "Feed == 'None' ")
 
-	# 	# print(city_state_news.data[0])
-	# 	print(state_news.data[0])
+		# print(city_state_news.data[0])
+		print(state_news.data)
 		
-	# def test_locations_API(self):
-	# 	country = self.client.post("/home/location/country/new/", {"name" : 'USA'})
+	def test_locations_API(self):
+		country = self.client.post("/home/location/country/new/", {"name" : 'USA'})
 
-	# 	state = self.client.post("/home/location/state/new/", {"name" : 'New York',
-	# 															"country_id" : country.data['id']
-	# 															})
+		state = self.client.post("/home/location/state/new/", {"name" : 'New York',
+																"country_id" : country.data['id']
+																})
 
-	# 	zipcode = self.client.post("/home/location/zipcode/new/", {"name" : '78945', 
-	# 																"state_id" : state.data['id'],
-	# 															})
+		zipcode = self.client.post("/home/location/zipcode/new/", {"name" : '78945', 
+																	"state_id" : state.data['id'],
+																})
 
-	# 	city = self.client.post("/home/location/city/new/", {"name" : 'Manhatty',
-	# 															"state_id" : state.data['id'],
-	# 															"zipcode_id" : zipcode.data['id'],
+		city = self.client.post("/home/location/city/new/", {"name" : 'Manhatty',
+																"state_id" : state.data['id'],
+																"zipcode_id" : zipcode.data['id'],
 
-	# 																})
+																	})
 
-	# 	self.assertEqual(country.data['name'], "USA", "Country name is not what was expected.")
-	# 	self.assertEqual(state.data['name'], "New York", "State name is not what was expected.")
-	# 	self.assertEqual(zipcode.data['zip_code'], "78945", "Zipcode is not what was expected.")
-	# 	self.assertEqual(city.data['name'], "Manhatty", "City name is not what was expected.")
+		self.assertEqual(country.data['name'], "USA", "Country name is not what was expected.")
+		self.assertEqual(state.data['name'], "New York", "State name is not what was expected.")
+		self.assertEqual(zipcode.data['zip_code'], "78945", "Zipcode is not what was expected.")
+		self.assertEqual(city.data['name'], "Manhatty", "City name is not what was expected.")
 
 
-	# 	country = self.client.get("/home/location/country/")
-	# 	state = self.client.get("/home/location/state/")
-	# 	zipcode = self.client.get("/home/location/zipcode/")
-	# 	city = self.client.get("/home/location/city/")
+		country = self.client.get("/home/location/country/")
+		state = self.client.get("/home/location/state/")
+		zipcode = self.client.get("/home/location/zipcode/")
+		city = self.client.get("/home/location/city/")
 		
-	# 	city_by_state = self.client.get("/home/location/city/state/{}/".format(state.data['data'][0]['id']))
+		city_by_state = self.client.get("/home/location/city/state/{}/".format(state.data['data'][0]['id']))
 
-	# 	self.assertEqual(len(country.data) > 0, True, "Expected more data from Country API.")
-	# 	self.assertEqual(len(state.data) > 0, True, "Expected more data from State API.")
-	# 	self.assertEqual(len(zipcode.data) > 0, True, "Expected more data from Zipcode API.")
-	# 	self.assertEqual(len(city.data) > 0, True, "Expected more data from City API.")
+		self.assertEqual(len(country.data) > 0, True, "Expected more data from Country API.")
+		self.assertEqual(len(state.data) > 0, True, "Expected more data from State API.")
+		self.assertEqual(len(zipcode.data) > 0, True, "Expected more data from Zipcode API.")
+		self.assertEqual(len(city.data) > 0, True, "Expected more data from City API.")
 
-	# 	country = self.client.get("/home/location/country/USA/")
-	# 	state = self.client.get("/home/location/state/New York/")
-	# 	zipcode = self.client.get("/home/location/zipcode/contains/789/")
-	# 	city = self.client.get("/home/location/city/Man/")
+		country = self.client.get("/home/location/country/USA/")
+		state = self.client.get("/home/location/state/New York/")
+		zipcode = self.client.get("/home/location/zipcode/contains/789/")
+		city = self.client.get("/home/location/city/Man/")
 
-	# 	self.assertEqual(len(country.data) > 0, True, "Expected more data from Country API.")
-	# 	self.assertEqual(len(state.data) > 0, True, "Expected more data from State API.")
-	# 	self.assertEqual(len(zipcode.data) > 0, True, "Expected more data from Zipcode API.")
-	# 	self.assertEqual(len(city.data) > 0, True, "Expected more data from City API.")
+		self.assertEqual(len(country.data) > 0, True, "Expected more data from Country API.")
+		self.assertEqual(len(state.data) > 0, True, "Expected more data from State API.")
+		self.assertEqual(len(zipcode.data) > 0, True, "Expected more data from Zipcode API.")
+		self.assertEqual(len(city.data) > 0, True, "Expected more data from City API.")
 
-	# 	country = self.client.get("/home/location/country/pk/1/")
-	# 	state = self.client.get("/home/location/state/pk/1/")
-	# 	zipcode = self.client.get("/home/location/zipcode/pk/1/")
-	# 	city = self.client.get("/home/location/city/pk/1/")
+		country = self.client.get("/home/location/country/pk/1/")
+		state = self.client.get("/home/location/state/pk/1/")
+		zipcode = self.client.get("/home/location/zipcode/pk/1/")
+		city = self.client.get("/home/location/city/pk/1/")
 
-	# 	self.assertEqual(len(country.data) > 0, True, "Expected more data from Country API.")
-	# 	self.assertEqual(len(state.data) > 0, True, "Expected more data from State API.")
-	# 	self.assertEqual(len(zipcode.data) > 0, True, "Expected more data from Zipcode API.")
-	# 	self.assertEqual(len(city.data) > 0, True, "Expected more data from City API.")
-
-
-	# 	city = self.client.delete("/home/location/city/delete/", {"pk" : city.data['id']})
-	# 	zipcode = self.client.delete("/home/location/zipcode/delete/", {"pk" : zipcode.data['id']})
-	# 	state = self.client.delete("/home/location/state/delete/", {"pk" : state.data['id']})
-	# 	country = self.client.delete("/home/location/country/delete/", {"pk" : country.data['id']})
-
-	# 	self.assertEqual(city.data['deleted'], True, "City not deleted")
-	# 	self.assertEqual(zipcode.data['deleted'], True, "Zipcode not deleted")
-	# 	self.assertEqual(state.data['deleted'], True, "State not deleted")
-	# 	self.assertEqual(country.data['deleted'], True, "Country not deleted")
-
-	# 	#######################
-	# 	## User Quick Questions
-	# 	########################
-
-	# 	###############
-	# 	# Interests
-	# 	###############
-
-	# def test_view_volunteer_interest_post(self):
-	# 	interest = self.client.post("/home/interests/new/", {"name":"Helping", "desc":"You like hleping others"})
-
-	# def test_view_volunteer_interest_get(self):
-	# 	vol_interest = self.client.post("/home/interests/new/", {"name":"Helping", "desc":"You like hleping others"})
-	# 	interest = self.client.get("/home/interests/pk/{}/".format(vol_interest.data['id']))
-	# 	interests = self.client.get("/home/interests/")
-
-	# 	deleted = self.client.delete("/home/interests/delete/", {"pk" : vol_interest.data['id']})
-	# 	self.assertEqual(deleted.data['deleted'], True, "Data not deleted")
-
-	# 	###############
-	# 	# Skills
-	# 	###############
-	# def test_view_volunteer_skill_post(self):
-	# 	skill = self.client.post("/home/skills/new/", {"name":"Helping", "desc":"You like hleping others"})
-
-	# def test_view_volunteer_skill_get_delete(self):
-	# 	vol_skill = self.client.post("/home/skills/new/", {"name":"Helping", "desc":"You like hleping others"})
-	# 	skill = self.client.get("/home/skills/pk/{}/".format(vol_skill.data['id']))
-	# 	skills = self.client.get("/home/skills/")
-
-	# 	deleted = self.client.delete("/home/skills/delete/", {"pk" : vol_skill.data['id']})
-	# 	self.assertEqual(deleted.data['deleted'], True, "Data not deleted")
+		self.assertEqual(len(country.data) > 0, True, "Expected more data from Country API.")
+		self.assertEqual(len(state.data) > 0, True, "Expected more data from State API.")
+		self.assertEqual(len(zipcode.data) > 0, True, "Expected more data from Zipcode API.")
+		self.assertEqual(len(city.data) > 0, True, "Expected more data from City API.")
 
 
+		city = self.client.delete("/home/location/city/delete/", {"pk" : city.data['id']})
+		zipcode = self.client.delete("/home/location/zipcode/delete/", {"pk" : zipcode.data['id']})
+		state = self.client.delete("/home/location/state/delete/", {"pk" : state.data['id']})
+		country = self.client.delete("/home/location/country/delete/", {"pk" : country.data['id']})
 
-	# def test_view_UserLocationAPI_post(self):
-	# 	user_location = self.client.post("/home/uqq/location/new/",
-	# 						{"user_id" : 1,
-	# 						"city_id":1, 
-	# 						"state_id":1,
-	# 						"country_id":1
-	# 						})
-	# 	self.assertEqual(UserLocation.objects.count(), 1, "Expected one object to be in UserLocations")
+		self.assertEqual(city.data['deleted'], True, "City not deleted")
+		self.assertEqual(zipcode.data['deleted'], True, "Zipcode not deleted")
+		self.assertEqual(state.data['deleted'], True, "State not deleted")
+		self.assertEqual(country.data['deleted'], True, "Country not deleted")
 
-	# 	# Test update
-	# 	user_location = self.client.post("/home/uqq/location/new/",
-	# 						{"user_id" : 1,
-	# 						"city_id":3, 
-	# 						"state_id":2,
-	# 						"_update":1
-	# 						})
-	# 	self.assertEqual(UserLocation.objects.count(), 1, "Expected one object to be in UserLocations")
+		#######################
+		## User Quick Questions
+		########################
+
+		###############
+		# Interests
+		###############
+
+	def test_view_volunteer_interest_post(self):
+		interest = self.client.post("/home/interests/new/", {"name":"Helping", "desc":"You like hleping others"})
+
+	def test_view_volunteer_interest_get(self):
+		vol_interest = self.client.post("/home/interests/new/", {"name":"Helping", "desc":"You like hleping others"})
+		interest = self.client.get("/home/interests/pk/{}/".format(vol_interest.data['id']))
+		interests = self.client.get("/home/interests/")
+
+		deleted = self.client.delete("/home/interests/delete/", {"pk" : vol_interest.data['id']})
+		self.assertEqual(deleted.data['deleted'], True, "Data not deleted")
+
+		###############
+		# Skills
+		###############
+	def test_view_volunteer_skill_post(self):
+		skill = self.client.post("/home/skills/new/", {"name":"Helping", "desc":"You like hleping others"})
+
+	def test_view_volunteer_skill_get_delete(self):
+		vol_skill = self.client.post("/home/skills/new/", {"name":"Helping", "desc":"You like hleping others"})
+		skill = self.client.get("/home/skills/pk/{}/".format(vol_skill.data['id']))
+		skills = self.client.get("/home/skills/")
+
+		deleted = self.client.delete("/home/skills/delete/", {"pk" : vol_skill.data['id']})
+		self.assertEqual(deleted.data['deleted'], True, "Data not deleted")
+
+
+
+	def test_view_UserLocationAPI_post(self):
+		user_location = self.client.post("/home/uqq/location/new/",
+							{"user_id" : 1,
+							"city_id":1, 
+							"state_id":1,
+							"country_id":1
+							})
+		self.assertEqual(UserLocation.objects.count(), 1, "Expected one object to be in UserLocations")
+
+		# Test update
+		user_location = self.client.post("/home/uqq/location/new/",
+							{"user_id" : 1,
+							"city_id":3, 
+							"state_id":2,
+							"_update":1
+							})
+		self.assertEqual(UserLocation.objects.count(), 1, "Expected one object to be in UserLocations")
 		
-	# 	self.assertEqual(user_location.data['city']['name'], "Atwater", "Expected city to be atwater")
+		self.assertEqual(user_location.data['city']['name'], "Atwater", "Expected city to be atwater")
 
-	# 	user_location = self.client.post("/home/uqq/location/new/",
-	# 						{"user_id" : 2,
-	# 						"city_id":3, 
-	# 						"state_id":2,
-	# 						"_update":1
-	# 						})
-	# 	print(user_location.data)
-
-
-	# def test_view_UserLocationAPI_get(self):
-	# 	user_location = self.client.post("/home/uqq/location/new/",
-	# 						{"user_id" : 1,
-	# 						"city_id":1, 
-	# 						"state_id":1,
-	# 						"country_id":1
-	# 						})
-
-	# 	print(user_location.data)
-	# 	user_location = self.client.get("/home/uqq/location/{}/".format(user_location.data['user']['id']))
-	# 	print(user_location.data)
-		
-	# 	self.assertEqual(user_location.data['user']['id'], 1, "Expected user id to be 1")
-
-	# def test_view_UserInterstSkillTags_post(self):
-	# 	user_tags = self.client.post("/home/uqq/tags/new/", {
-	# 		"user_id": "1",
-	# 		"tags" : json.dumps(['Tag1', 'Tag2', "Tag3"])
-	# 		})
-		
-	# 	self.assertEqual(json.loads(user_tags.data['tags'])[0], "Tag1", "Expected first tag to be Tag1")
-
-	# 	user_tags = self.client.post("/home/uqq/tags/update/", {
-	# 		"user_id": "1",
-	# 		"tags" : json.dumps(['Skill1', 'Interest2', "Tag3"]),
-	# 		"_update" : 0
-	# 		})
-
-	# 	user_tags = self.client.post("/home/uqq/tags/update/", {
-	# 		"user_id": "2",
-	# 		"tags" : json.dumps(['Skill1', 'Interest2', "Tag3"]),
-	# 		"_update" : 0
-	# 		})
-	# 	self.assertEqual(json.loads(user_tags.data['tags'])[0], "Skill1", "Expected first tag to be Skill1")
-		
-	# 	user_tags = self.client.post("/home/uqq/tags/update/", {
-	# 				"user_id": "2",
-	# 				"tags" : json.dumps([]),
-	# 				"_update" : 0
-	# 				})
-		
-	# 	print(user_tags.data)
-	# 	self.assertEqual(len(json.loads(user_tags.data['tags'])), 0, "Expected first tag to be Skill1")
+		user_location = self.client.post("/home/uqq/location/new/",
+							{"user_id" : 2,
+							"city_id":3, 
+							"state_id":2,
+							"_update":1
+							})
 		
 
-	# def test_view_UserInterstSkillTags_get(self):
-	# 	user_tags = self.client.post("/home/uqq/tags/new/", {
-	# 		"user_id": "1",
-	# 		"tags" : json.dumps(['Tag1', 'Tag2', "Tag3"])
-	# 		})
+
+	def test_view_UserLocationAPI_get(self):
+		user_location = self.client.post("/home/uqq/location/new/",
+							{"user_id" : 1,
+							"city_id":1, 
+							"state_id":1,
+							"country_id":1
+							})
 
 		
-	# 	user_tags = self.client.get("/home/uqq/tags/1/")
-	# 	print(user_tags.data)
-	# 	self.assertEqual(json.loads(user_tags.data['tags'])[0], "Tag1", "Expected first tag to be Tag1")
+		user_location = self.client.get("/home/uqq/location/{}/".format(user_location.data['user']['id']))
+		
+		
+		self.assertEqual(user_location.data['user']['id'], 1, "Expected user id to be 1")
+
+	def test_view_UserInterstSkillTags_post(self):
+		user_tags = self.client.post("/home/uqq/tags/new/", {
+			"user_id": "1",
+			"tags" : json.dumps(['Tag1', 'Tag2', "Tag3"])
+			})
+		
+		self.assertEqual(json.loads(user_tags.data['tags'])[0], "Tag1", "Expected first tag to be Tag1")
+
+		user_tags = self.client.post("/home/uqq/tags/update/", {
+			"user_id": "1",
+			"tags" : json.dumps(['Skill1', 'Interest2', "Tag3"]),
+			"_update" : 0
+			})
+
+		user_tags = self.client.post("/home/uqq/tags/update/", {
+			"user_id": "2",
+			"tags" : json.dumps(['Skill1', 'Interest2', "Tag3"]),
+			"_update" : 0
+			})
+		self.assertEqual(json.loads(user_tags.data['tags'])[0], "Skill1", "Expected first tag to be Skill1")
+		
+		user_tags = self.client.post("/home/uqq/tags/update/", {
+					"user_id": "2",
+					"tags" : json.dumps([]),
+					"_update" : 0
+					})
+		
+	
+		self.assertEqual(len(json.loads(user_tags.data['tags'])), 0, "Expected first tag to be Skill1")
+		
+
+	def test_view_UserInterstSkillTags_get(self):
+		user_tags = self.client.post("/home/uqq/tags/new/", {
+			"user_id": "1",
+			"tags" : json.dumps(['Tag1', 'Tag2', "Tag3"])
+			})
+
+		
+		user_tags = self.client.get("/home/uqq/tags/1/")
+
+		self.assertEqual(json.loads(user_tags.data['tags'])[0], "Tag1", "Expected first tag to be Tag1")

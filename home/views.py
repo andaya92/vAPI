@@ -24,23 +24,25 @@ from datetime import datetime, timedelta
 from decimal import Decimal
 
 def is_volunteer(user_id):
-	user = get_user_model().objects.get(pk=user_id)
 	volunteer_id = -1
 	try:
+		user = get_user_model().objects.get(pk=user_id)
 		volunteer_id = user.volunteer.id
 	except:
-		# return Response({"Error" : "User is not a volunteer"})
 		pass
 	return volunteer_id != -1
 
 def get_users_account_id(user_id):
 	vol = None
-	if is_volunteer(user_id):
-		vol = Volunteer.objects.filter(user_id=user_id)
-	else:
-		vol = VolunteerProvider.objects.filter(user_id=user_id)
-	if vol:
-		return vol[0].id
+	try:
+		if is_volunteer(user_id):
+			vol = Volunteer.objects.filter(user_id=user_id)
+		else:
+			vol = VolunteerProvider.objects.filter(user_id=user_id)
+		if vol:
+			return vol[0].id
+	except:
+		pass
 	return -1		
 #######################
 ## Model Charts
@@ -106,8 +108,11 @@ class VolunteerInterestAPI(APIView):
 	def get(self, request, pk=-1):
 		interests = None
 		if pk != -1:
-			vol_int = VolunteerInterest.objects.get(pk=pk)
-			return Response(VolunteerInterestSerializer(vol_int).data)
+			try:
+				vol_int = VolunteerInterest.objects.get(pk=pk)
+				return Response(VolunteerInterestSerializer(vol_int).data)
+			except:
+				pass
 		else:
 			interests = VolunteerInterest.objects.all()
 
@@ -144,8 +149,11 @@ class VolunteerSkillAPI(APIView):
 	def get(self, request, pk=-1):
 		skills = None
 		if pk != -1:
-			vol_int = VolunteerSkill.objects.get(pk=pk)
-			return Response(VolunteerSkillSerializer(vol_int).data)
+			try:
+				vol_int = VolunteerSkill.objects.get(pk=pk)
+				return Response(VolunteerSkillSerializer(vol_int).data)
+			except:
+				pass
 		else:
 			skills = VolunteerSkill.objects.all()
 
@@ -205,17 +213,20 @@ class UserLocationAPI(APIView):
 		city_id = request.data['city_id']
 		state_id = request.data['state_id']
 		if "_update" in request.data.keys():
-			user_location = UserLocation.objects.filter(user_id=user_id).first()
-			if user_location:
-				try:
-					user_location.city_id = city_id
-					user_location.state_id = state_id
-					user_location.save()
-					return Response(UserLocationSerializer(user_location).data)
-				except:
-					return Response({'data':"Error updating User Location", "error":True})
-			# If no entry create new
-			return self.create_new_user_location(user_id, city_id, state_id)
+			try:
+				user_location = UserLocation.objects.filter(user_id=user_id).first()
+				if user_location:
+					try:
+						user_location.city_id = city_id
+						user_location.state_id = state_id
+						user_location.save()
+						return Response(UserLocationSerializer(user_location).data)
+					except:
+						return Response({'data':"Error updating User Location", "error":True})
+				# If no entry create new
+				return self.create_new_user_location(user_id, city_id, state_id)
+			except:
+				return Response({'error':True})
 		elif user_id and city_id and state_id:
 				return self.create_new_user_location(user_id, city_id, state_id)
 		return Response({"data":"Must provide user_id({}), city_id({}) and, state_id({})".format(user_id, city_id, state_id), 
@@ -387,8 +398,11 @@ class VolunteerAPI(APIView):
 
 	def get(self, request, pk=-1, email=None):
 		if pk != -1:
-			vol = Volunteer.objects.get(pk=pk)
-			return Response(VolunteerSerializer(vol).data)
+			try:
+				vol = Volunteer.objects.get(pk=pk)
+				return Response(VolunteerSerializer(vol).data)
+			except:
+				pass
 		elif email:
 			user = get_user_model().objects.filter(email=email)[0]
 			if user:
@@ -408,8 +422,11 @@ class VolunteerProviderAPI(APIView):
 	
 	def get(self, request, pk=-1, email=None):
 		if pk != -1:
-			vol = VolunteerProvider.objects.get(pk=pk)
-			return Response(VolunteerProviderSerializer(vol).data)
+			try:
+				vol = VolunteerProvider.objects.get(pk=pk)
+				return Response(VolunteerProviderSerializer(vol).data)
+			except:
+				pass
 		elif email:
 			user = get_user_model().objects.filter(email=email)[0]
 			if user:
@@ -435,9 +452,11 @@ class VolunteerEventAPI(APIView):
 		results = None
 		result_set = set()
 		if pk != -1:
-			results = VolunteerEvent.objects.get(pk=pk)
-			if results:
+			try:
+				results = VolunteerEvent.objects.get(pk=pk)
 				return Response(VolunteerEventSerializer(results).data)
+			except:
+				pass
 		elif location != "none":
 			query_list = location.split(",")
 			for query in query_list:
@@ -498,7 +517,6 @@ class VolunteerEventAPI(APIView):
 		event_ends = int(request.data['event_ends'])
 
 		user_id = int(request.data['provider'])
-		user = get_user_model().objects.get(pk=user_id)
 		acct_id = -1
 
 		if not is_volunteer(user_id):
@@ -529,13 +547,16 @@ class VolunteerEventDeleteAPI(APIView):
 
 	def post(self, request):
 		pk = request.data['pk']
-		vol_event = VolunteerEvent.objects.get(pk=pk)
-		if request.user.id == vol_event.provider.user_id:
-			try:
-				vol_event.delete()
-				return Response({"deleted":True})
-			except:
-				print("Failed to delete event")
+		try:
+			vol_event = VolunteerEvent.objects.get(pk=pk)
+			if request.user.id == vol_event.provider.user_id:
+				try:
+					vol_event.delete()
+					return Response({"deleted":True})
+				except:
+					print("Failed to delete event")
+		except:
+			pass
 		return Response({"deleted":False})
 class VolunteerPostAPI(APIView):
 	authentication_classes = (TokenAuthentication,)
@@ -599,13 +620,16 @@ class VolunteerPostDeleteAPI(APIView):
 	permission_classes = (IsAuthenticated,)
 	def post(self, request):
 		pk = request.data['pk']
-		vol_post = VolunteerPost.objects.get(pk=pk)
-		if request.user.id == vol_post.user.id:
-			try:
-				vol_post.delete()
-				return Response({"deleted":True})
-			except:
-				print("Failed deleting Volunteer Post")
+		try:
+			vol_post = VolunteerPost.objects.get(pk=pk)
+			if request.user.id == vol_post.user.id:
+				try:
+					vol_post.delete()
+					return Response({"deleted":True})
+				except:
+					print("Failed deleting Volunteer Post")
+		except:
+			pass
 		return Response({"deleted":False})
 
 class VolunteerHoursAPI(APIView):
@@ -623,12 +647,15 @@ class VolunteerEventSignUpAPI(APIView):
 	def get(self, request, pk=-1, volunteer_id=-1, event_id=-1):
 		results = None
 		if pk != -1:
-			vol_event_signup = VolunteerEventSignUp.objects.get(pk=pk)
-			return Response(VolunteerEventSignUpSerializer(vol_event_signup).data)
-		elif volunteer_id != -1:
-			user = get_user_model().objects.get(pk=volunteer_id)
-			volunteer_id = -1
 			try:
+				vol_event_signup = VolunteerEventSignUp.objects.get(pk=pk)
+				return Response(VolunteerEventSignUpSerializer(vol_event_signup).data)
+			except:
+				pass
+		elif volunteer_id != -1:
+			try:
+				user = get_user_model().objects.get(pk=volunteer_id)
+				volunteer_id = -1
 				volunteer_id = user.volunteer.id
 			except:
 				return Response({"Error" : "User is not a volunteer"})
@@ -667,13 +694,16 @@ class VolunteerEventSignUpAPI(APIView):
 
 	def delete(self, request):
 		pk = request.data['pk']
-		vol_ev_signup = VolunteerEventSignUp.objects.get(pk=pk)
-		if vol_ev_signup.volunteer.user.id == request.user.id:
-			try:
-				vol_ev_signup.delete()
-				return Response({"deleted":True})
-			except:
-				print("Failed deleting volunteer event signup")
+		try:
+			vol_ev_signup = VolunteerEventSignUp.objects.get(pk=pk)
+			if vol_ev_signup.volunteer.user.id == request.user.id:
+				try:
+					vol_ev_signup.delete()
+					return Response({"deleted":True})
+				except:
+					print("Failed deleting volunteer event signup")
+		except:
+			pass
 		return Response({"deleted":False})
 
 
@@ -684,8 +714,11 @@ class EventCityAPI(APIView):
 	def get(self, request, pk=-1, name="none", state_id=-1, zipcode_id=-1):
 		cities = None
 		if pk != -1:
-			city = EventCity.objects.get(pk=pk)
-			return Response(EventCitySerializer(city).data)
+			try:
+				city = EventCity.objects.get(pk=pk)
+				return Response(EventCitySerializer(city).data)
+			except:
+				pass
 		elif name != "none":
 			cities = EventCity.objects.filter(name__icontains=name)
 		elif state_id != -1:
@@ -733,8 +766,11 @@ class ZipCodeAPI(APIView):
 	def get(self, request, pk=-1, name="none", state_id=-1):
 		zipcodes = None
 		if pk!=-1:
-			zipcode = ZipCode.objects.get(pk=pk)
-			return Response(ZipCodeSerializer(zipcode).data)
+			try:
+				zipcode = ZipCode.objects.get(pk=pk)
+				return Response(ZipCodeSerializer(zipcode).data)
+			except:
+				pass
 		elif name != "none":
 			zipcodes = ZipCode.objects.filter(zip_code__icontains=name)
 		elif state_id != -1:
@@ -779,8 +815,11 @@ class EventStateAPI(APIView):
 	def get(self, request, pk=-1, name="none", country_id=-1):
 		states = None
 		if pk!=-1:
-			state = EventState.objects.get(pk=pk)
-			return Response(EventStateSerializer(state).data)
+			try:
+				state = EventState.objects.get(pk=pk)
+				return Response(EventStateSerializer(state).data)
+			except:
+				pass
 		elif name != "none":
 			states = EventState.objects.filter(name__icontains=name)
 		elif country_id != -1:
@@ -824,8 +863,11 @@ class EventCountryAPI(APIView):
 	def get(self, request, pk=-1, name="none"):
 		countries = None
 		if pk!=-1:
-			country = EventCountry.objects.get(pk=pk)
-			return Response(EventCountrySerializer(country).data)
+			try:
+				country = EventCountry.objects.get(pk=pk)
+				return Response(EventCountrySerializer(country).data)
+			except:
+				pass
 		elif name != "none":
 			countries = EventCountry.objects.filter(name__icontains=name)
 		else:
@@ -871,8 +913,11 @@ class DonationEventAPI(APIView):
 	def get(self, request, pk=-1, field=None, query=None):
 		results = None
 		if pk != -1:
-			result = DonationEvent.objects.get(pk=pk)
-			return Response(DonationEventSerializer(result).data)
+			try:
+				result = DonationEvent.objects.get(pk=pk)
+				return Response(DonationEventSerializer(result).data)
+			except:
+				pass
 		elif field and query:
 			if field == "title":
 				results = DonationEvent.objects.filter(title__icontains=query)
@@ -948,7 +993,10 @@ class DonationAPI(APIView):
 		de = None
 
 		if donation_event_id != "-1":
-			de = DonationEvent.objects.get(pk=int(donation_event_id))
+			try:
+				de = DonationEvent.objects.get(pk=int(donation_event_id))
+			except:
+				pass
 
 		# try:
 		ids = json.dumps({"donation_event": donation_event_id})  
