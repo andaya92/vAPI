@@ -370,8 +370,12 @@ class ChangePassword(APIView):
 		password_confirm = request.data['password_confirm']
 		checked_password = check_password(password, password_confirm)
 		if not checked_password['error'] and request.user.check_password(current_password):
-			request.user.set_password(password)
-			return Response({"password_changed":True})
+			try:
+				request.user.set_password(password)
+				request.user.save()
+				return Response({"password_changed":True})
+			except:
+				pass
 		elif checked_password['error']:
 			print(checked_password['msg'])
 		return Response({"password_changed":False})
