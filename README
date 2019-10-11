@@ -1,14 +1,6 @@
-#### Huge problem
+# VolunteerMe API
 
-Events need tags for interests and skills
-So a user can search for events by location and filter by interests & skills
-
-#############
-
-
-
-README
-# https://cst-499-volunteer-api.herokuapp.com/
+# Project Notes
 
 # Delete Migrations
 find . -path "*/migrations/*.py" -not -name "__init__.py" -delete
