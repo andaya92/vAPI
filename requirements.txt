@@ -70,7 +70,7 @@ stripe==1.79.1
 tabulate==0.7.5
 termcolor==1.1.0
 texttable==0.9.1
-Twisted==17.9.0
+Twisted==19.7.0
 txaio==2.9.0
 urllib3==1.22
 vine==1.1.4
